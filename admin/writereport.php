@@ -77,14 +77,26 @@
       </nav>
 
       <div class="container-fluid">
-        <h1 class="mt-4">Visualizza lo stato degli ultimi interventi</h1>
+      <h1 class="mt-4">Compila Report</h1>
         <br>
         <form>
-  <div style="float:centre;">
-  <button class="btn btn-primary"  type="submit">Vai</button>
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Intervento</label>
+    <!--<input class="form-control" type="text" >-->
+    <label style = "color:darkgrey;text-align:centre;content-align:centre">Nome Intervento Da DB</label>
   </div>
+  <div class="form-group">
+    <label for="exampleFormControlSelect1">IsRisolto</label>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option>--</option>
+      <option>S&igrave;</option>
+      <option>No</option>
+    </select>
+  </div>
+  
+  
 </form>
-            </div>
+        </div>
     </div>
     <!-- /#page-content-wrapper -->
 
