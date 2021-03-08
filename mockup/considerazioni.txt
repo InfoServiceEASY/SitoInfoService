@@ -1,7 +1,0 @@
-enrollmentservice non metterei categoria solo cliente si registra
-infoserviceMockupPubblico : settings non mi piace solo se accedi vedi interventi, ha senso metterlo nella parte privata
-ci vuole anche mockup pagina privata clienti?
-dashboard?
-fare bubble
-
-

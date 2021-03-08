@@ -2,22 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-  <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-  -->  
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <title>Simple Sidebar - Start Bootstrap Template</title>
-
-   <!--Bootstrap core CSS -->
+  <title>Customer</title>
+  <!--Bootstrap core CSS -->
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
@@ -25,7 +13,7 @@
 </head>
 
 <body>
-<!--<?php// include '../template/navbar.php';?>
+  <!--<?php// include '../template/navbar.php';?>
 -->
   <div class="d-flex" id="wrapper">
 
@@ -62,7 +50,7 @@
               <a class="nav-link" href="#">Link</a>
             </li>
             <li class="nav-item dropdown">
-             <a class="nav-link " href="#" id="navbarDropdown" role="button"  style="background-color:yellow"data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <a class="nav-link " href="#" id="navbarDropdown" role="button" style="background-color:yellow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 M
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
@@ -80,40 +68,41 @@
         <h1 class="mt-4">Ticket</h1>
         <br>
         <form>
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Oggetto</label>
-    <input class="form-control" type="text" >
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlSelect1">Tipologia</label>
-    <select class="form-control" id="exampleFormControlSelect1" >
-      <option>--</option>
-      <option>Domanda</option>
-      <option>Incidente</option>
-      <option>Problema</option>
-      <option>feature request</option>
-    </select>
-  </div>  <div class="form-group">
-    <label for="exampleFormControlSelect1">Priorità</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>--</option>
-      <option>Bassa</option>
-      <option>Media</option>
-      <option>Alta</option>
-      <option>Urgente</option>
-    </select>
-  </div>
-  
-  <div class="form-group">
-    <label for="exampleFormControlTextarea1">Descrizione</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-  </div>
-  <div style="float: right;">
-  <button class="btn btn-primary"  type="submit">Cancella</button>
-  <button class="btn btn-primary"  type="submit">Conferma</button>
-  </div>
-</form>
-            </div>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">Oggetto</label>
+            <input class="form-control" type="text">
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Tipologia</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>--</option>
+              <option>Domanda</option>
+              <option>Incidente</option>
+              <option>Problema</option>
+              <option>feature request</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Priorità</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>--</option>
+              <option>Bassa</option>
+              <option>Media</option>
+              <option>Alta</option>
+              <option>Urgente</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Descrizione</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+          </div>
+          <div style="float: right;">
+            <button class="btn btn-primary" type="submit">Cancella</button>
+            <button class="btn btn-primary" type="submit">Conferma</button>
+          </div>
+        </form>
+      </div>
     </div>
     <!-- /#page-content-wrapper -->
 
