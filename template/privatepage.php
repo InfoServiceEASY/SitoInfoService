@@ -4,11 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Customer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+ 
   <!--Bootstrap core CSS -->
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
   <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
+
 
   <!-- Bootstrap core JavaScript -->
   <script src="../assets/js/jquery.min.js"></script>
@@ -56,7 +59,7 @@
             M
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">LogOut</a>
+            <a class="dropdown-item" href="Logout.php">LogOut</a>
             <a class="dropdown-item" href="#">Impostazioni</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>

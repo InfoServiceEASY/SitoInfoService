@@ -5,3 +5,7 @@ function menuacomparsa() {
         $("#wrapper").toggleClass("toggled");
     });
 }
+
+function popup() {
+    $('#myModal').modal(options)
+}
