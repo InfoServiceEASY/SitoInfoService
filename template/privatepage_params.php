@@ -1,3 +1,22 @@
+<?php
+//variables
+$letterautente = "M"; //strtoupper($_SESSION['utente'][0]);
+$sidebar_link = array();
+$sidebar_text = array();
+$nome = basename($_SERVER['PHP_SELF']); //pagecorrente
+switch($nome){ //dovrà essere invece $_SESSION['utenza'] al posto di $nome e i casi saranno "customer", "employee", "helpdesk" 
+    case 'customer.php': 
+        $sidebar_link = array("DashBoard.php", "Solutions.php", "customer.php", "#", "#", "#");
+        $sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");
+    break;
+    case 'employee copy.php':
+        $sidebar_link = array("DashBoard.php", "#", "#", "#");
+        $sidebar_text = array("Dashboard","Events","Profile","Status");
+    break;
+    case '': //helpdesk
+        break;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,14 +44,7 @@
 <!-- Sidebar -->
 <div class="bg-light border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">Infoservice </div>
-  <div class="list-group list-group-flush">
-    <a href="Dashboard.php" class="list-group-item list-group-item-action bg-light">Dashboard</a>
-    <a href="Solutions.php" class="list-group-item list-group-item-action bg-light">Solutions</a>
-    <a href="customer.php" class="list-group-item list-group-item-action bg-light">ticket</a>
-    <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
-    <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
-    <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
-  </div>
+<?php include 'sidebar_1.php';?>
 </div>
 <!-- /#sidebar-wrapper -->
 
@@ -56,7 +68,7 @@
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link " href="#" id="navbarDropdown" role="button" style="background-color:yellow" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            M
+            <?php echo $letterautente; ?>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="Logout.php">LogOut</a>
