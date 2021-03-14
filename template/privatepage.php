@@ -25,14 +25,15 @@
 <!-- Sidebar -->
 <div class="bg-light border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">Infoservice </div>
-  <div class="list-group list-group-flush">
-    <a href="Dashboard.php" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+  <div id="sidebar" class="list-group list-group-flush">
+  <script>sidebar( <?php echo json_encode($elementi) ?>)</script>
+  <!--  <a href="Dashboard.php" class="list-group-item list-group-item-action bg-light">Dashboard</a>
     <a href="Solutions.php" class="list-group-item list-group-item-action bg-light">Solutions</a>
     <a href="customer.php" class="list-group-item list-group-item-action bg-light">ticket</a>
     <a href="#" class="list-group-item list-group-item-action bg-light">Events</a>
     <a href="#" class="list-group-item list-group-item-action bg-light">Profile</a>
     <a href="#" class="list-group-item list-group-item-action bg-light">Status</a>
-  </div>
+  --></div>
 </div>
 <!-- /#sidebar-wrapper -->
 

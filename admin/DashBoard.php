@@ -1,5 +1,5 @@
+<?php  $elementi=["Dashboard","Solutions","ticket","Events","Profile","Status"];?>
  <?php include '../template/privatepage.php'; ?>
-
  <div class="containerone">
    <div class="containerr">
      <a>

@@ -1,3 +1,4 @@
+ <?php  $elementi=["Dashboard","Solutions","ticket","Events","Profile","Status"];?>   
   <?php include '../template/privatepage.php'; ?>
   <h1 class="mt-4">Ticket</h1>
   <br>
