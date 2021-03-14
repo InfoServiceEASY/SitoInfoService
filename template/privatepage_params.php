@@ -1,16 +1,14 @@
 <?php
 //variables
 $letterautente = "M"; //strtoupper($_SESSION['utente'][0]);
-$sidebar_link = array();
+//i nomi delle pagine devono essere parametroarraynometesto.php
 $sidebar_text = array();
 $nome = basename($_SERVER['PHP_SELF']); //pagecorrente
-switch($nome){ //dovrà essere invece $_SESSION['utenza'] al posto di $nome e i casi saranno "customer", "employee", "helpdesk" 
+switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome e i casi saranno "customer", "employee", "helpdesk" 
     case 'customer.php': 
-        $sidebar_link = array("DashBoard.php", "Solutions.php", "customer.php", "#", "#", "#");
         $sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");
     break;
     case 'employee copy.php':
-        $sidebar_link = array("DashBoard.php", "#", "#", "#");
         $sidebar_text = array("Dashboard","Events","Profile","Status");
     break;
     case '': //helpdesk
@@ -44,7 +42,10 @@ switch($nome){ //dovrà essere invece $_SESSION['utenza'] al posto di $nome e i 
 <!-- Sidebar -->
 <div class="bg-light border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">Infoservice </div>
-<?php include 'sidebar_1.php';?>
+  <div class="list-group list-group-flush" id="sidebar">
+  <script> sidebar( <?php echo json_encode($sidebar_text); ?>) </script>
+ <!-- <?php //include 'sidebar_1.php';?> -->
+  </div>
 </div>
 <!-- /#sidebar-wrapper -->
 

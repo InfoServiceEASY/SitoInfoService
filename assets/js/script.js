@@ -30,6 +30,7 @@ function chart() {
             responsive: true
         }
     });
+    return myLineChart;
 }
 
 function sidebar(arr) {
