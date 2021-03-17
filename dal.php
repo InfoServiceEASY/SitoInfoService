@@ -25,9 +25,9 @@ function Login($usr, $pass)
         $row = $result->fetch_assoc();
         if (password_verify($pass, $row['password'])) {
             $_SESSION['login'] = $usr;
+            $_SESSION["utente"]=$row['username'];
             if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
-            else if (!$row["IsDipendente"]) $_SESSION["member"] = "customer";
-            else $_SESSION["member"] = "employee";
+            else (!$row["IsDipendente"]? $_SESSION["member"] = "customer": $_SESSION["member"] = "employee");
             header("location:../admin/Dashboard.php");
             exit();
         } else

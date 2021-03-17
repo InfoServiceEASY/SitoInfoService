@@ -1,5 +1,5 @@
  <?php
-  include '../template/privatepage.php'; ?>
+  include '../template/privatepage_params.php'; ?>
  <div class="containerone">
    <div class="containerr">
      <a>
