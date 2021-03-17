@@ -5,7 +5,7 @@ $letterautente = "M"; //strtoupper($_SESSION['utente'][0]);
 $sidebar_text = array();
 $nome = basename($_SERVER['PHP_SELF']); //pagecorrente
 switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome e i casi saranno "customer", "employee", "helpdesk" 
-    case 'customer.php': 
+    case 'ticket.php': 
         $sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");
     break;
     case 'employee copy.php':
