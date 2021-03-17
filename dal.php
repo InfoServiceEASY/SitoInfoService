@@ -1,6 +1,11 @@
 <?php
 function DataConnect()
-{
+{ /* infinity free
+    $servername = "185.27.134.11";
+    $username = "epiz_28175371";
+    $password = "YZ2VoLf8aG";
+    $dbname = "epiz_28175371_infoservice";
+*/
     $servername = "127.0.0.1";
     $username = "root";
     $password = "root";
