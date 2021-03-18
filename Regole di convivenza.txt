@@ -1,0 +1,4 @@
+qua metteremo le regole che ci permetteranno di lavorare in modo tranquillo
+1) se ci accorgiamo che manca un file crearlo nel main e non nel branch personale
+2)merge nel main solo dopo che si ha completato il lavoro o se serve al collega per poter continuare il lavoro
+3) utilizzare il to do il più possibile per ricordarsi tutto soprattuto se vengono in mente idee opzionali(da poter sfruttare se avanza tempo)
