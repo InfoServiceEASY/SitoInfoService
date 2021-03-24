@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (!isset($_SESSION)) {
+  session_start();
+}
 //variables
 $letterautente = strtoupper($_SESSION['utente'][0]);
 //i nomi delle pagine devono essere parametroarraynometesto.php

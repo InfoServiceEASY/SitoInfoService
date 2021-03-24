@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (!isset($_SESSION)) {
+    session_start();
+}
 $error = "";
 include_once("../dal.php");
 $conn = DataConnect();
@@ -48,9 +50,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h2 class="text-info">Log In</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
                 </div>
-                <form>
-                    <div class="form-group"><label for="email">Email o Username</label><input class="form-control item" type="email" id="email"></div>
-                    <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" id="password"></div><button class="btn btn-primary btn-block" type="submit">Log In</button>
+                <form method="POST">
+                    <div class="form-group"><label for="email">Email o Username</label><input class="form-control item" type="email" name="email"></div>
+                    <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Log In</button>
+                    <div><?php echo $error ?> </div>
                 </form>
             </div>
         </section>
