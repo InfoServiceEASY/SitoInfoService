@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Register - InfoService</title>
+    <title>FAQ - InfoService</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -31,20 +31,35 @@
             </nav>
         </div>
     </nav>
-    <main class="page registration-page">
-        <section class="clean-block clean-form dark">
+    <main class="page faq-page">
+        <section class="clean-block clean-faq dark">
             <div class="container">
                 <div class="block-heading">
-                    <h2 class="text-info">Sign In</h2>
+                    <h2 class="text-info">FAQ</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
                 </div>
-                <form>
-                    <div class="form-group"><label for="name">First Name</label><input class="form-control item" type="text" id="name"></div>
-                    <div class="form-group"><label for="password">Last Name</label><input class="form-control item" type="password" id="password"></div>
-                    <div class="form-group"><label for="email">Username</label><input class="form-control item" type="email" id="email"></div>
-                    <div class="form-group"><label for="email">Phone Number</label><input class="form-control item" type="email" id="email-1"></div>
-                    <div class="form-group"><label for="email">Email</label><input class="form-control item" type="email" id="email-2"></div>
-                    <div class="form-group"><label for="email">Password</label><input class="form-control item" type="email" id="email-3"></div><button class="btn btn-primary btn-block" type="submit">Sign Up</button></form>
+                <div class="block-content">
+                    <div class="faq-item">
+                        <h4 class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h4>
+                        <div class="answer">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <h4 class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h4>
+                        <div class="answer">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <h4 class="question">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h4>
+                        <div class="answer">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit.&nbsp;Lorem ipsum dolor sit amet, consectetur adipiscing
+                                elit.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <div class="clean-block add-on social-icons">
