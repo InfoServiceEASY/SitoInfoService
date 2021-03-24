@@ -6,8 +6,16 @@
     $sth -> bindparam('?', IDByUser($_SESSION['utente'])); //SELECT id from dipendente WHERE username = parametro ($_SESSION['utente'])   
 */
 
+<<<<<<< HEAD
 include('../dal.php');
 
+=======
+<<<<<<< Updated upstream
+?>
+=======
+include('../dal.php');
+session_start();
+>>>>>>> FreddyBranch
 $conn = DataConnect();
 $sql = "SELECT id, dataapertura,descrizione FROM ticket
  WHERE isaperto = 1 AND fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
@@ -44,11 +52,19 @@ function PreparaTesti($data)
 function PrintSolutions($titoli, $testi)
 {
   for ($i = 0; $i < count($titoli); $i++) {
+<<<<<<< HEAD
+=======
+    $id = explode(explode($titoli[$i], '.')[1], ' ');
+>>>>>>> FreddyBranch
     if ($i % 3 == 0) echo "<div class='containerone'>";
     $template = "
         <div class='container'>
         <a><p>$titoli[$i]</p></a>
         <a>$testi[$i]</a>
+<<<<<<< HEAD
+=======
+        <button href = 'writereport.php?Id ='$id> Scrivi report sull'attività</button>
+>>>>>>> FreddyBranch
         </div>";
     echo $template;
     if ($i % 3 == 2) echo " </div>";
@@ -99,4 +115,9 @@ function PrintSolutions($titoli, $testi)
 </div>
 </body>
 
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> Stashed changes
+>>>>>>> FreddyBranch
