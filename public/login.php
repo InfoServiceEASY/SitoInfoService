@@ -31,10 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="assets/img/logo.png" style="height: 60px;">
                     <div class="collapse navbar-collapse" id="navcol-1">
                         <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item item"><a class="nav-link" href="about-us.html">ABOUT us</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="contact-us.html">CONTACT US</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="pricing.html">sign in</a></li>
-                            <li class="nav-item item"><a class="nav-link active" href="login.html">Login</a></li>
+                            <li class="nav-item item"><a class="nav-link" href="about-us.php">ABOUT US</a></li>
+                            <li class="nav-item item"><a class="nav-link" href="contact-us.php">CONTACT US</a></li>
+                            <li class="nav-item item"><a class="nav-link" href="enrollment.php">SIGN IN</a></li>
+                            <li class="nav-item item"><a class="nav-link active" href="login.php">LOGIN</a></li>
                         </ul>
                     </div>
                 </div>

@@ -21,10 +21,10 @@
                     <div class="collapse navbar-collapse"
                         id="navcol-1">
                         <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item item"><a class="nav-link" href="about-us.html">ABOUT us</a></li>
-                            <li class="nav-item item"><a class="nav-link active" href="contact-us.html">CONTACT US</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="pricing.html">sign in</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="login.html">Login</a></li>
+                            <li class="nav-item item"><a class="nav-link" href="about-us.php">ABOUT US</a></li>
+                            <li class="nav-item item"><a class="nav-link active" href="contact-us.php">CONTACT US</a></li>
+                            <li class="nav-item item"><a class="nav-link" href="enrollment.php">SIGN IN</a></li>
+                            <li class="nav-item item"><a class="nav-link" href="login.php">LOGIN</a></li>
                         </ul>
                     </div>
                 </div>
