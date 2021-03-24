@@ -5,6 +5,7 @@
     $sth = $conn -> prepare($sql);
     $sth -> bindparam('?', IDByUser($_SESSION['utente'])); //SELECT id from dipendente WHERE username = parametro ($_SESSION['utente'])   
 */
+session_start();
  include('../dal.php');
  $conn = DataConnect();
  $sql = "SELECT id, dataapertura,descrizione FROM ticket

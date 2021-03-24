@@ -16,7 +16,7 @@ function Login($usr, $pass)
     $errore = "";
     $usr2 = $usr;
     $conn = DataConnect();
-    $query = "SELECT * FROM `utenza` WHERE email=? or  username=?";
+    $query = "SELECT * FROM 'utenza' WHERE email=? or username=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ss', $usr, $usr2);
     $stmt->execute();
@@ -28,12 +28,35 @@ function Login($usr, $pass)
             $_SESSION["utente"] = $row['username'];
             if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
             else (!$row["IsDipendente"] ? $_SESSION["member"] = "customer" : $_SESSION["member"] = "employee");
-            header("location:../admin/Dashboard.php");
+            header("location:../admin/DashBoard.php");
             exit();
         } else
             $errore = "password sbagliata";
     } else
         $errore = "username o password sbagliati";
+    $conn->close();
+    return $errore;
+}
+
+function Register($firstname, $lastname, $username, $phone, $email, $password)
+{
+    $errore = "";
+    $conn = DataConnect();
+    $query = "INSERT INTO utenza (username,password,email) VALUES (?,?,?)";
+    $stmt = $conn->prepare($query);
+    $hash = password_hash($password, PASSWORD_DEFAULT);
+    $stmt->bind_param('sss', $username, $hash, $email);
+    if ($stmt->execute() === true) {
+        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('sss', $firstname, $lastname, $phone);
+        if ($stmt->execute() === true) {
+            header("location:login.php");
+            exit();
+        } else
+            $errore = "secondo if";
+    } else
+        $errore = "primo if";
     $conn->close();
     return $errore;
 }

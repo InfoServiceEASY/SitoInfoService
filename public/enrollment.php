@@ -1,3 +1,18 @@
+<?php
+session_start();
+$error = "";
+include_once("../dal.php");
+$conn = DataConnect();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $username = $_POST['username'];
+    $phone = $_POST['phone'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $error = Register($firstname, $lastname, $username, $phone, $email, $password);
+}
+?>
 <!DOCTYPE html>
 <html>
 
@@ -5,19 +20,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Register - InfoService</title>
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
-    <link rel="stylesheet" href="assets/css/styles.min.css">
+    <link rel="stylesheet" href="../assets/css/styles.min.css">
 </head>
 
 <body>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
         <div class="container">
             <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark clean-navbar">
-                <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="assets/img/logo.png" style="height: 60px;">
+                <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="../assets/img/logo.png" style="height: 60px;">
                     <div class="collapse navbar-collapse"
                         id="navcol-1">
                         <ul class="nav navbar-nav ml-auto">
@@ -38,13 +53,14 @@
                     <h2 class="text-info">Sign In</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
                 </div>
-                <form>
-                    <div class="form-group"><label for="name">First Name</label><input class="form-control item" type="text" id="name"></div>
-                    <div class="form-group"><label for="password">Last Name</label><input class="form-control item" type="password" id="password"></div>
-                    <div class="form-group"><label for="email">Username</label><input class="form-control item" type="email" id="email"></div>
-                    <div class="form-group"><label for="email">Phone Number</label><input class="form-control item" type="email" id="email-1"></div>
-                    <div class="form-group"><label for="email">Email</label><input class="form-control item" type="email" id="email-2"></div>
-                    <div class="form-group"><label for="email">Password</label><input class="form-control item" type="email" id="email-3"></div><button class="btn btn-primary btn-block" type="submit">Sign Up</button></form>
+                <form method="POST">
+                    <div class="form-group"><label for="firstname">First Name</label><input class="form-control item" required type="text" name="firstname"></div>
+                    <div class="form-group"><label for="lastname">Last Name</label><input class="form-control item" required type="text" name="lastname"></div>
+                    <div class="form-group"><label for="username">Username</label><input class="form-control item" required type="text" name="username"></div>
+                    <div class="form-group"><label for="phone">Phone Number</label><input class="form-control item" required type="text" name="phone"></div>
+                    <div class="form-group"><label for="email">Email</label><input class="form-control item" required type="email" name="email"></div>
+                    <div class="form-group"><label for="password">Password</label><input class="form-control item" required type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Sign Up</button></form>
+                    <div><?php echo $error?></div>
             </div>
         </section>
         <div class="clean-block add-on social-icons">
@@ -95,7 +111,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="assets/js/script.min.js"></script>
+    <script src="../assets/js/script.min.js"></script>
 </body>
 
 </html>
