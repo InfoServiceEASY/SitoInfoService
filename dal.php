@@ -31,9 +31,9 @@ function Login($usr, $pass)
             header("location:../admin/DashBoard.php");
             exit();
         } else
-            $errore = "password sbagliata";
+            $errore = "Password non corrispondente";
     } else
-        $errore = "username o password sbagliati";
+        $errore = "Username o password non corrispondenti";
     $conn->close();
     return $errore;
 }
@@ -64,16 +64,24 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
 
 function Session()
 {
-    $conn = DataConnect();
-    $user = $_SESSION['login'];
-    $user2 = $_SESSION['login'];
-    $query = "SELECT * FROM utenza WHERE email=? OR username=?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('ss', $user, $user2);
-    $stmt->execute();
-    $result = $stmt->get_result();
     if (!isset($_SESSION['login'])) {
         header('location:../index.php');
         exit();
     }
+}
+
+function Contact($firstname, $lastname, $phone, $email, $description)
+{
+    $errore = "";
+    $conn = DataConnect();
+    $query = "INSERT INTO contatto (nome,cognome,cellulare,email,descrizione) VALUES (?,?,?,?,?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('sssss', $firstname, $lastname, $phone, $email, $description);
+    if ($stmt->execute() === true) {
+        header("location:index.php");
+        exit();
+    } else
+        $errore = "C'è stato un problema, riprova più tardi";
+    $conn->close();
+    return $errore;
 }
