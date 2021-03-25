@@ -1,9 +1,7 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
-$error = "";
+session_start();
 include_once("../dal.php");
+$error = "";
 $conn = DataConnect();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['email'];

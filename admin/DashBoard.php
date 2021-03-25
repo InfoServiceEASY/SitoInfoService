@@ -1,80 +1,80 @@
- <?php
-  session_start();
-  include_once("../dal.php");
+<?php
+session_start();
+include_once("../dal.php");
+Session();
 
+$conn = DataConnect();
+$query = "SELECT dataapertura FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 ";
+$stmt = $conn->prepare($query);
+$stmt->execute();
+$result = $stmt->get_result();
+$data = array();
+foreach ($result as $row) {
+  $data[] = $row['dataapertura'];
+}
 
-    $conn = DataConnect();
-    $query = "SELECT dataapertura FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 ";
-    $stmt = $conn->prepare($query);
-      $stmt->execute();
-    $result = $stmt->get_result();
-    $data=array();
-    foreach ($result as $row) {
-      $data[] =$row['dataapertura'];
-    }
+include '../template/privatepage_params.php'; ?>
+<div class="containerone">
+  <div class="containerr">
+    <a>
+      <p>Unresolved</p>
+    </a> 0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>solved</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>Overdue</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>Unassigned</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>Open</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>On Hold</p>
+    </a>
+    0
+  </div>
+</div>
+<br>
+<div class="container my-4">
 
-  include '../template/privatepage_params.php'; ?>
- <div class="containerone">
-   <div class="containerr">
-     <a>
-       <p>Unresolved</p>
-     </a> 0
-   </div>
-   <div class="containerr">
-     <a>
-       <p>solved</p>
-     </a>
-     0
-   </div>
-   <div class="containerr">
-     <a>
-       <p>Overdue</p>
-     </a>
-     0
-   </div>
-   <div class="containerr">
-     <a>
-       <p>Unassigned</p>
-     </a>
-     0
-   </div>
-   <div class="containerr">
-     <a>
-       <p>Open</p>
-     </a>
-     0
-   </div>
-   <div class="containerr">
-     <a>
-       <p>On Hold</p>
-     </a>
-     0
-   </div>
- </div>
- <br>
- <div class="container my-4">
+  <hr class="my-4">
 
-   <hr class="my-4">
+  <div>
+    <canvas id="lineChart"></canvas>
+  </div>
 
-   <div>
-     <canvas id="lineChart"></canvas>
-   </div>
+</div>
+<div style="height: 400px;" class="containerone">
+  <div style="margin-right: 0.57%;width:49%;  margin-top: 20px;" class="containerr">
+    <p style="float: left;">Unresolved tickets</p>
+    <a href="#">View details</a>
 
- </div>
- <div style="height: 400px;" class="containerone">
-   <div style="margin-right: 0.57%;width:49%;  margin-top: 20px;" class="containerr">
-     <p style="float: left;">Unresolved tickets</p>
-     <a href="#">View details</a>
-
-     <img style="margin-top: 60px;" src="
+    <img style="margin-top: 60px;" src="
     https://eucfassetsgreen.freshdesk.com/production/a/assets/images/empty-states/unresolved-empty-eb60bb2b7b369cedbde7f34f11ec516e84dee3f466fd453f4bc621dcea912c98.svg" alt="unresolved" width="200" height="200">
-   </div>
-   <div style="text-align: left;margin-right: 0.57%;width:49%;margin-top: 20px;" class="containerr">
-     <p style="float: left;">Your Satisfaction</p>
-     <a href="#">View details</a>
+  </div>
+  <div style="text-align: left;margin-right: 0.57%;width:49%;margin-top: 20px;" class="containerr">
+    <p style="float: left;">Your Satisfaction</p>
+    <a href="#">View details</a>
 
-     <img style="margin-top: 40px; width:80%" src="../assets/img/Soddisfazioni.PNG">
-     <!--
+    <img style="margin-top: 40px; width:80%" src="../assets/img/Soddisfazioni.PNG">
+    <!--
     <div>
       <br>
       <p >positive</p>
@@ -88,43 +88,43 @@
     https://eucfassetsgreen.freshdesk.com/production/a/assets/images/empty-states/unresolved-empty-eb60bb2b7b369cedbde7f34f11ec516e84dee3f466fd453f4bc621dcea912c98.svg" 
     alt="unresolved">
     </div>-->
-   </div>
- </div>
+  </div>
+</div>
 
- <style>
-   a {
-     padding: 5px;
-     float: right;
-   }
+<style>
+  a {
+    padding: 5px;
+    float: right;
+  }
 
-   .containerone {
-     box-sizing: border-box;
-     background-color: rgb(235, 239, 243);
-     height: 100px;
-   }
+  .containerone {
+    box-sizing: border-box;
+    background-color: rgb(235, 239, 243);
+    height: 100px;
+  }
 
-   div.containerr {
-     background-color: white;
-     height: 80%;
-     margin-right: 0.57%;
-     margin-top: 10px;
-     text-align: center;
-     float: left;
-     width: 16%;
-     position: relative;
-   }
+  div.containerr {
+    background-color: white;
+    height: 80%;
+    margin-right: 0.57%;
+    margin-top: 10px;
+    text-align: center;
+    float: left;
+    width: 16%;
+    position: relative;
+  }
 
-   div.containerr:first-child {
-     margin-left: 0.57%;
-   }
+  div.containerr:first-child {
+    margin-left: 0.57%;
+  }
 
-   .containerr:hover {
-     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
-   }
- </style>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
- <script>
-   chart(<?php echo json_encode($data); ?>);
- </script>
+  .containerr:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script>
+  chart(<?php echo json_encode($data); ?>);
+</script>
 
- </body>
+</body>

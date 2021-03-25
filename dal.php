@@ -25,7 +25,7 @@ function Login($usr, $pass)
         $row = $result->fetch_assoc();
         if (password_verify($pass, $row['password'])) {
             $_SESSION['login'] = $usr;
-            $_SESSION["utente"] = $row['username'];
+            $_SESSION['utente'] = $row['username'];
             if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
             else (!$row["IsDipendente"] ? $_SESSION["member"] = "customer" : $_SESSION["member"] = "employee");
             header("location:../admin/DashBoard.php");
@@ -60,4 +60,20 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
         $errore = "primo if";
     $conn->close();
     return $errore;
+}
+
+function Session()
+{
+    $conn = DataConnect();
+    $user = $_SESSION['login'];
+    $user2 = $_SESSION['login'];
+    $query = "SELECT * FROM utenza WHERE email=? OR username=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ss', $user, $user2);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if (!isset($_SESSION['login'])) {
+        header('location:../index.php');
+        exit();
+    }
 }

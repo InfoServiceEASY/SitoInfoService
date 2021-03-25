@@ -1,5 +1,8 @@
 <?php
+session_start();
 include '../template/privatepage_params.php';
+include_once("../dal.php");
+Session();
 ?>
         <h1 class="mt-4">Visualizza lo stato degli ultimi interventi</h1>
         <br>
