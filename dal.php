@@ -16,7 +16,7 @@ function Login($usr, $pass)
     $errore = "";
     $usr2 = $usr;
     $conn = DataConnect();
-    $query = "SELECT * FROM 'utenza' WHERE email=? or username=?";
+    $query = "SELECT * FROM utenza WHERE email=? OR username=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ss', $usr, $usr2);
     $stmt->execute();
@@ -48,7 +48,7 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
     $hash = password_hash($password, PASSWORD_DEFAULT);
     $stmt->bind_param('sss', $username, $hash, $email);
     if ($stmt->execute() === true) {
-        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))";
+        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza)+1)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('sss', $firstname, $lastname, $phone);
         if ($stmt->execute() === true) {
