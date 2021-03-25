@@ -1,5 +1,9 @@
 <?php
-session_start();
+
+if(!isset($_SESSION)) {
+    session_start();
+}
+
 include_once("../dal.php");
 $error = "";
 $conn = DataConnect();
@@ -51,6 +55,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <form style="border-radius: 25px" method="POST">
                     <div class="form-group"><label for="email">Email o Username</label><input class="form-control item" type="email" name="email"></div>
                     <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Log In</button>
+                    </br>
+                    <p> Non ancora registrato? Registrati <a href="enrollment.php">qui</a>.</p>
                     <div><?php echo $error ?> </div>
                 </form>
             </div>

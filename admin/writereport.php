@@ -30,11 +30,22 @@ $id = $_GET['Id'];
 </head>
 
 <body>
-<?php include '../template/privatepage_params.php';?>
+<?php include '../template/privatepage_params.php';
+include_once('../dal.php');
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+  }
+  function InsertReport($descrizione, $isrisolto_string, $fk_ticket){
+    //fk_ticket in report. n report 1 ticket.
+    $conn = DataConnect();
+    $sql = "INSERT INTO report(ora,attività,isrisolto,fk_dipendente,fk_ticket,isconvalidato,commento) VALUES(?,?,?,?,?,?,?,?)";
+    //mettere ora attuale
+  }
+  ?>
 
-      <h1 class="mt-4">Compila Report</h1>
-        <br>
-        <form>
+    <h1 class="mt-4">Compila Report</h1>
+      <br>
+    <form method="POST">
   <div class="form-group">
     <label for="exampleFormControlInput1">Intervento</label>
     <!--<input class="form-control" type="text" >-->
