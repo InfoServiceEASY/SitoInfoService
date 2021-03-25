@@ -1,4 +1,18 @@
  <?php
+  session_start();
+  include_once("../dal.php");
+
+
+    $conn = DataConnect();
+    $query = "SELECT dataapertura FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 ";
+    $stmt = $conn->prepare($query);
+      $stmt->execute();
+    $result = $stmt->get_result();
+    $data=array();
+    foreach ($result as $row) {
+      $data[] =$row['dataapertura'];
+    }
+
   include '../template/privatepage_params.php'; ?>
  <div class="containerone">
    <div class="containerr">
@@ -110,7 +124,7 @@
  </style>
  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
  <script>
-   chart();
+   chart(<?php echo json_encode($data); ?>);
  </script>
 
  </body>

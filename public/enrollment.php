@@ -61,6 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-group"><label for="email">Email</label><input class="form-control item" required type="email" name="email"></div>
                     <div class="form-group"><label for="password">Password</label><input class="form-control item" required type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Sign Up</button></form>
                     <div><?php echo $error?></div>
+
             </div>
         </section>
         <div class="clean-block add-on social-icons">

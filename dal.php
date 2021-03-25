@@ -38,6 +38,7 @@ function Login($usr, $pass)
     return $errore;
 }
 
+
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
     $errore = "";

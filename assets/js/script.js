@@ -8,29 +8,61 @@ function menuacomparsa() {
 
 
 //line
-function chart() {
-    var ctxL = document.getElementById("lineChart").getContext('2d');
-    var myLineChart = new Chart(ctxL, {
-        type: 'line',
+function chart(date) {
+    /*  var ctxL = document.getElementById("lineChart").getContext('2d');
+      var myLineChart = new Chart(ctxL, {
+          type: 'line',
+          data: {
+              labels: ["January", "February", "March", "April", "May", "June", "July"],
+              datasets: [{
+                  label: "Ticket Aperti",
+                  data: [0, 2, 0, 2, 0, 0],
+                  backgroundColor: [
+                      'rgba(105, 0, 132, .2)',
+                  ],
+                  borderColor: [
+                      'rgba(200, 99, 132, .7)',
+                  ],
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              responsive: true
+          }
+      });*/
+
+    var arrayAcaso = [];
+    date.forEach(element => {
+        arrayAcaso.push(new Date(element).toISOString().split('T')[0]);
+    });
+    const config = {
+        type: 'ticket aperti',
         data: {
-            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            labels: arrayAcaso,
             datasets: [{
-                label: "Ticket Aperti",
-                data: [0, 2, 0, 2, 0, 0],
-                backgroundColor: [
-                    'rgba(105, 0, 132, .2)',
-                ],
-                borderColor: [
-                    'rgba(200, 99, 132, .7)',
-                ],
-                borderWidth: 2
-            }]
+                label: 'Line',
+                //     data: [2, 5, 3],
+                borderColor: '#D4213D',
+                fill: false,
+            }, ],
         },
         options: {
-            responsive: true
-        }
-    });
-    return myLineChart;
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                }, ],
+            },
+            pan: {
+                enabled: true,
+                mode: 'xy',
+            },
+            zoom: {
+                enabled: true,
+                mode: 'xy', // or 'x' for "drag" version
+            },
+        },
+    };
+    new Chart(document.getElementById('chart'), config);
 }
 
 function sidebar(arr) {

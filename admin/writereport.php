@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<?php
+session_start();
+$id = $_GET['Id'];
+?>
 <head>
     <meta charset="utf-8">
   <!--  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
@@ -15,7 +18,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simple Sidebar - Start Bootstrap Template</title>
+  <title>Scrivi nuovo report</title>
 
    <!--Bootstrap core CSS -->
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
@@ -33,7 +36,7 @@
   <div class="form-group">
     <label for="exampleFormControlInput1">Intervento</label>
     <!--<input class="form-control" type="text" >-->
-    <label style = "color:darkgrey;text-align:centre;content-align:centre">Nome Intervento Da DB</label>
+    <label style = "color:darkgrey;text-align:centre;content-align:centre">Intervento n. <?php echo "$id"; ?></label> <!--Nome Intervento Da DB-->
   </div>
   <div class="form-group">
     <label for="exampleFormControlSelect1">Tempo impiegato (ore)?</label>
