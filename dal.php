@@ -16,7 +16,7 @@ function Login($usr, $pass)
     $errore = "";
     $usr2 = $usr;
     $conn = DataConnect();
-    $query = "SELECT * FROM `utenza` WHERE email=? or  username=?";
+    $query = "SELECT * FROM utenza WHERE email=? or  username=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ss', $usr, $usr2);
     $stmt->execute();
