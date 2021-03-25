@@ -5,18 +5,22 @@
     $sth = $conn -> prepare($sql);
     $sth -> bindparam('?', IDByUser($_SESSION['utente'])); //SELECT id from dipendente WHERE username = parametro ($_SESSION['utente'])   
 */
-
-include('../dal.php');
 session_start();
->>>>>>> FreddyBranch
+include('../dal.php');
+include '../template/privatepage_params.php'; ?>
+<h1 class="mt-4">I tuoi interventi</h1>
+<?php
 $conn = DataConnect();
 $sql = "SELECT id, dataapertura,descrizione FROM ticket
  WHERE isaperto = 1 AND fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
 $sth = $conn->prepare($sql);
 $sth->bind_param('s', $_SESSION['utente']);
-$data = $sth->execute();
-$contents = PreparaTesti($data);
-PrintSolutions($contents[0], $contents[1]);
+$sth->execute();
+$data = $sth -> get_result();
+if($data != null) {
+  $contents = PreparaTesti($data);
+  PrintSolutions($contents[0], $contents[1], $contents[2]);
+}
 /* $conn = DataConnect();
  $sql = "SELECT id, dataapertura,descrizione FROM ticket
  WHERE isaperto = 1 AND fk_dipendente = ?";
@@ -36,22 +40,25 @@ function PreparaTesti($data)
 {
   $titoli = array();
   $testi = array();
+  $ids = array();
   foreach ($data as $d) {
     array_push($titoli, "Intervento n." . $d['id'] . " aperto il " . $d['dataapertura']);
     array_push($testi, $d['descrizione']);
+    array_push($ids, $d['id']);
   }
-  return array($titoli, $testi);
+  return array($titoli, $testi, $ids);
 }
-function PrintSolutions($titoli, $testi)
+function PrintSolutions($titoli, $testi, $ids)
 {
   for ($i = 0; $i < count($titoli); $i++) {
-    $id = explode(explode($titoli[$i], '.')[1], ' ');
-    if ($i % 3 == 0) echo "<div class='containerone'>";
+    $href = "writereport.php?Id=$ids[$i]";
+    if($i % 3 == 0) echo "<div class='containerone'>";
     $template = "
         <div class='container'>
         <a><p>$titoli[$i]</p></a>
         <a>$testi[$i]</a>
-        <button href = 'writereport.php?Id ='$id> Scrivi report sull'attività</button>
+        </br>
+        <a href='$href'> Scrivi report sull'attività</a>
         </div>";
     echo $template;
     if ($i % 3 == 2) echo " </div>";
@@ -72,8 +79,6 @@ function PrintSolutions($titoli, $testi)
 }
 
 ?>
-<?php include '../template/privatepage_params.php'; ?>
-<h1 class="mt-4">I tuoi interventi</h1>
 <br>
 <form>
 
