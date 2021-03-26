@@ -16,7 +16,7 @@ function Login($usr, $pass)
     $errore = "";
     $usr2 = $usr;
     $conn = DataConnect();
-    $query = "SELECT * FROM utenza WHERE email=? OR username=?";
+    $query = "SELECT * FROM utenza WHERE (email=? OR username=?) and status='active'";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ss', $usr, $usr2);
     $stmt->execute();
@@ -43,19 +43,23 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
     $errore = "";
     $conn = DataConnect();
-    $query = "INSERT INTO utenza (username,password,email) VALUES (?,?,?)";
+    $stato = "disabled";
+    $query = "INSERT INTO utenza (username,password,email,status) VALUES (?,?,?,?)";
     $stmt = $conn->prepare($query);
     $hash = password_hash($password, PASSWORD_DEFAULT);
-    $stmt->bind_param('sss', $username, $hash, $email);
+    $stmt->bind_param('ssss', $username, $hash, $email, $stato);
+
     if ($stmt->execute() === true) {
-        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza)+1)";
+        $conn->close();
+        $conn = DataConnect();
+        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('sss', $firstname, $lastname, $phone);
         if ($stmt->execute() === true) {
-            header("location:login.php");
-            exit();
+            $errore .= "<script>window.sendEmail('$email','$username')</script>";
+            $errore .= "<div>You have registered and the activation mail is sent to your email. Click the activation link to activate you account.</div><br>";
         } else
-            $errore = "secondo if";
+            $errore .= $conn->error;
     } else
         $errore = "primo if";
     $conn->close();

@@ -88,3 +88,17 @@ function EsciDallaPagina() {
         }
     }
 }
+
+function sendEmail(email, username) {
+    Email.send({
+            Host: "smtp.gmail.com",
+            Username: "infoservicehelps@gmail.com",
+            Password: "maroc100",
+            To: email,
+            From: "infoservicehelps@gmail.com",
+            Subject: 'Signup | Verification',
+            Body: "Please click this link to activate your account:\n\
+            http://localhost:8000/verify.php?email=" + email + "&usr=" + username,
+        })
+        .then(function(message) {});
+}
