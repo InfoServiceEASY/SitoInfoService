@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
                 </div>
                 <form style="border-radius: 25px" method="POST">
-                    <div class="form-group"><label for="email">Email o Username</label><input class="form-control item" type="email" name="email"></div>
+                    <div class="form-group"><label for="email">Email o Username</label><input class="form-control item" name="email"></div>
                     <div class="form-group"><label for="password">Password</label><input class="form-control" type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Log In</button>
                     </br>
                     <p> Non ancora registrato? Registrati <a href="enrollment.php">qui</a>.</p>

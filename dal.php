@@ -27,7 +27,7 @@ function Login($usr, $pass)
             $_SESSION['login'] = $usr;
             $_SESSION['utente'] = $row['username'];
             if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
-            else (!$row["IsDipendente"] ? $_SESSION["member"] = "customer" : $_SESSION["member"] = "employee");
+            else (!$row["IsDipendente"] ? $_SESSION["member"] = "cliente" : $_SESSION["member"] = "dipendente");
             header("location:../admin/DashBoard.php");
             exit();
         } else
@@ -38,6 +38,19 @@ function Login($usr, $pass)
     return $errore;
 }
 
+function GetIDGivenUsername($username){
+    $conn = DataConnect();
+   
+    $query = "SELECT member.id FROM ".$_SESSION["member"]." as member inner join utenza u on u.id=member.fk_utenza WHERE u.username=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row["id"];
+}
+else return "error";}
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
@@ -89,3 +102,4 @@ function Contact($firstname, $lastname, $phone, $email, $description)
     $conn->close();
     return $errore;
 }
+
