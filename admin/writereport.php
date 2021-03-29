@@ -2,7 +2,12 @@
 session_start();
 include_once("../dal.php");
 Session();
-$id = $_GET['Id'];
+function UserId($conn){
+  $statement = $conn -> prepare("SELECT id FROM utenza WHERE username = ?");
+  $statement -> bind_param("s", $_SESSION['utente']);
+  $statement -> execute();
+  return $statement -> get_result(); // dopo () ci va [0]?
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,45 +38,60 @@ $id = $_GET['Id'];
 <?php include '../template/privatepage_params.php';
 include_once('../dal.php');
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+    echo '<script type="text/javascript">';
+  echo ' alert("POST")';  //not showing an alert box.
+  echo '</script>';
+    $fk_ticket = explode($_POST["Intervento"], '.').trim();
+    $descrizione = $_POST["Descrizione"];
+    $isrisolto = $_POST["IsRisolto"] == "Sì"? 1:0;
+    $fk_utente = UserId(DataConnect());
+    InsertReport($descrizione, $isrisolto, $fk_ticket, $fk_utente);
   }
-  function InsertReport($descrizione, $isrisolto_string, $fk_ticket){
+  else{
+    $id = $_GET['Id'];
+  }
+  function InsertReport($descrizione, $isrisolto, $fk_ticket, $fk_dipendente){
     //fk_ticket in report. n report 1 ticket.
     $conn = DataConnect();
-    $sql = "INSERT INTO report(ora,attività,isrisolto,fk_dipendente,fk_ticket,isconvalidato,commento) VALUES(?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO report(ora,attività,isrisolto,fk_dipendente,fk_ticket,isconvalidato,commento) VALUES(?,?,?,?,?,?,?)";
     //mettere ora attuale
+    $thisdate = date('d/m/Y \a\l\l\e H:i:s');
+    $sth = $conn -> prepare($sql);
+    $sth ->bind_param('ssiiiis', $thisdate, $descrizione, $isrisolto, $fk_dipendente, $fk_ticket,0,null);
+    $sth -> execute();
+    echo "REPORT INSERITO!";
   }
   ?>
 
     <h1 class="mt-4">Compila Report</h1>
       <br>
-    <form method="POST">
-  <div class="form-group">
-    <label for="exampleFormControlInput1">Intervento</label>
-    <!--<input class="form-control" type="text" >-->
-    <label style = "color:darkgrey;text-align:centre;content-align:centre">Intervento n. <?php echo "$id"; ?></label> <!--Nome Intervento Da DB-->
-  </div>
-  <div class="form-group">
-    <label for="exampleFormControlSelect1">Tempo impiegato (ore)?</label>
-    </br>
-    <input type="text"></input>
+<form method="POST">
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Intervento</label>
+      <!--<input class="form-control" type="text" >-->
+      <label style = "color:darkgrey;text-align:centre;content-align:centre" name = "Intervento" >Intervento n. <?php echo "$id"; ?></label> <!--Nome Intervento Da DB-->
     </div>
-  
-  <div class="form-group">
-    <label for="exampleFormControlSelect1">Problema risolto?</label>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option>--</option>
-      <option>S&igrave;</option>
-      <option>No</option>
-    </select>
-  </div>
-  <div class="form-group">
-      <label for="exampleFormControlTextarea1">Descrizione</label>
-      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Tempo impiegato (ore)?</label>
+      </br>
+      <input type="text"></input>
+      </div>
+
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">Problema risolto?</label>
+      <select name = "IsRisolto" class="form-control" id="exampleFormControlSelect1">
+        <option>--</option>
+        <option>S&igrave;</option>
+        <option>No</option>
+      </select>
     </div>
-    <div style="float: right;">
-      <button class="btn btn-primary" type="submit">Cancella</button>
-      <button id="btnShowModal" type="button" class="btn btn-primary" type="submit">Conferma</button>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Descrizione</label>
+        <textarea name = "Descrizione"class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+      </div>
+      <div style="float: right;">
+        <button class="btn btn-primary" type="submit">Cancella</button>
+        <button id="btnShowModal" type="button" class="btn btn-primary" type="submit">Conferma</button>
 </form>
         </div>
     </div>
