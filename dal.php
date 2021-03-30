@@ -38,12 +38,12 @@ function Login($usr, $pass)
     return $errore;
 }
 
-function GetIDGivenUsername($username){
+function GetIDGivenUsername(){
     $conn = DataConnect();
    
-    $query = "SELECT member.id FROM ".$_SESSION["member"]." as member inner join utenza u on u.id=member.fk_utenza WHERE u.username=?";
+    $query = "SELECT id FROM utenza WHERE username = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('s', $username);
+    $stmt->bind_param('s', $_SESSION['utente']);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {

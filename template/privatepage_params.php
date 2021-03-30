@@ -17,7 +17,7 @@ switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome
     case '': //helpdesk
         break;
 }*/
-if ($_SESSION["member"] == "cliente")  {$sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");}
+if ($_SESSION["member"] == "cliente")  {$sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Status");}
 else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Events","Profile","Status"): $sidebar_text = array("Dashboard","TicketList","Events","Profile","Status");
 ?>
 <!DOCTYPE html>
@@ -25,7 +25,7 @@ else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Event
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Customer</title>
+  <title> <?php echo $title;?></title>
 
   <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
@@ -80,7 +80,7 @@ else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Event
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="Logout.php">LogOut</a>
-            <a class="dropdown-item" href="#">Impostazioni</a>
+            <a class="dropdown-item" href="Impostazioni.php">Impostazioni</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>
           </div>

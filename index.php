@@ -17,7 +17,8 @@
     <main class="page landing-page">
         <section class="text-black-50 clean-block clean-hero" style="color: rgba(9, 162, 255, 0.85);">
             <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark clean-navbar">
-                <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="assets/img/logo.png" style="height: 60px;">
+                <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+                <img src="assets/img/logo.png" style="height: 60px;">
                     <div class="collapse navbar-collapse"
                         id="navcol-1">
                         <ul class="nav navbar-nav ml-auto">
