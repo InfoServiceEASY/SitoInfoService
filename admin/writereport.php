@@ -39,7 +39,9 @@ $id = $_GET['Id'];
     <div class="form-group">
       <label for="Tempo">Tempo impiegato (ore)?</label>
       </br>
-      <input name="Tempo" type="text" id="Tempo" required></input>
+      <input type="time" id="Tempo" name="Tempo" required>
+
+    <!--  <input  type="text"  required></input>-->
       </div>
 
     <div class="form-group">

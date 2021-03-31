@@ -40,7 +40,6 @@ function Login($usr, $pass)
 
 function GetIDGivenUsername(){
     $conn = DataConnect();
-   
     $query = "SELECT id FROM utenza WHERE username = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $_SESSION['utente']);
