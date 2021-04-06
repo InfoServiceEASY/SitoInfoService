@@ -8,13 +8,14 @@
 
 session_start();
 include('../dal.php');
+$title = 'Lista interventi dipendente';
 include '../template/privatepage_params.php'; ?>
 <h1 class="mt-4">I tuoi interventi</h1>
 <?php
 
 $conn = DataConnect();
-$sql = "SELECT id, dataapertura,descrizione FROM ticket
- WHERE isaperto = 1 AND fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
+$sql = "SELECT ticket.id, ticket.dataapertura,ticket.descrizione FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
+ WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
 $sth = $conn->prepare($sql);
 $sth->bind_param('s', $_SESSION['utente']);
 $sth->execute();
