@@ -26,11 +26,12 @@ function chart(date) {
         zoomEnabled: true,
         animationEnabled: true,
         title: {
-            text: "Try Zooming - Panning"
+            text: "Ticket aperti"
         },
         axisY: {
             lineThickness: 1
         },
+        pointSize: 20,
         data: data // random data
     };
 

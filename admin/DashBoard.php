@@ -8,10 +8,16 @@ $nomeColonna=1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1
 $condizione="";
 if ($_SESSION["member"] == "helpdesk") $condizione=1;
 elseif($_SESSION["member"] == "cliente")  {$nomeColonna="fk_cliente";$condizione=GetIDGivenUsername();} 
-else{$nomeColonna="fk_dipendente";$condizione=GetIDGivenUsername();}
 $query = "SELECT dataapertura , count(*) as count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and ".$nomeColonna."=? group by dataapertura";
+
+if($_SESSION["member"] == "dipendente"){
+  $sql = "SELECT t.dataapertura, count(*) as count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+  WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
+  $condizione= $_SESSION['utente'];}
+
+
 $stmt = $conn->prepare($query);
-$stmt->bind_param('s', $condizione);
+$stmt->bind_param('i', $condizione);
 $stmt->execute();
 $result = $stmt->get_result();
 $data = array();
@@ -21,6 +27,7 @@ foreach ($result as $row) {
     "somma" => $row["count"]
   ));
 }
+$title="Dashboard";
 include '../template/privatepage_params.php'; ?>
 <div class="containerone">
   <div class="containerr">
