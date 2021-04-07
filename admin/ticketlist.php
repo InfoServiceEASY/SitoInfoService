@@ -55,11 +55,14 @@ function PrintSolutions($titoli, $testi, $ids)
 {
   for ($i = 0; $i < count($titoli); $i++) {
     $href = "writereport.php?Id=$ids[$i]";
+    $href2 = "measures.php?Id=$ids[$i]";
     if($i % 3 == 0) echo "<div class='containerone'>";
     $template = "
         <div class='container'>
         <a><p>$titoli[$i]</p></a>
         <a>$testi[$i]</a>
+        </br>
+        <a href='$href2'> Visualizza report scritti sull'attività</a>
         </br>
         <a href='$href'> Scrivi report sull'attività</a>
         </div>";
