@@ -110,20 +110,20 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $errore = '';
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT id FROM settore WHERE nome=?');
+   /* $stmt = $conn->prepare('SELECT id FROM settore WHERE nome=?');
     $stmt->bind_param('s', $settore);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
         $stmt->close();
         $row = $result->fetch_assoc();
-        $settore = $row['id'];
-        $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,?)');
-        $stmt->bind_param('ssssii', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
+       // $settore = $row['id'];*/
+        $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
+        $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
         if ($stmt->execute() === true) {
             $stmt->close();
             $conn->close();
-            header("location:DashBoard.php");
+            header("location:/private/DashBoard.php");
             exit();
             return $errore;
         } else {
@@ -132,10 +132,7 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
             $errore = "C'è stato un problema, riprova più tardi";
             return $errore;
         }
-    } else {
-        $error = "C'è stato un problema, riprova più tardi";
-        return $error;
-    }
+    
 }
 
 function ShowTicket()

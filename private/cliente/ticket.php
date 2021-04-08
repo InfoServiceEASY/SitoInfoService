@@ -1,4 +1,5 @@
 <?php
+$title="ticket";
 include_once("../../template/privatepage_params.php");
 include_once("../../dal.php");
 $error = '';
