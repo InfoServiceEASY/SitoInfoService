@@ -17,8 +17,10 @@ switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome
     case '': //helpdesk
         break;
 }*/
+
 if ($_SESSION["member"] == "cliente")  {$sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Status","MyTicket");}
-else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Events","Profile","Status"): $sidebar_text = array("Dashboard","TicketList","Events","Profile","Status");
+else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Events","Profile","Status","TicketAperti"): $sidebar_text = array("Dashboard","TicketList","Events","Profile","Status");
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
