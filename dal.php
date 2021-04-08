@@ -38,9 +38,10 @@ function Login($usr, $pass)
     return $errore;
 }
 
-function GetIDGivenUsername(){
+function GetIDGivenUsername()
+{
     $conn = DataConnect();
-    $query = "SELECT id FROM utenza WHERE username = ?";
+    $query = "SELECT id FROM utenza WHERE username=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $_SESSION['utente']);
     $stmt->execute();
@@ -48,8 +49,11 @@ function GetIDGivenUsername(){
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         return $row["id"];
+    } else {
+        $stmt->close();
+        return "error";
+    }
 }
-else return "error";}
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
@@ -100,5 +104,46 @@ function Contact($firstname, $lastname, $phone, $email, $description)
         $errore = "C'è stato un problema, riprova più tardi";
     $conn->close();
     return $errore;
+}
+
+function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
+{
+    $errore = '';
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT id FROM settore WHERE nome=?');
+    $stmt->bind_param('s', $settore);
+    $errore = '2';
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $stmt->close();
+        $row = $result->fetch_assoc();
+        $settore = $row['id'];
+        $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,?)');
+        $stmt->bind_param('ssssii', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
+        $errore = '3';
+        if ($stmt->execute() === true) {
+            $stmt->close();
+            $conn->close();
+            header("location:DashBoard.php");
+            exit();
+            return $errore;
+        } else {
+            $stmt->close();
+            $conn->close();
+            $errore = "C'è stato un problema, riprova più tardi";
+            return $errore;
+        }
+    } else {
+        $error = "C'è stato un problema, riprova più tardi";
+        return $error;
+    }
+}
+
+function ShowTicket($id){
+    $errore = '';
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura FROM ticket WHERE fk_utenza=?');
+    $stmt->bind_param('i', GetIDGivenUsername());
 }
 
