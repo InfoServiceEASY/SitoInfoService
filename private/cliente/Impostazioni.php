@@ -1,5 +1,5 @@
 <?php
-include '../template/privatepage_params.php'; 
+include '../../template/privatepage_params.php'; 
 ?>
 <h3>Impostazioni generali dell'account</h3>
 

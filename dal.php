@@ -112,7 +112,6 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT id FROM settore WHERE nome=?');
     $stmt->bind_param('s', $settore);
-    $errore = '2';
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
@@ -121,7 +120,6 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
         $settore = $row['id'];
         $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,?)');
         $stmt->bind_param('ssssii', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
-        $errore = '3';
         if ($stmt->execute() === true) {
             $stmt->close();
             $conn->close();
