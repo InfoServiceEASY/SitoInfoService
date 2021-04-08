@@ -24,7 +24,7 @@ $id = $_GET['Id'];
     $sth = $conn -> prepare($sql);
     $sth ->bind_param('sssiii', $thisdate,$durata, $descrizione, $isrisolto,$fk_ticket, $fk_dipendente);
     $sth -> execute();
-    echo "REPORT INSERITO!";
+    echo "REPORT SCRITTO!";
   }
   ?>
 

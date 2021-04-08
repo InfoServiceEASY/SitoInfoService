@@ -5,14 +5,20 @@ $title = 'Lista report compilati dal dipendente';
 include '../template/privatepage_params.php'; ?>
 <h1 class="mt-4">I tuoi report</h1>
 <?php
-$id = $_GET['Id'];
+//$id = $_GET['Id'];
 $conn = DataConnect();
-$sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, ticket.commento FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
- WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?) and ticket.id=?";
+ /*$sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, report.commento, report.durata, report.attività, ticket.descrizione FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
+ WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM dipendente WHERE fk_utenza = (SELECT id FROM utenza WHERE username = ?)) and ticket.id=?";*/
+  $sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, report.commento, report.durata, report.attività, ticket.descrizione FROM k113bann4ponykr2.ticket AS ticket INNER JOIN k113bann4ponykr2.report AS report ON ticket.id = report.fk_ticket
+  WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
+//$sql = "SELECT * FROM report";
+/*INNER JOIN ticket  ON ticket.id = report.fk_ticket
+WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?) and ticket.id=?";*/
 $sth = $conn->prepare($sql);
-$sth->bind_param('si', $_SESSION['utente'],$id);
+$sth->bind_param('s', $_SESSION['utente']);
 $sth->execute();
 $data = $sth -> get_result();
+//var_dump($data);
 if($data != null) {
   $contents = PreparaTesti($data);
   PrintSolutions($contents[0], $contents[1], $contents[2]);
@@ -24,9 +30,11 @@ function PreparaTesti($data)
   $testi = array();
   $ids = array();
   foreach ($data as $d) {
-    array_push($titoli, "Report n." . $d['id'] ." \n relativo all'intervento n." . $_GET['Id'] . "\n con data di inizio il " . $d['datainizio']. " \n e con fine il ".$d['datafine']. ".");
-    array_push($testi, $d['descrizione'] . "\n" . $d['isrisolto'] == 1? "Risolto":"Non risolto." . "\n Commento cliente:" . ($d['commento'] == null? "non pervenuto": $d['commento']));
+    array_push($titoli, "Report n." . $d['id'] ." \n relativo all'intervento n." . $_GET['Id'] . "\n con data di inizio il " . $d['datainizio']. ", \n  con fine il ".$d['datafine']. ", \n e durato " . $d['durata'] . " ore. </br>");
+    array_push($testi, $d['descrizione'] . "\n" . $d['isrisolto'] == 1? "Risolto.":"Non risolto." . "\n </br> Commento cliente: " . ($d['commento'] == null? " non pervenuto.": "\n" . $d['commento']));
     array_push($ids, $d['id']);
+    /*array_push($titoli, "Report n." . $d['id'] . "\n Assegnato a " . $d['fk_dipendente']." relativo a ". 
+  $d['fk_ticket']. "e ". $d['isrisolto']);*/
   }
   return array($titoli, $testi, $ids);
 }

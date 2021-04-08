@@ -55,7 +55,7 @@ function PrintSolutions($titoli, $testi, $ids)
 {
   for ($i = 0; $i < count($titoli); $i++) {
     $href = "writereport.php?Id=$ids[$i]";
-    $href2 = "measures.php?Id=$ids[$i]";
+    $href2 = "measures.php?Id=$ids[$i]"; 
     if($i % 3 == 0) echo "<div class='containerone'>";
     $template = "
         <div class='container'>
