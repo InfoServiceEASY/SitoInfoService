@@ -26,7 +26,7 @@ function Login($usr, $pass)
         if (password_verify($pass, $row['password'])) {
             $_SESSION['login'] = $usr;
             $_SESSION['utente'] = $row['username'];
-            if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
+            if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "admin";
             else (!$row["IsDipendente"] ? $_SESSION["member"] = "cliente" : $_SESSION["member"] = "dipendente");
             header("location:../private/DashBoard.php");
             exit();
@@ -147,8 +147,9 @@ function ShowTicket()
     $tipologia = array();
     $descrizione = array();
     $dataapertura = array();
-    $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura FROM ticket WHERE fk_utenza=?');
-    $stmt->bind_param('i', GetIDGivenUsername());
+    $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura FROM ticket WHERE fk_cliente=?');
+    $id=GetIDGivenUsername();
+    $stmt->bind_param('i',$id);
     $stmt->execute();
     $result = $stmt->get_result();
     foreach ($result as $r) {

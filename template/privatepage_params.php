@@ -18,8 +18,8 @@ switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome
         break;
 }*/
 
-if ($_SESSION["member"] == "cliente")  {$sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Status","MyTicket");}
-else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Events","Profile","Status","TicketAperti"): $sidebar_text = array("Dashboard","TicketList","Events","Profile","Status");
+if ($_SESSION["member"] == "cliente")  {$sidebar_text = array( "Solutions","Ticket","Events","Status","MyTicket");}
+else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Events","Profile","Status","TicketAperti"): $sidebar_text = array("TicketList","Events","Profile","Status");
 
 ?>
 <!DOCTYPE html>
@@ -33,16 +33,16 @@ else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Event
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
  
   <!--Bootstrap core CSS -->
-  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://localhost:8000/assets/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
+  <link href="http://localhost:8000/assets/css/stylesheetprivato.css" rel="stylesheet">
 
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../assets/js/jquery.min.js"></script>
-  <script src="../assets/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/script.js"></script>
+  <script src="http://localhost:8000/assets/js/jquery.min.js"></script>
+  <script src="http://localhost:8000/assets/js/bootstrap.bundle.min.js"></script>
+  <script src="http://localhost:8000/assets/js/script.js"></script>
 </head>
 
 <body onload="menuacomparsa();">
@@ -52,7 +52,7 @@ else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Event
 <div class="bg-light border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">Infoservice </div>
   <div class="list-group list-group-flush" id="sidebar">
-  <script> sidebar( <?php echo json_encode($sidebar_text); ?>) </script>
+  <script> sidebar( <?php echo json_encode($sidebar_text); ?>,<?php echo '"'.$_SESSION['member'].'"'?>) </script>
  <!-- <?php //include 'sidebar_1.php';?> -->
   </div>
 </div>

@@ -1,7 +1,8 @@
 <?php
 session_start();
-include_once("../template/privatepage_params.php");
-include_once("../dal.php");
+$title="My ticket";
+include_once("../../dal.php");
+include_once("../../template/privatepage_params.php");
 ShowTicket();
 ?>
 

@@ -46,14 +46,19 @@ function chart(date) {
 
 
 
-function sidebar(arr) {
+function sidebar(arr, posizione) {
     var div = document.getElementById("sidebar");
     var link;
     var href = "";
+    link = document.createElement('a');
+    link.className = "list-group-item list-group-item-action bg-light";
+    link.href = "/private/dashboard.php";
+    link.innerHTML = "dashboard";
+    div.appendChild(link);
     for (const element of arr) {
         link = document.createElement('a');
         link.className = "list-group-item list-group-item-action bg-light";
-        href = element + ".php";
+        href = "/private/" + posizione + "/" + element + ".php";
         link.href = href;
         link.innerHTML = element;
         div.appendChild(link);

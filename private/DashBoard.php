@@ -6,7 +6,7 @@ Session();
 $conn = DataConnect();
 $nomeColonna=1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
 $condizione="";
-if ($_SESSION["member"] == "helpdesk") $condizione=1;
+if ($_SESSION["member"] == "admin") $condizione=1;
 elseif($_SESSION["member"] == "cliente")  {$nomeColonna="fk_cliente";$condizione=GetIDGivenUsername();} 
 $query = "SELECT dataapertura , count(*) as count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and ".$nomeColonna."=? group by dataapertura";
 

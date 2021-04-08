@@ -1,4 +1,4 @@
-<?php include '../template/privatepage_params.php'; ?>
+<?php include '../../template/privatepage_params.php'; ?>
 <h1 class="mt-4">Solutions</h1>
 <br>
 <form>

@@ -1,6 +1,6 @@
 <?php
-include_once("../template/privatepage_params.php");
-include_once("../dal.php");
+include_once("../../template/privatepage_params.php");
+include_once("../../dal.php");
 $error = '';
 $conn = DataConnect();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
