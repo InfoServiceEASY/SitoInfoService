@@ -28,7 +28,7 @@ function Login($usr, $pass)
             $_SESSION['utente'] = $row['username'];
             if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
             else (!$row["IsDipendente"] ? $_SESSION["member"] = "cliente" : $_SESSION["member"] = "dipendente");
-            header("location:../admin/DashBoard.php");
+            header("location:../private/DashBoard.php");
             exit();
         } else
             $errore = "Password non corrispondente";
@@ -140,10 +140,38 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
     }
 }
 
-function ShowTicket($id){
-    $errore = '';
+function ShowTicket()
+{
     $conn = DataConnect();
+    $oggetto = array();
+    $tipologia = array();
+    $descrizione = array();
+    $dataapertura = array();
     $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura FROM ticket WHERE fk_utenza=?');
     $stmt->bind_param('i', GetIDGivenUsername());
+    $stmt->execute();
+    $result = $stmt->get_result();
+    foreach ($result as $r) {
+        array_push($oggetto, $r['oggetto']);
+        array_push($tipologia, 'Tipo di intervento' . $r['tipologia']);
+        array_push($descrizione, 'Descrizione del problema' . $r['descrizione']);
+        array_push($dataapertura, 'Ticket aperto il ' . $r['dataapertura']);
+    }
+    $stmt->close();
+    $conn->close();
+    for ($i = 0; $i < count($oggetto); $i++) {
+        if ($i == 0) echo "<div class='containerone'>";
+        $template = "
+            <div class='container'>
+            <p>$oggetto[$i]</p>
+            </br>
+            <a>$tipologia[$i]</a>
+            </br>
+            <p>$descrizione[$i]</p>
+            </br>
+            <p>$dataapertura[$i]</p>
+            </div>";
+        echo $template;
+        if (count($oggetto) == $i) echo "</div>";
+    }
 }
-
