@@ -44,7 +44,10 @@ function chart(date) {
     });
 }
 
-
+function reload(form, id) {
+    var val = form.scelta.options[form.scelta.options.selectedIndex].value;
+    self.location = 'AssegnaTicket.php?id=' + id + '&scelta=' + val;
+}
 
 function sidebar(arr, posizione) {
     var div = document.getElementById("sidebar");

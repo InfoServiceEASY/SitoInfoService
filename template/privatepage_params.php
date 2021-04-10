@@ -18,8 +18,8 @@ switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome
         break;
 }*/
 
-if ($_SESSION["member"] == "cliente")  {$sidebar_text = array( "Solutions","Ticket","Events","Status","MyTicket");}
-else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Events","Profile","Status","TicketAperti"): $sidebar_text = array("TicketList","Events","Profile","Status");
+if ($_SESSION["member"] == "cliente")  {$sidebar_text = array( "Solutions","Ticket","MyTicket");}
+else $_SESSION["member"] == "admin"? $sidebar_text = array("Events","Profile","Status","TicketAperti"): $sidebar_text = array("TicketList","Events","Profile","Status");
 
 ?>
 <!DOCTYPE html>
