@@ -7,9 +7,15 @@
 */
 
 session_start();
+<<<<<<< Updated upstream:admin/ticketlist.php
 include('../dal.php');
 $title = 'Lista interventi dipendente';
 include '../template/privatepage_params.php'; ?>
+=======
+include('../../dal.php');
+$title = 'Lista interventi dipendente';
+include '../../template/privatepage_params.php'; ?>
+>>>>>>> Stashed changes:private/dipendente/ticketlist.php
 <h1 class="mt-4">I tuoi interventi</h1>
 <?php
 
