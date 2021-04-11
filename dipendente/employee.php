@@ -4,11 +4,11 @@ include '../template/privatepage_params.php';
 include_once("../dal.php");
 Session();
 ?>
-        <h1 class="mt-4">Visualizza lo stato degli ultimi interventi</h1>
+  <!--      <h1 class="mt-4">Visualizza lo stato degli ultimi interventi</h1>
         <br>
         <form>
   <div style="float:centre;">
-  <button class="btn btn-primary"  ></button> <!-- type="submit"-->
+  <button class="btn btn-primary"  ></button> type="submit"--> 
   </div>
 </form>
             </div>
