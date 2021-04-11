@@ -7,7 +7,7 @@ include '../template/privatepage_params.php'; ?>
 <?php
 $id = $_GET['Id'];
 $conn = DataConnect();
-$sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, ticket.commento FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
+$sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, report.commento FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
  WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?) and ticket.id=?";
 $sth = $conn->prepare($sql);
 $sth->bind_param('si', $_SESSION['utente'],$id);

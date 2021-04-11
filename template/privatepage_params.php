@@ -33,16 +33,16 @@ else $_SESSION["member"] == "admin"? $sidebar_text = array("Events","Profile","S
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
  
   <!--Bootstrap core CSS -->
-  <link href="http://localhost:8000/assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="http://localhost:8000/assets/css/stylesheetprivato.css" rel="stylesheet">
+  <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
 
 
   <!-- Bootstrap core JavaScript -->
-  <script src="http://localhost:8000/assets/js/jquery.min.js"></script>
-  <script src="http://localhost:8000/assets/js/bootstrap.bundle.min.js"></script>
-  <script src="http://localhost:8000/assets/js/script.js"></script>
+  <script src="../assets/js/jquery.min.js"></script>
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/script.js"></script>
 </head>
 
 <body onload="menuacomparsa();">
