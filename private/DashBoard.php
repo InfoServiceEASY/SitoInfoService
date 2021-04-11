@@ -4,15 +4,30 @@ include_once("../dal.php");
 Session();
 
 $conn = DataConnect();
-$query = "SELECT dataapertura FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 ";
+$nomeColonna=1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
+$condizione="";
+if ($_SESSION["member"] == "admin") $condizione=1;
+elseif($_SESSION["member"] == "cliente")  {$nomeColonna="fk_cliente";$condizione=GetIDGivenUsername();} 
+$query = "SELECT dataapertura , count(*) as count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and ".$nomeColonna."=? group by dataapertura";
+
+if($_SESSION["member"] == "dipendente"){
+  $sql = "SELECT t.dataapertura, count(*) as count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+  WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
+  $condizione= $_SESSION['utente'];}
+
+
 $stmt = $conn->prepare($query);
+$stmt->bind_param('i', $condizione);
 $stmt->execute();
 $result = $stmt->get_result();
 $data = array();
 foreach ($result as $row) {
-  $data[] = $row['dataapertura'];
+  array_push($data, array(
+    "data" => $row["dataapertura"],
+    "somma" => $row["count"]
+  ));
 }
-
+$title="Dashboard";
 include '../template/privatepage_params.php'; ?>
 <div class="containerone">
   <div class="containerr">
@@ -52,15 +67,9 @@ include '../template/privatepage_params.php'; ?>
   </div>
 </div>
 <br>
-<div class="container my-4">
 
-  <hr class="my-4">
-
-  <div>
-    <canvas id="lineChart"></canvas>
-  </div>
-
-</div>
+<div  style=" height: 275px; width: 100%;" id="lineChart"> </div>
+<button id="exportChart">Export Chart</button>
 <div style="height: 400px;" class="containerone">
   <div style="margin-right: 0.57%;width:49%;  margin-top: 20px;" class="containerr">
     <p style="float: left;">Unresolved tickets</p>
@@ -74,7 +83,9 @@ include '../template/privatepage_params.php'; ?>
     <a href="#">View details</a>
 
     <img style="margin-top: 40px; width:80%" src="../assets/img/Soddisfazioni.PNG">
-    <!--
+  </div>
+</div>
+<!--
     <div>
       <br>
       <p >positive</p>
@@ -88,8 +99,7 @@ include '../template/privatepage_params.php'; ?>
     https://eucfassetsgreen.freshdesk.com/production/a/assets/images/empty-states/unresolved-empty-eb60bb2b7b369cedbde7f34f11ec516e84dee3f466fd453f4bc621dcea912c98.svg" 
     alt="unresolved">
     </div>-->
-  </div>
-</div>
+
 
 <style>
   a {

@@ -17,36 +17,32 @@ switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome
     case '': //helpdesk
         break;
 }*/
-<<<<<<< Updated upstream
-if ($_SESSION["member"] == "customer")  {$sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");}
-else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Events","Profile","Status"): $sidebar_text = array("Dashboard","TicketList","Events","Profile","Status");
-=======
 
-if ($_SESSION["member"] == "cliente")  {$sidebar_text = array( "Solutions","Ticket","Events","Status","MyTicket");}
-else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Events","Profile","Status","TicketAperti"): $sidebar_text = array("TicketList","Events","Profile","Status");
-$posizione = ($_SESSION["member"] == "cliente"? "cliente": ($_SESSION["member"] == "helpdesk"? "admin": "dipendente"));
+if ($_SESSION["member"] == "cliente")  {$sidebar_text = array( "Solutions","Ticket","MyTicket");}
+else $_SESSION["member"] == "admin"? $sidebar_text = array("Events","Profile","Status","TicketAperti"): $sidebar_text = array("TicketList","Events","Profile","Status");
 
->>>>>>> Stashed changes
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Customer</title>
+  <title> <?php echo $title;?></title>
+
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
  
   <!--Bootstrap core CSS -->
-  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="http://localhost:8000/assets/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
+  <link href="http://localhost:8000/assets/css/stylesheetprivato.css" rel="stylesheet">
 
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../assets/js/jquery.min.js"></script>
-  <script src="../assets/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/script.js"></script>
+  <script src="http://localhost:8000/assets/js/jquery.min.js"></script>
+  <script src="http://localhost:8000/assets/js/bootstrap.bundle.min.js"></script>
+  <script src="http://localhost:8000/assets/js/script.js"></script>
 </head>
 
 <body onload="menuacomparsa();">
@@ -56,11 +52,7 @@ $posizione = ($_SESSION["member"] == "cliente"? "cliente": ($_SESSION["member"] 
 <div class="bg-light border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">Infoservice </div>
   <div class="list-group list-group-flush" id="sidebar">
-<<<<<<< Updated upstream
-  <script> sidebar( <?php echo json_encode($sidebar_text); ?>) </script>
-=======
-  <script> sidebar(<?php echo json_encode($sidebar_text); ?>,<?php echo '"'.$posizione.'"'?>) </script>
->>>>>>> Stashed changes
+  <script> sidebar( <?php echo json_encode($sidebar_text); ?>,<?php echo '"'.$_SESSION['member'].'"'?>) </script>
  <!-- <?php //include 'sidebar_1.php';?> -->
   </div>
 </div>
@@ -90,7 +82,7 @@ $posizione = ($_SESSION["member"] == "cliente"? "cliente": ($_SESSION["member"] 
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="Logout.php">LogOut</a>
-            <a class="dropdown-item" href="#">Impostazioni</a>
+            <a class="dropdown-item" href="Impostazioni.php">Impostazioni</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>
           </div>

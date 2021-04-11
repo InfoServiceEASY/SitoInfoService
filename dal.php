@@ -16,7 +16,7 @@ function Login($usr, $pass)
     $errore = "";
     $usr2 = $usr;
     $conn = DataConnect();
-    $query = "SELECT * FROM utenza WHERE email=? OR username=?";
+    $query = "SELECT * FROM utenza WHERE (email=? OR username=?) and status='active'";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ss', $usr, $usr2);
     $stmt->execute();
@@ -26,9 +26,9 @@ function Login($usr, $pass)
         if (password_verify($pass, $row['password'])) {
             $_SESSION['login'] = $usr;
             $_SESSION['utente'] = $row['username'];
-            if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "helpdesk";
-            else (!$row["IsDipendente"] ? $_SESSION["member"] = "customer" : $_SESSION["member"] = "employee");
-            header("location:../admin/DashBoard.php");
+            if ($row["IsAdmin"] && $row["IsDipendente"]) $_SESSION["member"] = "admin";
+            else (!$row["IsDipendente"] ? $_SESSION["member"] = "cliente" : $_SESSION["member"] = "dipendente");
+            header("location:../private/DashBoard.php");
             exit();
         } else
             $errore = "Password non corrispondente";
@@ -38,24 +38,44 @@ function Login($usr, $pass)
     return $errore;
 }
 
+function GetIDGivenUsername()
+{
+    $conn = DataConnect();
+    $query = "SELECT id FROM utenza WHERE username=?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('s', $_SESSION['utente']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row["id"];
+    } else {
+        $stmt->close();
+        return "error";
+    }
+}
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
     $errore = "";
     $conn = DataConnect();
-    $query = "INSERT INTO utenza (username,password,email) VALUES (?,?,?)";
+    $stato = "disabled";
+    $query = "INSERT INTO utenza (username,password,email,status) VALUES (?,?,?,?)";
     $stmt = $conn->prepare($query);
     $hash = password_hash($password, PASSWORD_DEFAULT);
-    $stmt->bind_param('sss', $username, $hash, $email);
+    $stmt->bind_param('ssss', $username, $hash, $email, $stato);
+
     if ($stmt->execute() === true) {
-        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza)+1)";
+        $conn->close();
+        $conn = DataConnect();
+        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('sss', $firstname, $lastname, $phone);
         if ($stmt->execute() === true) {
-            header("location:login.php");
-            exit();
+            $errore .= "<script>window.sendEmail('$email','$username')</script>";
+            $errore .= "<div>You have registered and the activation mail is sent to your email. Click the activation link to activate you account.</div><br>";
         } else
-            $errore = "secondo if";
+            $errore .= $conn->error;
     } else
         $errore = "primo if";
     $conn->close();
@@ -84,4 +104,70 @@ function Contact($firstname, $lastname, $phone, $email, $description)
         $errore = "C'è stato un problema, riprova più tardi";
     $conn->close();
     return $errore;
+}
+
+function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
+{
+    $errore = '';
+    $conn = DataConnect();
+   /* $stmt = $conn->prepare('SELECT id FROM settore WHERE nome=?');
+    $stmt->bind_param('s', $settore);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $stmt->close();
+        $row = $result->fetch_assoc();
+       // $settore = $row['id'];*/
+        $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
+        $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
+        if ($stmt->execute() === true) {
+            $stmt->close();
+            $conn->close();
+            header("location:/private/DashBoard.php");
+            exit();
+            return $errore;
+        } else {
+            $stmt->close();
+            $conn->close();
+            $errore = "C'è stato un problema, riprova più tardi";
+            return $errore;
+        }
+    
+}
+
+function ShowTicket()
+{
+    $conn = DataConnect();
+    $oggetto = array();
+    $tipologia = array();
+    $descrizione = array();
+    $dataapertura = array();
+    $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura FROM ticket WHERE fk_cliente=?');
+    $id=GetIDGivenUsername();
+    $stmt->bind_param('i',$id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    foreach ($result as $r) {
+        array_push($oggetto, $r['oggetto']);
+        array_push($tipologia, 'Tipo di intervento' . $r['tipologia']);
+        array_push($descrizione, 'Descrizione del problema' . $r['descrizione']);
+        array_push($dataapertura, 'Ticket aperto il ' . $r['dataapertura']);
+    }
+    $stmt->close();
+    $conn->close();
+    for ($i = 0; $i < count($oggetto); $i++) {
+        if ($i == 0) echo "<div class='containerone'>";
+        $template = "
+            <div class='container'>
+            <p>$oggetto[$i]</p>
+            </br>
+            <a>$tipologia[$i]</a>
+            </br>
+            <p>$descrizione[$i]</p>
+            </br>
+            <p>$dataapertura[$i]</p>
+            </div>";
+        echo $template;
+        if (count($oggetto) == $i) echo "</div>";
+    }
 }

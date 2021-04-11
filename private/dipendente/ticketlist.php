@@ -9,6 +9,7 @@
 session_start();
 <<<<<<< Updated upstream:admin/ticketlist.php
 include('../dal.php');
+$title = 'Lista interventi dipendente';
 include '../template/privatepage_params.php'; ?>
 =======
 include('../../dal.php');
@@ -19,8 +20,8 @@ include '../../template/privatepage_params.php'; ?>
 <?php
 
 $conn = DataConnect();
-$sql = "SELECT id, dataapertura,descrizione FROM ticket
- WHERE isaperto = 1 AND fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
+$sql = "SELECT ticket.id, ticket.dataapertura,ticket.descrizione FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
+ WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
 $sth = $conn->prepare($sql);
 $sth->bind_param('s', $_SESSION['utente']);
 $sth->execute();
@@ -60,11 +61,14 @@ function PrintSolutions($titoli, $testi, $ids)
 {
   for ($i = 0; $i < count($titoli); $i++) {
     $href = "writereport.php?Id=$ids[$i]";
+    $href2 = "measures.php?Id=$ids[$i]"; 
     if($i % 3 == 0) echo "<div class='containerone'>";
     $template = "
         <div class='container'>
         <a><p>$titoli[$i]</p></a>
         <a>$testi[$i]</a>
+        </br>
+        <a href='$href2'> Visualizza report scritti sull'attività</a>
         </br>
         <a href='$href'> Scrivi report sull'attività</a>
         </div>";
