@@ -25,11 +25,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     if ($result->num_rows > 0) {
-        $error = "Sorry... username already taken";
+        $error = "Username già utilizzato";
     } else if ($resultE->num_rows > 0) {
-        $error = "Sorry... email already taken";
+        $error = "Email già utilizzata";
     } else {
-        echo "ci sentro";
         $conn->close();
         $error =  Register($firstname, $lastname, $username, $phone, $email, $password);
     }
@@ -59,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="block-heading">
                     <h2 class="text">Sign Up</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <p><?php echo $error ?></p>
                 </div>
                 <form style="border-radius: 25px" method="POST">
                     <div class="form-group"><label for="firstname">First Name</label><input class="form-control item" required type="text" name="firstname"></div>
@@ -69,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-group"><label for="email">Email</label><input class="form-control item" required type="email" name="email"></div>
                     <div class="form-group"><label for="password">Password</label><input class="form-control item" required type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Sign Up</button>
                 </form>
-                <div><?php echo $error ?></div>
+
 
             </div>
         </section>

@@ -33,7 +33,7 @@ function Login($usr, $pass)
             //else (!$row["IsDipendente"] ? $_SESSION["member"] = "cliente" : $_SESSION["member"] = "dipendente");
             else if (!$row["IsDipendente"]) {
                 $_SESSION['member'] = 'cliente';
-                header("location:../private/cliente/dashboard.php");
+                header("location:../cliente/dashboard.php");
             } else {
                 $_SESSION['member'] = 'dipendente';
                 header("location:../private/DashBoard.php");
@@ -119,7 +119,7 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
         $stmt->bind_param('sss', $firstname, $lastname, $phone);
         if ($stmt->execute() === true) {
             $errore .= "<script>window.sendEmail('$email','$username')</script>";
-            $errore .= "<div>You have registered and the activation mail is sent to your email. Click the activation link to activate you account.</div><br>";
+            $errore .= "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
         } else
             $errore .= $conn->error;
     } else
@@ -161,6 +161,7 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
+        return "ticket creato con successo";
     } else {
         $stmt->close();
         $conn->close();
