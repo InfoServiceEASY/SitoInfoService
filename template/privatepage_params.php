@@ -17,8 +17,16 @@ switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome
     case '': //helpdesk
         break;
 }*/
+<<<<<<< Updated upstream
 if ($_SESSION["member"] == "customer")  {$sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");}
 else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Events","Profile","Status"): $sidebar_text = array("Dashboard","TicketList","Events","Profile","Status");
+=======
+
+if ($_SESSION["member"] == "cliente")  {$sidebar_text = array( "Solutions","Ticket","Events","Status","MyTicket");}
+else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Events","Profile","Status","TicketAperti"): $sidebar_text = array("TicketList","Events","Profile","Status");
+$posizione = ($_SESSION["member"] == "cliente"? "cliente": ($_SESSION["member"] == "helpdesk"? "admin": "dipendente"));
+
+>>>>>>> Stashed changes
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -48,7 +56,11 @@ else $_SESSION["member"] == "helpdesk"? $sidebar_text = array("Dashboard","Event
 <div class="bg-light border-right" id="sidebar-wrapper">
   <div class="sidebar-heading">Infoservice </div>
   <div class="list-group list-group-flush" id="sidebar">
+<<<<<<< Updated upstream
   <script> sidebar( <?php echo json_encode($sidebar_text); ?>) </script>
+=======
+  <script> sidebar(<?php echo json_encode($sidebar_text); ?>,<?php echo '"'.$posizione.'"'?>) </script>
+>>>>>>> Stashed changes
  <!-- <?php //include 'sidebar_1.php';?> -->
   </div>
 </div>
