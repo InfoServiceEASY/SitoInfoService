@@ -4,16 +4,20 @@ include_once("../dal.php");
 Session();
 
 $conn = DataConnect();
-$nomeColonna=1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
-$condizione="";
-if ($_SESSION["member"] == "admin") $condizione=1;
-elseif($_SESSION["member"] == "cliente")  {$nomeColonna="fk_cliente";$condizione=GetIDGivenUsername();} 
-$query = "SELECT dataapertura , count(*) as count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and ".$nomeColonna."=? group by dataapertura";
+$nomeColonna = 1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
+$condizione = "";
+if ($_SESSION["member"] == "admin") $condizione = 1;
+elseif ($_SESSION["member"] == "cliente") {
+  $nomeColonna = "fk_cliente";
+  $condizione = GetIDGivenUsername();
+}
+$query = "SELECT dataapertura , count(*) as count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and " . $nomeColonna . "=? group by dataapertura";
 
-if($_SESSION["member"] == "dipendente"){
+if ($_SESSION["member"] == "dipendente") {
   $sql = "SELECT t.dataapertura, count(*) as count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
   WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
-  $condizione= $_SESSION['utente'];}
+  $condizione = $_SESSION['utente'];
+}
 
 
 $stmt = $conn->prepare($query);
@@ -27,7 +31,7 @@ foreach ($result as $row) {
     "somma" => $row["count"]
   ));
 }
-$title="Dashboard";
+$title = "Dashboard";
 include '../template/privatepage_params.php'; ?>
 <div class="containerone">
   <div class="containerr">
@@ -68,7 +72,7 @@ include '../template/privatepage_params.php'; ?>
 </div>
 <br>
 
-<div  style=" height: 275px; width: 100%;" id="lineChart"> </div>
+<div style=" height: 275px; width: 100%;" id="lineChart"> </div>
 <button id="exportChart">Export Chart</button>
 <div style="height: 400px;" class="containerone">
   <div style="margin-right: 0.57%;width:49%;  margin-top: 20px;" class="containerr">

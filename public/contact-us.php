@@ -1,15 +1,9 @@
 <?php
 session_start();
-$error = "";
 include_once("../dal.php");
-$conn = DataConnect();
+Session();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $description = $_POST['description'];
-    $error = Contact($firstname, $lastname, $phone, $email, $description);
+    $error = Contact($_POST['firstname'], $_POST['lastname'], $_POST['phone'], $_POST['email'], $_POST['description']);
 }
 ?>
 <!DOCTYPE html>
