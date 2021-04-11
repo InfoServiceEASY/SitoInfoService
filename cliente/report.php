@@ -4,9 +4,9 @@ include_once '../dal.php';
 Session();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['yes'])) {
-
-    }else if(isset($_POST['no'])){
-        
+        $error = ConvalidTicket(true, $_POST['commento'], $_POST['id']);
+    } else if (isset($_POST['no'])) {
+        $error = ConvalidTicket(false, $_POST['commento'], $_POST['id']);
     }
 }
 ?>
@@ -52,14 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
     <script src="../assets/js/script.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
-            $("#btnShowModal").click(function() {
-                $("#exampleModal").modal("show");
-            });
-            $("#btnClose").click(function() {
-                $("#exampleModal").modal("toggle");
-            });
-        });
+        
     </script>
 </body>
 
