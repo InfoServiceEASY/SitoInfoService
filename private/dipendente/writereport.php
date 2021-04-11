@@ -1,10 +1,10 @@
 <?php
 session_start();
-include_once("../dal.php");
+include_once("../../dal.php");
 Session();
 
 $title = "Scrivi nuovo report";
-include '../template/privatepage_params.php';
+include '../../template/privatepage_params.php';
 
 $id = $_GET['Id'];
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
