@@ -10,7 +10,8 @@ $conn = DataConnect();
 $sql = "SELECT t.id, t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome  FROM ticket t
 inner join settore s on s.id=t.fk_settore
 LEFT JOIN report r ON t.id =r.fk_ticket
-WHERE   r.fk_ticket IS NULL and t.isaperto=?";
+WHERE   r.fk_ticket IS NULL and t.isaperto=?
+order by t.dataapertura desc";
 $sth = $conn->prepare($sql);
 $sth->bind_param('i',$uno);
 $sth->execute();
@@ -41,7 +42,7 @@ if ($result->num_rows > 0) {
 <br>
 <form>
 
- 
+ <style>
   p { margin:1 }
 
     .containerone {
