@@ -1,7 +1,7 @@
 <?php session_start();
-include('../../dal.php');
+include('../dal.php');
 $title = 'Lista interventi dipendente';
-include '../../template/privatepage_params.php'; ?>
+include '../template/privatepage_params.php'; ?>
 <h1 class="mt-4">I ticket Aperti</h1>
 <br>
 <?php

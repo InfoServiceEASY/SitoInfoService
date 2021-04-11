@@ -1,8 +1,8 @@
 <?php session_start();
-include('../../dal.php');
+include('../dal.php');
 $title = 'Lista interventi dipendente';
 $conn = DataConnect();
-include '../../template/privatepage_params.php';
+include '../template/privatepage_params.php';
 $sql = "SELECT t.id, t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome  FROM ticket t
 inner join settore s on s.id=t.fk_settore
 where t.id=?";
