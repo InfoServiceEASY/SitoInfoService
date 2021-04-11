@@ -89,7 +89,7 @@ $conn->close();
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ticket creato con successo</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Ticket assegnato con successo</h5>
             <button id="btnClose" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
           </div>
 
