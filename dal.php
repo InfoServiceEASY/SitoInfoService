@@ -245,16 +245,15 @@ function ShowTicket()
 function ShowReport()
 {
     $conn = DataConnect();
-    $waitingreport = '<div class="row justify-content-center">';
     $openedreport = '<div class="row justify-content-center">';
     $closedreport = '<div class="row justify-content-center">';
     $refusedreport = '<div class="row justify-content-center">';
-    $contwait = 0;
     $contopen = 0;
     $contclose = 0;
     $contrefused = 0;
-    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t LEFT JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
-    $id = GetIDGivenUsername();
+
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
+    $id=GetIDGivenUsername();
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -262,15 +261,8 @@ function ShowReport()
     $conn->close();
     if ($result->num_rows > 0) {
         foreach ($result as $r) {
-            if (is_null($r['isconvalidato']) && is_null($r['attività'])) {
-                $contwait++;
-                $waitingreport .= '<div class="col-md-4 feature-box">' .
-                    '<h4>' . $r['oggetto'] . '</h4>' .
-                    '<p>' . $r['tipologia'] . '</p>' .
-                    '<p>' . $r['descrizione'] . '</p>' .
-                    '<p>' . $r['dataapertura'] . '</p>' .
-                    '</div>';
-            } else if (is_null($r['isconvalidato']) && $r['attività'] != null) {
+          
+            if (is_null($r['isconvalidato']) && $r['attività'] != null) {
                 $contopen++;
                 $openedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>Ticket numero: ' . $r['id'] . '</h4>' .
@@ -287,7 +279,7 @@ function ShowReport()
                     '<button class="btn btn-primary btn-block" type="submit" name="no">Non sono d\'accordo</button>' .
                     '</div>' .
                     '</form>';
-            } else if ($r['isconvalidato'] == true && $r['isrisolto'] == true) {
+            } else if ($r['isconvalidato'] == 1 && $r['isrisolto'] == 1) {
                 $contclose++;
                 $closedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
@@ -296,7 +288,7 @@ function ShowReport()
                     '<p>' . $r['attività'] . '</p>' .
                     '<p>' . $r['commento'] . '</p>' .
                     '</div>';
-            } else if ($r['isconvalidato'] == false || $r['isrisolto'] == false) {
+            } else if ($r['isconvalidato'] == 0 || $r['isrisolto'] == 0) {
                 $contrefused++;
                 $refusedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
@@ -308,9 +300,7 @@ function ShowReport()
             }
         }
     }
-    if ($contwait == 0) {
-        $waitingreport .= '<h5>Non hai ancora ticket aperti.</h5>';
-    }
+   
     if ($contopen == 0) {
         $openedreport .= '<h5>Non hai report da convalidare.</h5>';
     }
@@ -320,7 +310,7 @@ function ShowReport()
     if ($contrefused == 0) {
         $refusedreport .= '<h5>Non hai report in attesa.</h5>';
     }
-    return array($waitingreport .= '</div>', $openedreport .= '</div>', $closedreport .= '</div>', $refusedreport .= '</div>');
+    return array( $openedreport .= '</div>', $closedreport .= '</div>', $refusedreport .= '</div>');
 }
 
 function ShowProfile()

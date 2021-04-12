@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="../assets/css/styles.min.css">
+    <link rel="stylesheet" href="../assets/css/stylesheetprivato.css">
 </head>
 
 <body>
@@ -35,14 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="block-heading">
                     <h2 class="text">I tuoi report</h2>
                 </div>
-                <h3>Report in attesa di risoluzione</h3>
-                <?php echo ShowReport()[0] ?>
                 <h3>Report da convalidare</h3>
-                <?php echo ShowReport()[1] ?>
+                <?php echo ShowReport()[0] ?>
                 <h3>Report convalidati e risolti</h3>
-                <?php echo ShowReport()[2] ?>
+                <?php echo ShowReport()[1] ?>
                 <h3>Report non risolti</h3>
-                <?php echo ShowReport()[3] ?>
+                <?php echo ShowReport()[2] ?>
             </div>
         </section>
     </main>
@@ -50,10 +49,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="../assets/js/script.min.js"></script>
-    <script type="text/javascript">
-        
-    </script>
 </body>
 
 </html>

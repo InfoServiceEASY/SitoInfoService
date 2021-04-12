@@ -18,7 +18,7 @@ $id = $_GET['Id'];
   function InsertReport($durata,$descrizione, $isrisolto, $fk_ticket, $fk_dipendente){
     //fk_ticket in report. n report 1 ticket.
     $conn = DataConnect();
-    $sql = "update report set datafine=?,durata=?,attività=?,isrisolto=? where fk_ticket=? and fk_dipendente=? and isrisolto=null";
+    $sql = "update report set datafine=?,durata=?,attività=?,isrisolto=? where fk_ticket=? and fk_dipendente=? and isnull(isrisolto)";
     //mettere ora attuale
     $thisdate = date('d/m/Y \a\l\l\e H:i:s');
     $sth = $conn -> prepare($sql);
