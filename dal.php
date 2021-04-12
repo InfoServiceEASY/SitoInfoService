@@ -156,10 +156,10 @@ function Contact($firstname, $lastname, $phone, $email, $description)
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
-    $id=GetIDGivenUsername();
-    $data=date('Y-m-d H:i:s');
+    $id = GetIDGivenUsername();
+    $data = date('Y-m-d H:i:s');
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione,$data ,$id , $settore);
+    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, $data, $id, $settore);
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
@@ -207,7 +207,7 @@ function ShowTicket()
     $closedticket = '<div class="row justify-content-center">';
     $contopen = 0;
     $contclose = 0;
-    $id=GetIDGivenUsername();
+    $id = GetIDGivenUsername();
     $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
     $stmt->bind_param('i', $id);
     $stmt->execute();
@@ -254,7 +254,7 @@ function ShowReport()
     $contclose = 0;
     $contrefused = 0;
     $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t LEFT JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
-    $id=GetIDGivenUsername();
+    $id = GetIDGivenUsername();
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -321,4 +321,23 @@ function ShowReport()
         $refusedreport .= '<h5>Non hai report in attesa.</h5>';
     }
     return array($waitingreport .= '</div>', $openedreport .= '</div>', $closedreport .= '</div>', $refusedreport .= '</div>');
+}
+
+function ShowProfile()
+{
+    $conn = DataConnect();
+    $template = '<div class="getting-started-info">';
+    $stmt = $conn->prepare('SELECT * FROM cliente INNER JOIN utenza ON cliente.fk_utenza = utenza.id AND utenza.id=?');
+    $id = GetIDGivenUsername();
+    $stmt->bind_param('i', $id);
+    if ($stmt->execute() === true) {
+        $result = $stmt->get_result();
+        $result = $result->fetch_assoc();
+        $stmt->close();
+        $conn->close();
+        foreach ($result as $r) {
+            $template .= '<h4>';
+        }
+        return array($result['nome'], $result['cognome']);
+    }
 }
