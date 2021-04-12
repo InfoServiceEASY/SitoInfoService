@@ -81,7 +81,7 @@ else $_SESSION["member"] == "admin"? $sidebar_text = array("Events","Profile","S
             <?php echo $letterautente; ?>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="Logout.php">LogOut</a>
+            <a class="dropdown-item" href="../private/Logout.php">LogOut</a>
             <a class="dropdown-item" href="Impostazioni.php">Impostazioni</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>

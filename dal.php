@@ -149,23 +149,54 @@ function Contact($firstname, $lastname, $phone, $email, $description)
     } else {
         $stmt->close();
         $conn->close();
-        return "C'è stato un problema, riprova più tardi";
+        return 'C\'è stato un problema, riprova più tardi';
     }
 }
 
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
+    $id=GetIDGivenUsername();
+    $data=date('Y-m-d H:i:s');
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
+    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione,$data ,$id , $settore);
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
-        return "ticket creato con successo";
+        return 'Ticket creato con successo.';
     } else {
         $stmt->close();
         $conn->close();
-        return "C'è stato un problema, riprova più tardi";
+        return 'C\'è stato un problema, riprova più tardi';
+    }
+}
+
+function ConvalidTicket($choice, $comment, $id)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
+    $stmt->bind_param('sssi', $choice, $comment, $choice, $id);
+    if ($stmt->execute() === true) {
+        $stmt->close();
+        if ($choice == true) {
+            $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
+            $cond = 0;
+            $stmt->bind_param('ii', $cond, $id);
+            if ($stmt->execute() === true) {
+                $stmt->close();
+                $conn->close();
+                return 'Report convalidato correttamente.';
+            } else {
+                $stmt->close();
+                $conn->close();
+                return 'C\'è stato un problema, riprova più tardi.';
+            }
+        } else
+            return 'Report convalidato correttamente.';
+    } else {
+        $stmt->close();
+        $conn->close();
+        return 'C\'è stato un problema, riprova più tardi.';
     }
 }
 
@@ -176,8 +207,9 @@ function ShowTicket()
     $closedticket = '<div class="row justify-content-center">';
     $contopen = 0;
     $contclose = 0;
+    $id=GetIDGivenUsername();
     $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
-    $stmt->bind_param('i', GetIDGivenUsername());
+    $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
@@ -221,15 +253,16 @@ function ShowReport()
     $contopen = 0;
     $contclose = 0;
     $contrefused = 0;
-    $stmt = $conn->prepare('SELECT t.oggetto,t.tipologia,t.descrizione,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t LEFT JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
-    $stmt->bind_param('i', GetIDGivenUsername());
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t LEFT JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
+    $id=GetIDGivenUsername();
+    $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
     $conn->close();
     if ($result->num_rows > 0) {
         foreach ($result as $r) {
-            if ($r['isconvalidato'] == null && $r['attività'] == null) {
+            if (is_null($r['isconvalidato']) && is_null($r['attività'])) {
                 $contwait++;
                 $waitingreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
@@ -237,9 +270,10 @@ function ShowReport()
                     '<p>' . $r['descrizione'] . '</p>' .
                     '<p>' . $r['dataapertura'] . '</p>' .
                     '</div>';
-            } else if ($r['isconvalidato'] == null && $r['attività'] != null) {
+            } else if (is_null($r['isconvalidato']) && $r['attività'] != null) {
                 $contopen++;
                 $openedreport .= '<div class="col-md-4 feature-box">' .
+                    '<h4>Ticket numero: ' . $r['id'] . '</h4>' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
                     '<p>' . $r['tipologia'] . '</p>' .
                     '<p>' . $r['descrizione'] . '</p>' .
@@ -247,9 +281,10 @@ function ShowReport()
                     '<form action="" method="POST"' .
                     '<div class="form-group">
                     <label for="Commento">Commento</label>
-                    <textarea class="form-control" name="descrizione"></textarea>' .
-                    '<button class="btn btn-primary btn-block" type="submit" name="yes">Sono daccordo</button>' .
-                    '<button class="btn btn-primary btn-block" type="submit" name="no">Non sono daccordo</button>' .
+                    <textarea class="form-control" name="commento" required></textarea>' .
+                    '<input type="hidden" name="id" value="' . $r['id'] . '" />' .
+                    '<button class="btn btn-primary btn-block" type="submit" name="yes">Sono d\'accordo</button>' .
+                    '<button class="btn btn-primary btn-block" type="submit" name="no">Non sono d\'accordo</button>' .
                     '</div>' .
                     '</form>';
             } else if ($r['isconvalidato'] == true && $r['isrisolto'] == true) {
@@ -262,6 +297,14 @@ function ShowReport()
                     '<p>' . $r['commento'] . '</p>' .
                     '</div>';
             } else if ($r['isconvalidato'] == false || $r['isrisolto'] == false) {
+                $contrefused++;
+                $refusedreport .= '<div class="col-md-4 feature-box">' .
+                    '<h4>' . $r['oggetto'] . '</h4>' .
+                    '<p>' . $r['tipologia'] . '</p>' .
+                    '<p>' . $r['descrizione'] . '</p>' .
+                    '<p>' . $r['attività'] . '</p>' .
+                    '<p>' . $r['commento'] . '</p>' .
+                    '</div>';
             }
         }
     }
