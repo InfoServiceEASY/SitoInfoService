@@ -156,8 +156,10 @@ function Contact($firstname, $lastname, $phone, $email, $description)
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
+    $id=GetIDGivenUsername();
+    $data=date('Y-m-d H:i:s');
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, date('Y-m-d H:i:s'), GetIDGivenUsername(), $settore);
+    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione,$data ,$id , $settore);
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
@@ -205,8 +207,9 @@ function ShowTicket()
     $closedticket = '<div class="row justify-content-center">';
     $contopen = 0;
     $contclose = 0;
+    $id=GetIDGivenUsername();
     $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
-    $stmt->bind_param('i', GetIDGivenUsername());
+    $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
@@ -251,7 +254,8 @@ function ShowReport()
     $contclose = 0;
     $contrefused = 0;
     $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t LEFT JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
-    $stmt->bind_param('i', GetIDGivenUsername());
+    $id=GetIDGivenUsername();
+    $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
