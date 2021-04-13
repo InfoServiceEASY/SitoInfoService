@@ -156,10 +156,10 @@ function Contact($firstname, $lastname, $phone, $email, $description)
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
-    $id=GetIDGivenUsername();
-    $data=date('Y-m-d H:i:s');
+    $id = GetIDGivenUsername();
+    $data = date('Y-m-d H:i:s');
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione,$data ,$id , $settore);
+    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, $data, $id, $settore);
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
@@ -207,7 +207,7 @@ function ShowTicket()
     $closedticket = '<div class="row justify-content-center">';
     $contopen = 0;
     $contclose = 0;
-    $id=GetIDGivenUsername();
+    $id = GetIDGivenUsername();
     $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
     $stmt->bind_param('i', $id);
     $stmt->execute();
@@ -245,16 +245,15 @@ function ShowTicket()
 function ShowReport()
 {
     $conn = DataConnect();
-    $waitingreport = '<div class="row justify-content-center">';
     $openedreport = '<div class="row justify-content-center">';
     $closedreport = '<div class="row justify-content-center">';
     $refusedreport = '<div class="row justify-content-center">';
-    $contwait = 0;
     $contopen = 0;
     $contclose = 0;
     $contrefused = 0;
-    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t LEFT JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
-    $id=GetIDGivenUsername();
+
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
+    $id = GetIDGivenUsername();
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -262,15 +261,8 @@ function ShowReport()
     $conn->close();
     if ($result->num_rows > 0) {
         foreach ($result as $r) {
-            if (is_null($r['isconvalidato']) && is_null($r['attività'])) {
-                $contwait++;
-                $waitingreport .= '<div class="col-md-4 feature-box">' .
-                    '<h4>' . $r['oggetto'] . '</h4>' .
-                    '<p>' . $r['tipologia'] . '</p>' .
-                    '<p>' . $r['descrizione'] . '</p>' .
-                    '<p>' . $r['dataapertura'] . '</p>' .
-                    '</div>';
-            } else if (is_null($r['isconvalidato']) && $r['attività'] != null) {
+
+            if (is_null($r['isconvalidato']) && $r['attività'] != null) {
                 $contopen++;
                 $openedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>Ticket numero: ' . $r['id'] . '</h4>' .
@@ -287,7 +279,7 @@ function ShowReport()
                     '<button class="btn btn-primary btn-block" type="submit" name="no">Non sono d\'accordo</button>' .
                     '</div>' .
                     '</form>';
-            } else if ($r['isconvalidato'] == true && $r['isrisolto'] == true) {
+            } else if ($r['isconvalidato'] == 1 && $r['isrisolto'] == 1) {
                 $contclose++;
                 $closedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
@@ -296,7 +288,7 @@ function ShowReport()
                     '<p>' . $r['attività'] . '</p>' .
                     '<p>' . $r['commento'] . '</p>' .
                     '</div>';
-            } else if ($r['isconvalidato'] == false || $r['isrisolto'] == false) {
+            } else if ($r['isconvalidato'] == 0 || $r['isrisolto'] == 0) {
                 $contrefused++;
                 $refusedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
@@ -308,9 +300,7 @@ function ShowReport()
             }
         }
     }
-    if ($contwait == 0) {
-        $waitingreport .= '<h5>Non hai ancora ticket aperti.</h5>';
-    }
+
     if ($contopen == 0) {
         $openedreport .= '<h5>Non hai report da convalidare.</h5>';
     }
@@ -320,5 +310,29 @@ function ShowReport()
     if ($contrefused == 0) {
         $refusedreport .= '<h5>Non hai report in attesa.</h5>';
     }
-    return array($waitingreport .= '</div>', $openedreport .= '</div>', $closedreport .= '</div>', $refusedreport .= '</div>');
+    return array($openedreport .= '</div>', $closedreport .= '</div>', $refusedreport .= '</div>');
+}
+
+function ShowProfile()
+{
+    $conn = DataConnect();
+    $template = '<div class="getting-started-info">';
+    $stmt = $conn->prepare('SELECT c.nome,c.cognome,c.cellulare,u.username,u.email FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.id=?');
+    $id = GetIDGivenUsername();
+    $stmt->bind_param('i', $id);
+    if ($stmt->execute() === true) {
+        $result = $stmt->get_result();
+        $result = $result->fetch_assoc();
+        $stmt->close();
+        $conn->close();
+        $template .= '<form style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Cognome</label><input class="form-control item" name="cognome" type="text" value="' . $result['cognome'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Cellulare</label><input class="form-control item" name="cellulare" type="text" value="' . $result['cellulare'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Username</label><input class="form-control item" name="username" type="text" value="' . $result['username'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Email</label><input class="form-control item" name="email" type="email" value="' . $result['email'] . '" disabled></div>' .
+            '<button class="btn btn-primary btn-block" type="submit">Modifica</button>' .
+            '</form>' . '</div>';
+        return array($result['nome'], $result['cognome'], $template);
+    }else
+    return 'C\'è stato un problema, riprova più tardi.';
 }
