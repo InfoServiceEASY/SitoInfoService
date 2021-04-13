@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <?php include_once "../template/navbar.php" ?>
+    <?php include_once '../template/navbar.php' ?>
     <main class="page">
         <section class="clean-block about-us">
             <div class="container">
@@ -54,11 +54,10 @@
             </div>
         </section>
     </main>
-    <?php include_once("../template/footer.php") ?>
+    <?php include_once '../template/footer.php' ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="../assets/js/script.min.js"></script>
 </body>
 
 </html>

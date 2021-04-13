@@ -3,11 +3,10 @@ session_start();
 include_once '../dal.php';
 Session();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['yes'])) {
+    if (isset($_POST['yes']))
         $error = ConvalidTicket(true, $_POST['commento'], $_POST['id']);
-    } else if (isset($_POST['no'])) {
+    else if (isset($_POST['no']))
         $error = ConvalidTicket(false, $_POST['commento'], $_POST['id']);
-    }
 }
 ?>
 

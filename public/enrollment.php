@@ -1,37 +1,33 @@
 <?php
-session_start();
-$error = "";
-include_once("../dal.php");
+include_once '../dal.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $conn = DataConnect();
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $username = $_POST['username'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    //$firstname = $_POST['firstname'];
+    //$lastname = $_POST['lastname'];
+    //$username = $_POST['username'];
+    //$phone = $_POST['phone'];
+    //$email = $_POST['email'];
+    //$password = $_POST['password'];
 
-    $sql_u = "SELECT * FROM utenza WHERE username=?;";
-    $stmt = $conn->prepare($sql_u);
-    $stmt->bind_param('s', $username);
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
+    $stmt->bind_param('s', $_POST['username']);
     $stmt->execute();
     $result = $stmt->get_result();
+    $stmt->close();
 
-    $sql_e = "SELECT * FROM utenza WHERE email=?";
-    $stmt = $conn->prepare($sql_e);
+    $stmt = $conn->prepare('SELECT * FROM utenza WHERE email=?');
     $stmt->bind_param('s', $email);
     $stmt->execute();
     $resultE = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
 
-
-    if ($result->num_rows > 0) {
-        $error = "Username già utilizzato";
-    } else if ($resultE->num_rows > 0) {
-        $error = "Email già utilizzata";
-    } else {
-        $conn->close();
-        $error =  Register($firstname, $lastname, $username, $phone, $email, $password);
-    }
+    if ($result->num_rows > 0)
+        $error = 'Username già utilizzato';
+    else if ($resultE->num_rows > 0)
+        $error = 'Email già utilizzata';
+    else
+        $error =  Register($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['phone'], $_POST['email'], $_POST['password']);
 }
 ?>
 <!DOCTYPE html>
@@ -41,8 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Register - InfoService</title>
-    <script src="https://smtpjs.com/v3/smtp.js">
-    </script>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script src="../assets/js/script.js"></script>
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
@@ -52,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-    <?php include_once "../template/navbar.php" ?>
+    <?php include_once '../template/navbar.php' ?>
     <main class="page registration-page">
         <section class="clean-block clean-form dark">
             <div class="container">
@@ -73,11 +68,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </section>
     </main>
-    <?php include_once("../template/footer.php") ?>
+    <?php include_once '../template/footer.php' ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="../assets/js/script.min.js"></script>
 </body>
 
 </html>

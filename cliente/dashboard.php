@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once '../dal.php';
+Session();
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,11 +30,11 @@ include_once '../dal.php';
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-5 feature-box"><i class="icon-desktop icon" style="color: black;"></i>
-                        <h4><a href="ticket1.php">Apri un nuovo ticket</a></h4>
+                        <h4><a href="ticket.php">Apri un nuovo ticket</a></h4>
                         <p>Se hai qualche tipo di problema.</p>
                     </div>
                     <div class="col-md-5 feature-box"><i class="icon-cogs icon" style="color: black;"></i>
-                        <h4><a href="myticket1.php">Visualizza i tuoi ticket</a></h4>
+                        <h4><a href="myticket.php">Visualizza i tuoi ticket</a></h4>
                         <p>Controlla i ticket attivi.</p>
                     </div>
                     <div class="col-md-5 feature-box"><i class="icon-screen-smartphone icon" style="color: black;"></i>
@@ -52,7 +53,6 @@ include_once '../dal.php';
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="../assets/js/script.min.js"></script>
 </body>
 
 </html>

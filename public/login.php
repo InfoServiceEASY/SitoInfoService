@@ -1,10 +1,6 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
-include_once("../dal.php");
-$error = "";
-$conn = DataConnect();
+session_start();
+include_once '../dal.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['email'];
     $password = $_POST['password'];
@@ -18,9 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Login - InfoService</title>
-    <script src=
-    "https://smtpjs.com/v3/smtp.js">
-  </script>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script src="../assets/js/script.js"></script>
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
@@ -48,10 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </section>
     </main>
-    <?php include_once("../template/footer.php") ?>
+    <?php include_once '../template/footer.php' ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="../assets/js/script.min.js"></script>
 </body>
+
 </html>
