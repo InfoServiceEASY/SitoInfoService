@@ -4,6 +4,7 @@ include_once '../dal.php';
 $title = 'Lista interventi dipendente';
 $conn = DataConnect();
 include '../template/privatepage_params.php';
+Session();
 $stmt = $conn->prepare('SELECT t.id, t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t INNER JOIN settore s ON s.id=t.fk_settore AND t.id=?');
 $stmt->bind_param('i', $_GET["id"]);
 $stmt->execute();

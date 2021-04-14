@@ -325,14 +325,14 @@ function ShowProfile()
         $result = $result->fetch_assoc();
         $stmt->close();
         $conn->close();
-        $template .= '<form style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
-            '<div class="form-group"><label for="email">Cognome</label><input class="form-control item" name="cognome" type="text" value="' . $result['cognome'] . '" disabled></div>' .
-            '<div class="form-group"><label for="email">Cellulare</label><input class="form-control item" name="cellulare" type="text" value="' . $result['cellulare'] . '" disabled></div>' .
-            '<div class="form-group"><label for="email">Username</label><input class="form-control item" name="username" type="text" value="' . $result['username'] . '" disabled></div>' .
-            '<div class="form-group"><label for="email">Email</label><input class="form-control item" name="email" type="email" value="' . $result['email'] . '" disabled></div>' .
-            '<button class="btn btn-primary btn-block" type="submit">Modifica</button>' .
+        $template .= '<form style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item field" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Cognome</label><input   class="form-control item field" name="cognome" type="text" value="' . $result['cognome'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Cellulare</label><input id="field" class="form-control item field" name="cellulare" type="text" value="' . $result['cellulare'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Username</label><input class="form-control item field " name="username" type="text" value="' . $result['username'] . '" disabled></div>' .
+            '<div class="form-group"><label for="email">Email</label><input class="form-control item field" name="email" type="email" value="' . $result['email'] . '" disabled></div>' .
+            '<label><input type="checkbox" id="action" onclick="myFunction()"> Abilita modifica</label>' .
             '</form>' . '</div>';
         return array($result['nome'], $result['cognome'], $template);
-    }else
-    return 'C\'è stato un problema, riprova più tardi.';
+    } else
+        return 'C\'è stato un problema, riprova più tardi.';
 }
