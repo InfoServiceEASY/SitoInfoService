@@ -1,7 +1,4 @@
 <?php
-if (!isset($_SESSION)) {
-  session_start();
-}
 //variables
 $letterautente = strtoupper($_SESSION['utente'][0]);
 //i nomi delle pagine devono essere parametroarraynometesto.php
@@ -30,18 +27,10 @@ if ($_SESSION["member"] == "cliente") {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title> <?php echo $title; ?></title>
-
   <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-
-  <!--Bootstrap core CSS -->
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
   <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
-
-
-  <!-- Bootstrap core JavaScript -->
   <script src="../assets/js/jquery.min.js"></script>
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/script.js"></script>
@@ -49,30 +38,20 @@ if ($_SESSION["member"] == "cliente") {
 
 <body onload="menuacomparsa();">
   <div class="d-flex" id="wrapper">
-
-    <!-- Sidebar -->
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Infoservice </div>
       <div class="list-group list-group-flush" id="sidebar">
         <script>
           sidebar(<?php echo json_encode($sidebar_text); ?>, <?php echo '"' . $_SESSION['member'] . '"' ?>)
         </script>
-        <!-- <?php //include 'sidebar_1.php';
-              ?> -->
       </div>
     </div>
-    <!-- /#sidebar-wrapper -->
-
-    <!-- Page Content -->
     <div id="page-content-wrapper">
-
       <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <button class="btn btn-primary" id="menu-toggle">Menu</button>
-
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">

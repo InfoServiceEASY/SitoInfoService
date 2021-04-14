@@ -2,20 +2,21 @@
 include_once '../dal.php';
 if (isset($_GET["email"]) && isset($_GET["usr"])) {
     $conn = DataConnect();
-    //$email = $_GET["email"];
-    //$usr = $_GET["usr"];
-    $stmt = $conn->prepare('UPDATE utenza SET status=\'active\' WHERE email=? AND username=?');
-    $stmt->bind_param('ss', $_GET["email"], $_GET["usr"]);
+    $status = 1;
+    $stmt = $conn->prepare('UPDATE utenza SET status=? WHERE email=? AND username=?');
+    $stmt->bind_param('ss', $status, $_GET["email"], $_GET["usr"]);
     if ($stmt->execute() === true) {
+        $stmt->close();
+        $conn->close();
         $error = 'Bravo ti sei registrato con successo premi sul pulsante per accedere </p> </div>
         <form action="login.php">
             <button class="btn btn-primary btn-block" type="submit">Login</button>
         </form>';
     } else {
+        $stmt->close();
+        $conn->close();
         $error = 'Errore riprova</p> </div>';
     }
-} else {
-    echo "nulla";
 }
 ?>
 <!DOCTYPE html>

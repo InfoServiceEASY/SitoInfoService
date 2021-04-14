@@ -2,6 +2,9 @@
 session_start();
 include_once '../dal.php';
 Session();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $error = UpdateProfile($_POST['nome'], $_POST['cognome'], $_POST['cellulare'], $_POST['username'], $_POST['email']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -31,9 +34,7 @@ Session();
                     <p>Da qui puoi gestire le tue impostazioni</p>
                 </div>
                 <div>
-                    <div class="col-md-6">
-                        <?php echo ShowProfile()[2] ?>
-                    </div>
+                    <?php echo ShowProfile()[2] ?>
                 </div>
             </div>
         </section>
@@ -47,9 +48,9 @@ Session();
             var checkBox = document.getElementById("action");
             var text = document.getElementById("field");
             if (checkBox.checked == true) {
-                $('.field').prop('disabled',false);
+                $('.field').prop('disabled', false);
             } else {
-                $('.field').prop('disabled',true);
+                $('.field').prop('disabled', true);
             }
         }
     </script>

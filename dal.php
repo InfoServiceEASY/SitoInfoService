@@ -11,123 +11,6 @@ function DataConnect()
     return $conn;
 }
 
-function Login($usr, $pass)
-{
-    $errore = "";
-    $usr2 = $usr;
-    $conn = DataConnect();
-    $query = "SELECT * FROM utenza WHERE (email=? OR username=?) and status='active'";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('ss', $usr, $usr2);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        if (password_verify($pass, $row['password'])) {
-            $_SESSION['login'] = $usr;
-            $_SESSION['utente'] = $row['username'];
-            if ($row["IsAdmin"] && $row["IsDipendente"]) {
-                $_SESSION["member"] = "admin";
-                header("location:../private/DashBoard.php");
-            }
-            //else (!$row["IsDipendente"] ? $_SESSION["member"] = "cliente" : $_SESSION["member"] = "dipendente");
-            else if (!$row["IsDipendente"]) {
-                $_SESSION['member'] = 'cliente';
-                header("location:../cliente/dashboard.php");
-            } else {
-                $_SESSION['member'] = 'dipendente';
-                header("location:../private/DashBoard.php");
-            }
-            //header("location:../private/DashBoard.php");
-            exit();
-        } else
-            $errore = "Password non corrispondente";
-    } else
-        $errore = "Username o password non corrispondenti";
-    $conn->close();
-    return $errore;
-}
-
-function GetIDGivenUsername()
-{
-    $conn = DataConnect();
-    $query = "SELECT id FROM utenza WHERE username=?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('s', $_SESSION['utente']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row["id"];
-    } else {
-        $stmt->close();
-        return "error";
-    }
-}
-
-function GetNameGivenID()
-{
-    $conn = DataConnect();
-    $query = "SELECT nome FROM cliente INNER JOIN utenza ON cliente.fk_utenza = utenza.id AND utenza.username=?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('s', $_SESSION['utente']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row['nome'];
-    } else {
-        $stmt->close();
-        return "error";
-    }
-}
-
-function GetSectors()
-{
-    $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT nome FROM settore');
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $stmt->close();
-    $conn->close();
-    if ($result->num_rows > 0) {
-        $template = '';
-        foreach ($result as $x) {
-            $template .= '<option>' . $x['nome'] . '</option>';
-        }
-        return $template;
-    } else {
-        return "error";
-    }
-}
-
-function Register($firstname, $lastname, $username, $phone, $email, $password)
-{
-    $errore = "";
-    $conn = DataConnect();
-    $stato = "disabled";
-    $query = "INSERT INTO utenza (username,password,email,status) VALUES (?,?,?,?)";
-    $stmt = $conn->prepare($query);
-    $hash = password_hash($password, PASSWORD_DEFAULT);
-    $stmt->bind_param('ssss', $username, $hash, $email, $stato);
-
-    if ($stmt->execute() === true) {
-        $conn->close();
-        $conn = DataConnect();
-        $query = "INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('sss', $firstname, $lastname, $phone);
-        if ($stmt->execute() === true) {
-            $errore .= "<script>window.sendEmail('$email','$username')</script>";
-            $errore .= "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
-        } else
-            $errore .= $conn->error;
-    } else
-        $errore = "primo if";
-    $conn->close();
-    return $errore;
-}
-
 function Session()
 {
     if (!isset($_SESSION['login'])) {
@@ -136,10 +19,151 @@ function Session()
     }
 }
 
+function Login($usr, $pass)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT * FROM utenza WHERE (email=? OR username=?) AND status=true');
+    $stmt->bind_param('ss', $usr, $usr);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if (password_verify($pass, $row['password'])) {
+            $_SESSION['login'] = $usr;
+            $_SESSION['utente'] = $row['username'];
+            if ($row['IsAdmin'] && $row["IsDipendente"]) {
+                $_SESSION['member'] = "admin";
+                header("location:../private/DashBoard.php");
+            } else if (!$row["IsDipendente"]) {
+                $_SESSION['member'] = 'cliente';
+                header("location:../cliente/dashboard.php");
+            } else {
+                $_SESSION['member'] = 'dipendente';
+                header("location:../private/DashBoard.php");
+            }
+            $conn->close();
+            exit();
+        } else {
+            $conn->close();
+            return 'Password non corrispondente';
+        }
+    } else {
+        $conn->close();
+        return 'Username o password non corrispondenti';
+    }
+}
+
+function GetIDGivenUsername()
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT id FROM utenza WHERE username=?');
+    $stmt->bind_param('s', $_SESSION['utente']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['id'];
+    } else
+        return 'Errore';
+}
+
+function GetNameGivenID()
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT nome FROM cliente INNER JOIN utenza ON cliente.fk_utenza = utenza.id AND utenza.username=?');
+    $stmt->bind_param('s', $_SESSION['utente']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['nome'];
+    } else
+        return 'Errore';
+}
+
+function GetSectors()
+{
+    $conn = DataConnect();
+    $template = '';
+    $stmt = $conn->prepare('SELECT nome FROM settore');
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    if ($result->num_rows > 0) {
+        foreach ($result as $r) {
+            $template .= '<option>' . $r['nome'] . '</option>';
+        }
+        return $template;
+    } else {
+        return 'Errore';
+    }
+}
+
+function Register($firstname, $lastname, $username, $phone, $email, $password)
+{
+    $errore = "";
+    $conn = DataConnect();
+    $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
+    $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
+    if ($stmt->execute() === true) {
+        $stmt->close();
+        $conn->close();
+        $conn = DataConnect();
+        $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
+        $stmt->bind_param('sss', $firstname, $lastname, $phone);
+        if ($stmt->execute() === true) {
+            $stmt->close();
+            $conn->close();
+            $errore .= "<script>window.sendEmail('$email','$username')</script>";
+            $errore .= "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
+        } else {
+            $stmt->close();
+            $conn->close();
+            $errore .= $conn->error;
+        }
+    } else {
+        $stmt->close();
+        $conn->close();
+        $errore = "primo if";
+    }
+    return $errore;
+}
+
+function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
+{
+    $conn = DataConnect();
+    $id = GetIDGivenUsername();
+    $stmt = $conn->prepare('UPDATE cliente SET nome=?,cognome=?,cellulare=? WHERE fk_utenza=?');
+    $stmt->bind_param('sssi', $nome, $cognome, $cellulare, $id);
+    if ($stmt->execute() === true) {
+        $stmt->close();
+        $stmt = $conn->prepare('UPDATE utenza SET username=?,email=? WHERE id=?');
+        $stmt->bind_param('ssi', $username, $email, $id);
+        if ($stmt->execute() === true) {
+            $stmt->close();
+            $conn->close();
+        } else {
+            $stmt->close();
+            $conn->close();
+            return 'C\'è stato un problema riprova più tardi';
+        }
+    } else {
+        $stmt->close();
+        $conn->close();
+        return 'C\'è stato un problema riprova più tardi';
+    }
+}
+
 function Contact($firstname, $lastname, $phone, $email, $description)
 {
     $conn = DataConnect();
-    $stmt = $conn->prepare("INSERT INTO contatto (nome,cognome,cellulare,email,descrizione) VALUES (?,?,?,?,?)");
+    $stmt = $conn->prepare('INSERT INTO contatto (nome,cognome,cellulare,email,descrizione) VALUES (?,?,?,?,?)');
     $stmt->bind_param('sssss', $firstname, $lastname, $phone, $email, $description);
     if ($stmt->execute() === true) {
         $stmt->close();
@@ -157,9 +181,8 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
     $id = GetIDGivenUsername();
-    $data = date('Y-m-d H:i:s');
-    $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,?,?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('ssssis', $oggetto, $tipologia, $descrizione, $data, $id, $settore);
+    $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,Now(),?,(SELECT id FROM settore WHERE nome=?))');
+    $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, $id, $settore);
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
@@ -191,8 +214,11 @@ function ConvalidTicket($choice, $comment, $id)
                 $conn->close();
                 return 'C\'è stato un problema, riprova più tardi.';
             }
-        } else
+        } else {
+            $stmt->close();
+            $conn->close();
             return 'Report convalidato correttamente.';
+        }
     } else {
         $stmt->close();
         $conn->close();
@@ -251,7 +277,6 @@ function ShowReport()
     $contopen = 0;
     $contclose = 0;
     $contrefused = 0;
-
     $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
     $id = GetIDGivenUsername();
     $stmt->bind_param('i', $id);
@@ -261,7 +286,6 @@ function ShowReport()
     $conn->close();
     if ($result->num_rows > 0) {
         foreach ($result as $r) {
-
             if (is_null($r['isconvalidato']) && $r['attività'] != null) {
                 $contopen++;
                 $openedreport .= '<div class="col-md-4 feature-box">' .
@@ -300,7 +324,6 @@ function ShowReport()
             }
         }
     }
-
     if ($contopen == 0) {
         $openedreport .= '<h5>Non hai report da convalidare.</h5>';
     }
@@ -325,14 +348,18 @@ function ShowProfile()
         $result = $result->fetch_assoc();
         $stmt->close();
         $conn->close();
-        $template .= '<form style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item field" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
+        $template .= '<form action="" style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item field" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
             '<div class="form-group"><label for="email">Cognome</label><input   class="form-control item field" name="cognome" type="text" value="' . $result['cognome'] . '" disabled></div>' .
             '<div class="form-group"><label for="email">Cellulare</label><input id="field" class="form-control item field" name="cellulare" type="text" value="' . $result['cellulare'] . '" disabled></div>' .
             '<div class="form-group"><label for="email">Username</label><input class="form-control item field " name="username" type="text" value="' . $result['username'] . '" disabled></div>' .
             '<div class="form-group"><label for="email">Email</label><input class="form-control item field" name="email" type="email" value="' . $result['email'] . '" disabled></div>' .
             '<label><input type="checkbox" id="action" onclick="myFunction()"> Abilita modifica</label>' .
+            '<button class="btn btn-primary btn-block" type="submit" name="send">Conferma</button>' .
             '</form>' . '</div>';
         return array($result['nome'], $result['cognome'], $template);
-    } else
+    } else {
+        $stmt->close();
+        $conn->close();
         return 'C\'è stato un problema, riprova più tardi.';
+    }
 }

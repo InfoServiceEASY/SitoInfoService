@@ -20,7 +20,7 @@ Session();
 </head>
 
 <body>
-    <?php include_once "../template/private-nav.php" ?>
+    <?php include_once '../template/private-nav.php' ?>
     <main class="page faq-page">
         <section class="clean-block features">
             <div class="container">
@@ -30,7 +30,7 @@ Session();
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-md-5 feature-box"><i class="icon-desktop icon" style="color: black;"></i>
-                        <h4><a href="ticket.php">Apri un nuovo ticket</a></h4>
+                        <h4><a href="writeticket.php">Apri un nuovo ticket</a></h4>
                         <p>Se hai qualche tipo di problema.</p>
                     </div>
                     <div class="col-md-5 feature-box"><i class="icon-cogs icon" style="color: black;"></i>
@@ -49,7 +49,7 @@ Session();
             </div>
         </section>
     </main>
-    <?php include_once "../template/footer.php" ?>
+    <?php include_once '../template/footer.php' ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
