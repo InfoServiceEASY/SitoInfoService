@@ -1,5 +1,5 @@
 <?php
 session_start();
-include_once("../dal.php");
+include_once '../dal.php';
 Session();
 ?>

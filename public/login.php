@@ -2,9 +2,7 @@
 session_start();
 include_once '../dal.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['email'];
-    $password = $_POST['password'];
-    $error = Login($username, $password);
+    $error = Login($_POST['email'], $_POST['password']);
 }
 ?>
 <!DOCTYPE html>
@@ -24,13 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-    <?php include_once "../template/navbar.php" ?>
+    <?php include_once '../template/navbar.php' ?>
     <main class="page login-page">
         <section class="clean-block clean-form dark">
             <div class="container">
                 <div class="block-heading">
                     <h2 class="text">Log In</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quam urna, dignissim nec auctor in, mattis vitae leo.</p>
+                    <p>Inserisci le tue credenziali per iniziare.</p>
                 </div>
                 <form style="border-radius: 25px" method="POST">
                     <div class="form-group"><label for="email">Email o Username</label><input class="form-control item" name="email"></div>

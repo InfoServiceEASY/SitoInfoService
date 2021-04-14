@@ -1,27 +1,18 @@
 <?php
 include_once '../dal.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //$firstname = $_POST['firstname'];
-    //$lastname = $_POST['lastname'];
-    //$username = $_POST['username'];
-    //$phone = $_POST['phone'];
-    //$email = $_POST['email'];
-    //$password = $_POST['password'];
-
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
     $stmt->bind_param('s', $_POST['username']);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
-
     $stmt = $conn->prepare('SELECT * FROM utenza WHERE email=?');
     $stmt->bind_param('s', $email);
     $stmt->execute();
     $resultE = $stmt->get_result();
     $stmt->close();
     $conn->close();
-
     if ($result->num_rows > 0)
         $error = 'Username già utilizzato';
     else if ($resultE->num_rows > 0)

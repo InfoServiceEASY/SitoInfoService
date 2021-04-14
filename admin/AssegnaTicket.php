@@ -1,9 +1,10 @@
 <?php
 session_start();
 include_once '../dal.php';
+include_once '../template/privatepage_params.php';
+Session();
 $title = 'Lista interventi dipendente';
 $conn = DataConnect();
-include '../template/privatepage_params.php';
 $stmt = $conn->prepare('SELECT t.id, t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t INNER JOIN settore s ON s.id=t.fk_settore AND t.id=?');
 $stmt->bind_param('i', $_GET["id"]);
 $stmt->execute();
@@ -12,7 +13,7 @@ if ($result->num_rows > 0) $row = $result->fetch_assoc();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $conn = DataConnect();
-  $query = "INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza from dipendente where id=?),?)";
+  $query = "INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza FROM dipendente WHERE id=?),?)";
   $stmt = $conn->prepare($query);
   $stmt->bind_param('ii', $_POST['dipendenti'], $row['id']);
   if ($stmt->execute() === true) {
@@ -62,20 +63,19 @@ $conn->close();
         $variabile = $_GET["scelta"];
         $conn = DataConnect();
         if ($variabile == 1) {
-          $sql = "SELECT dipendente.id, concat(nome, ' ', cognome) as fullname  FROM k113bann4ponykr2.dipendente
-                inner join lavora on dipendente.fk_utenza=lavora.fk_dipendente
-                where lavora.fk_settore=(select id from settore where settore.nome= ? )";
+          $sql = "SELECT dipendente.id, concat(nome, ' ', cognome) AS fullname  FROM k113bann4ponykr2.dipendente
+                INNER JOIN lavora on dipendente.fk_utenza=lavora.fk_dipendente
+                WHERE lavora.fk_settore=(SELECT id FROM settore WHERE settore.nome= ? )";
           $stmt = $conn->prepare($sql);
           $stmt->bind_param('s', $row["nome"]);
         } else {
-          $sql = "SELECT id, concat(nome, ' ', cognome) as fullname  FROM k113bann4ponykr2.dipendente";
+          $sql = "SELECT id, concat(nome, ' ', cognome) AS fullname FROM k113bann4ponykr2.dipendente";
           $stmt = $conn->prepare($sql);
         }
         $stmt->execute();
         $result = $stmt->get_result();
         $dropdown = "<div class='form-group'><select class='custom-select' name='dipendenti'><option value=''>Select one</option>";
         if ($result->num_rows > 0) {
-
           while ($row = $result->fetch_assoc()) {
             $dropdown .= "<option value=" . $row['id'] . ">" . $row['fullname'] . "</option>";
           }

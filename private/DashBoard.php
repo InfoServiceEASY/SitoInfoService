@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("../dal.php");
+include_once '../dal.php';
 Session();
 
 $conn = DataConnect();
@@ -11,10 +11,10 @@ elseif ($_SESSION["member"] == "cliente") {
   $nomeColonna = "fk_cliente";
   $condizione = GetIDGivenUsername();
 }
-$query = "SELECT dataapertura , count(*) as count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and " . $nomeColonna . "=? group by dataapertura";
+$query = "SELECT dataapertura , count(*) AS count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and " . $nomeColonna . "=? group by dataapertura";
 
 if ($_SESSION["member"] == "dipendente") {
-  $sql = "SELECT t.dataapertura, count(*) as count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+  $sql = "SELECT t.dataapertura, count(*) AS count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
   WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
   $condizione = $_SESSION['utente'];
 }
@@ -32,7 +32,7 @@ foreach ($result as $row) {
   ));
 }
 $title = "Dashboard";
-include '../template/privatepage_params.php'; ?>
+include_once '../template/privatepage_params.php'; ?>
 <div class="containerone">
   <div class="containerr">
     <a>

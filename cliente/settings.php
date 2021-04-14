@@ -2,6 +2,9 @@
 session_start();
 include_once '../dal.php';
 Session();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $error = UpdateProfile($_POST['nome'], $_POST['cognome'], $_POST['cellulare'], $_POST['username'], $_POST['email']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -12,6 +15,7 @@ Session();
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Il mio profilo - InfoService</title>
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <script src="jquery-3.5.1.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,700,700i,600,600i">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
@@ -30,9 +34,7 @@ Session();
                     <p>Da qui puoi gestire le tue impostazioni</p>
                 </div>
                 <div>
-                    <div class="col-md-6">
-                        <?php echo ShowProfile()[2] ?>
-                    </div>
+                    <?php echo ShowProfile()[2] ?>
                 </div>
             </div>
         </section>
@@ -41,6 +43,17 @@ Session();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+    <script>
+        function myFunction() {
+            var checkBox = document.getElementById("action");
+            var text = document.getElementById("field");
+            if (checkBox.checked == true) {
+                $('.field').prop('disabled', false);
+            } else {
+                $('.field').prop('disabled', true);
+            }
+        }
+    </script>
 </body>
 
 </html>
