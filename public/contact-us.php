@@ -1,5 +1,5 @@
 <?php
-include_once("../dal.php");
+include_once '../dal.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = Contact($_POST['firstname'], $_POST['lastname'], $_POST['phone'], $_POST['email'], $_POST['description']);
 }
