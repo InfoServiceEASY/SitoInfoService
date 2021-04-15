@@ -1,24 +1,7 @@
 <?php
 include_once '../dal.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
-    $stmt->bind_param('s', $_POST['username']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $stmt->close();
-    $stmt = $conn->prepare('SELECT * FROM utenza WHERE email=?');
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $resultE = $stmt->get_result();
-    $stmt->close();
-    $conn->close();
-    if ($result->num_rows > 0)
-        $error = 'Username già utilizzato';
-    else if ($resultE->num_rows > 0)
-        $error = 'Email già utilizzata';
-    else
-        $error =  Register($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['phone'], $_POST['email'], $_POST['password']);
+    $error =  Register($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['phone'], $_POST['email'], $_POST['password']);
 }
 ?>
 <!DOCTYPE html>
@@ -44,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="block-heading">
                     <h2 class="text">Sign Up</h2>
-                    <p><?php echo $error ?></p>
+                    <p>Registrati per entrare a far parte di noi.</p>
                 </div>
                 <form style="border-radius: 25px" method="POST">
                     <div class="form-group"><label for="firstname">First Name</label><input class="form-control item" required type="text" name="firstname"></div>
@@ -52,10 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-group"><label for="username">Username</label><input class="form-control item" required type="text" name="username"></div>
                     <div class="form-group"><label for="phone">Phone Number</label><input class="form-control item" required type="text" name="phone"></div>
                     <div class="form-group"><label for="email">Email</label><input class="form-control item" required type="email" name="email"></div>
-                    <div class="form-group"><label for="password">Password</label><input class="form-control item" required type="password" name="password"></div><button class="btn btn-primary btn-block" type="submit">Sign Up</button>
+                    <div class="form-group"><label for="password">Password</label><input class="form-control item" required type="password" name="password"></div>
+                    <button class="btn btn-primary btn-block" type="submit">Sign Up</button>
+                    <div><?php echo $error ?> </div>
                 </form>
-
-
             </div>
         </section>
     </main>

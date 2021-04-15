@@ -1,4 +1,7 @@
 <?php
+
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 function DataConnect()
 {
     $servername = "lmc8ixkebgaq22lo.chr7pe7iynqr.eu-west-1.rds.amazonaws.com";
@@ -107,32 +110,47 @@ function GetSectors()
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
-    $errore = "";
     $conn = DataConnect();
-    $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
-    $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
-    if ($stmt->execute() === true) {
-        $stmt->close();
-        $conn->close();
-        $conn = DataConnect();
-        $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
-        $stmt->bind_param('sss', $firstname, $lastname, $phone);
+    $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
+    $stmt->bind_param('s', $username);
+    $stmt->execute();
+    $resultU = $stmt->get_result();
+    $stmt->close();
+    $stmt = $conn->prepare('SELECT * FROM utenza WHERE email=?');
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $resultE = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    if ($resultU->num_rows > 0)
+        return 'Username già utilizzato';
+    else if ($resultE->num_rows > 0)
+        return 'Email già utilizzata';
+    else {
+        $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
+        $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
         if ($stmt->execute() === true) {
             $stmt->close();
             $conn->close();
-            $errore .= "<script>window.sendEmail('$email','$username')</script>";
-            $errore .= "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
+            $conn = DataConnect();
+            $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
+            $stmt->bind_param('sss', $firstname, $lastname, $phone);
+            if ($stmt->execute() === true) {
+                $stmt->close();
+                $conn->close();
+                return "<script>window.sendEmail('$email','$username')</script>" .
+                    "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
+            } else {
+                $stmt->close();
+                $conn->close();
+                return 'C\'è stato un problema riprova più tardi';
+            }
         } else {
             $stmt->close();
             $conn->close();
-            $errore .= $conn->error;
+            return 'C\'è stato un problema riprova più tardi';
         }
-    } else {
-        $stmt->close();
-        $conn->close();
-        $errore = "primo if";
     }
-    return $errore;
 }
 
 function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
