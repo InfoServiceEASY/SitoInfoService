@@ -127,6 +127,7 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
     else if ($resultE->num_rows > 0)
         return 'Email già utilizzata';
     else {
+        $conn = DataConnect();
         $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
         $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
         if ($stmt->execute() === true) {
