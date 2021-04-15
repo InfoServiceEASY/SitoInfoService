@@ -6,24 +6,24 @@ include '../template/privatepage_params.php'; ?>
 <h1 class="mt-4">I tuoi report</h1>
 <?php
 $id = $_GET['Id'];
+$fk_dipendente = GetIDGivenUsername();
 $conn = DataConnect();
-if(!isset($_GET["Cancella"])){
+if (!isset($_GET["Cancella"])) {
   $sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, report.commento FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
-  WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?) and ticket.id=?";
+  WHERE ticket.isaperto = 1 AND report.fk_dipendente = ? and ticket.id=?";
   $sth = $conn->prepare($sql);
-  $sth->bind_param('si', $_SESSION['utente'],$id);
+  $sth->bind_param('si', $fk_dipendente, $id);
   $sth->execute();
-  $data = $sth -> get_result();
-  if($data != null) {
+  $data = $sth->get_result();
+  if ($data != null) {
     $contents = PreparaTesti($data);
-    PrintSolutions($contents[0], $contents[1], $contents[2], $id);
+    PrintSolutions($conn, $contents[0], $contents[1], $contents[2], $id);
   }
-}
-else{
+} else {
   $id_report = $_GET['ReportId'];
   $sql = "UPDATE report set datainizio=null,datafine=null,durata=null,attività=null,isrisolto=null where id=? and commento=null";
-  $sth = $conn -> prepare($sql);
-  $sth->bind_param('i',$_GET["ReportId"]);
+  $sth = $conn->prepare($sql);
+  $sth->bind_param('i', $_GET["ReportId"]);
   $sth->execute();
 }
 
@@ -33,26 +33,37 @@ function PreparaTesti($data)
   $testi = array();
   $ids = array();
   foreach ($data as $d) {
-    array_push($titoli, "Report n." . $d['id'] ." \n relativo all'intervento n." . $_GET['Id'] . "\n con data di inizio il " . $d['datainizio']. " \n e con fine il ".$d['datafine']. ".");
-    array_push($testi, $d['descrizione'] . "\n" . $d['isrisolto'] == 1? "Risolto":"Non risolto." . "</br>\n Commento cliente: " . ($d['commento'] == null? "non pervenuto": $d['commento']));
-    array_push($ids, $d['id']);
+    array_push($titoli, "Report n." . $d['id'] . " \n relativo all'intervento n." . $_GET['Id'] . "\n con data di inizio il " . $d['datainizio'] . " \n e con fine il " . $d['datafine'] . ".");
+    array_push($testi, $d['descrizione'] . "\n" . $d['isrisolto'] == 1 ? "Risolto" : "Non risolto." . "</br>\n Commento cliente: " . ($d['commento'] == null ? "non pervenuto" : $d['commento']));
+    array_push($ids, $d["id"]);
   }
   return array($titoli, $testi, $ids);
 }
-function PrintSolutions($titoli, $testi, $ids, $id)
+function IsMine($conn, $id_report)
+{
+  $sql = "SELECT fk_dipendente FROM report WHERE id = ?";
+  $sth = $conn->prepare($sql);
+  $sth->bind_param('i', $id_report);
+  $sth->execute();
+  $fk_dipendente = $sth->get_result();
+  $sth->close();
+  $fk_dipendente = $fk_dipendente->fetch_assoc();
+  return $fk_dipendente["fk_dipendente"] == GetIDGivenUsername();
+}
+function PrintSolutions($conn, $titoli, $testi, $ids, $id)
 {
   for ($i = 0; $i < count($titoli); $i++) {
     $href = "writereport.php?Id=$id&ReportId=$ids[$i]";
     $href2 = "measures.php?Id=$id&ReportId=$ids[$i]&Cancella=yes";
-    if($i % 3 == 0) echo "<div class='containerone'>";
+    if ($i % 3 == 0) echo "<div class='containerone' style='float:left'>";
     $template = "
         <div class='container'>
         <a><p>$titoli[$i]</p></a>
         <a>$testi[$i]</a>
-        </br>
-        <a href='$href2'> Cancella questo report</a>
-        </br>
-        <a href='$href'> Modifica il report sull'attività</a>
+        </br>";
+        $template = (IsMine($conn, $ids[$i])? ($template . "<a href='$href2'> Cancella questo report</a>
+        </br>") :  $template);
+        $template = $template . "<a href='$href'> Modifica il report sull'attività</a>
         </div>";
     echo $template;
     if ($i % 3 == 2) echo " </div>";
@@ -76,7 +87,7 @@ function PrintSolutions($titoli, $testi, $ids, $id)
 <br>
 <form>
 
- 
+
 </form>
 
 <!-- /#page-content-wrapper -->
@@ -86,4 +97,3 @@ function PrintSolutions($titoli, $testi, $ids, $id)
 
 
 </html>
-
