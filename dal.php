@@ -253,7 +253,7 @@ function ShowTicket()
     $contopen = 0;
     $contclose = 0;
     $id = GetIDGivenUsername();
-    $stmt = $conn->prepare('SELECT oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
+    $stmt = $conn->prepare('SELECT id,oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -267,6 +267,8 @@ function ShowTicket()
                 '<p>' . $r['tipologia'] . '</p>' .
                 '<p>' . $r['descrizione'] . '</p>' .
                 '<p>' . $r['dataapertura'] . '</p>' .
+                '<input type="hidden" name="id" value="' . $r['id'] . '"/>' .
+                '<a href="details.php?id=' . $r['id'] . '">Visualizza più dettagli</a>' .
                 '</div>';
         } else if ($r['isaperto'] == false) {
             $contclose++;
@@ -317,7 +319,7 @@ function ShowReport()
                     '<div class="form-group">
                     <label for="Commento">Commento</label>
                     <textarea class="form-control" name="commento" required></textarea>' .
-                    '<input type="hidden" name="id" value="' . $r['id'] . '" />' .
+                    '<input type="hidden" name="id" value="' . $r['id'] . '"/>' .
                     '<button class="btn btn-primary btn-block" type="submit" name="yes">Sono d\'accordo</button>' .
                     '<button class="btn btn-primary btn-block" type="submit" name="no">Non sono d\'accordo</button>' .
                     '</div>' .
@@ -331,7 +333,7 @@ function ShowReport()
                     '<p>' . $r['attività'] . '</p>' .
                     '<p>' . $r['commento'] . '</p>' .
                     '</div>';
-            } else if ($r['isconvalidato'] == 0 || $r['isrisolto'] == 0) {
+            } else if ($r['isconvalidato'] === 0 || $r['isrisolto'] === 0) {
                 $contrefused++;
                 $refusedreport .= '<div class="col-md-4 feature-box">' .
                     '<h4>' . $r['oggetto'] . '</h4>' .
@@ -362,7 +364,7 @@ function ShowProfile()
     $stmt = $conn->prepare('SELECT c.nome,c.cognome,c.cellulare,u.username,u.email FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.id=?');
     $id = GetIDGivenUsername();
     $stmt->bind_param('i', $id);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute() == true) {
         $result = $stmt->get_result();
         $result = $result->fetch_assoc();
         $stmt->close();
@@ -376,6 +378,47 @@ function ShowProfile()
             '<button class="btn btn-primary btn-block" type="submit" name="send">Conferma</button>' .
             '</form>' . '</div>';
         return array($result['nome'], $result['cognome'], $template);
+    } else {
+        $stmt->close();
+        $conn->close();
+        return 'C\'è stato un problema, riprova più tardi.';
+    }
+}
+
+function ShowDetails($id)
+{
+    $conn = DataConnect();
+    $template = '<div class="row justify-content-center">';
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.datainizio,r.datafine,r.isrisolto,r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
+    $stmt->bind_param('i', $id);
+    if ($stmt->execute() == true) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $stmt->close();
+            $conn->close();
+            if (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
+            if (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
+            if (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
+            if ($result['isrisolto'] == 0 ? $status = 'Non ancora risolto' : $status = 'Risolto');
+            if (is_null($result['commento']) ? $comment = 'Non hai ancora <a href="report.php">commentato</a>' : $comment = $result['commento']);
+            $template .= '<div class="col-md-4 feature-box">' .
+                '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Tipologia:<h5>' . $result['tipologia'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Descrizione:<h5>' . $result['descrizione'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Data inzio risoluzione:<h5>' . $startdate . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Data fine risoluzione:<h5>' . $endate . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Attività:<h5>' . $activity . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Stato ticket:<h5>' . $status . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Commento:<h5>' . $comment . '</h5></label></br>' .
+                '</div></div>';
+            return $template;
+        } else {
+            $stmt->close();
+            $conn->close();
+            return 'Non c\'è nulla da visualizzare per questo ticket.';
+        }
     } else {
         $stmt->close();
         $conn->close();
