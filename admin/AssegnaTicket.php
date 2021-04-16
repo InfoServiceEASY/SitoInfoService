@@ -97,6 +97,7 @@ $conn->close();
 
             </div>
           </div>
+          </div>
           <script type="text/javascript">
             $(document).ready(function() {
               $("#btnShowModal").click(function() {

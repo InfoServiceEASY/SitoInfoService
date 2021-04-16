@@ -32,8 +32,8 @@ if ($_SESSION["member"] == "cliente") {
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
   <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
   <script src="../assets/js/jquery.min.js"></script>
-  <script src="../assets/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/script.js"></script>
+ <script src="../assets/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/script.js"></script>
 </head>
 
 <body onload="menuacomparsa();">

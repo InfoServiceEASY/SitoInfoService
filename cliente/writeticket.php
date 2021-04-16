@@ -4,6 +4,10 @@ include_once '../dal.php';
 Session();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = WriteTicket($_POST['oggetto'], $_POST['tipologia'], $_POST['settore'], $_POST['descrizione']);
+    echo ("<script LANGUAGE='JavaScript'>
+    window.alert('" . $error . "');
+    window.location.href='dashboard.php';
+    </script>");
 }
 ?>
 <!DOCTYPE html>
@@ -20,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="../assets/css/styles.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 </head>
 
 <body>
@@ -34,11 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <form style="border-radius: 25px" method="POST">
                     <div class="form-group">
                         <label for="exampleFormControlInput1">Oggetto</label>
-                        <input class="form-control item" type="text" name="oggetto">
+                        <input class="form-control item" type="text" name="oggetto" required>
                     </div>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Tipologia</label>
-                        <select class="form-control" id="exampleFormControlSelect1" name="tipologia">
+                        <select class="form-control" id="exampleFormControlSelect1" name="tipologia" required>
                             <option>--</option>
                             <option>Domanda</option>
                             <option>Incidente</option>
@@ -48,27 +53,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Settore</label>
-                        <select class="form-control" id="exampleFormControlSelect1" name="settore">
+                        <select class="form-control" id="exampleFormControlSelect1" name="settore" required>
                             <option>--</option>
                             <?php echo GetSectors() ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Descrizione</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="descrizione"></textarea>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="descrizione" required></textarea>
                     </div>
                     <div>
                         <button id="btnShowModal" class="btn btn-primary btn-block" type="submit">Conferma</button>
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel"><?php echo $error;?></h5>
-                                        <button id="btnClose" type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -79,16 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
     <script src="../assets/js/script.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("#btnShowModal").click(function() {
-                $("#exampleModal").modal("show");
-            });
-            $("#btnClose").click(function() {
-                $("#exampleModal").modal("toggle");
-            });
-        });
-    </script>
+
 </body>
 
 </html>
