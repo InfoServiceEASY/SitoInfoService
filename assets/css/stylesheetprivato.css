@@ -52,9 +52,7 @@
     height: 300px;
 }
 
-
-/*
-div.container {
+div.contenitore {
     flex: 1;
     border-radius: 25px;
     border: 2px solid white;
@@ -62,10 +60,9 @@ div.container {
     margin-top: 10px;
 }
 
-.container:hover {
+.contenitore:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
 }
-*/
 
 .col-md-4:hover {
     border-radius: 25px;

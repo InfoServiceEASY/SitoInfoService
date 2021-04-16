@@ -59,7 +59,7 @@ function Login($username, $password)
 function GetUser()
 {
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT u.id,c.nome FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.username=?');
+    $stmt = $conn->prepare('SELECT u.id,c.nome FROM '.$_SESSION["member"].' c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.username=?');
     $stmt->bind_param('s', $_SESSION['utente']);
     $stmt->execute();
     $result = $stmt->get_result();

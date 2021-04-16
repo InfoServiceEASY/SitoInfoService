@@ -3,16 +3,17 @@ session_start();
 include('../dal.php');
 $title = 'Lista report compilati dal dipendente';
 include '../template/privatepage_params.php'; ?>
-<h1 class="mt-4">I tuoi report</h1>
+<h1 class="mt-4">I reports</h1>
 <?php
 $id = $_GET['Id'];
-$fk_dipendente = GetIDGivenUsername();
+$fk_dipendente = GetUser()[0];
 $conn = DataConnect();
 if (!isset($_GET["Cancella"])) {
-  $sql = "SELECT report.id, report.datainizio, report.datafine, report.isrisolto,ticket.descrizione, report.commento FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
-  WHERE ticket.isaperto = 1 AND report.fk_dipendente = ? and ticket.id=?";
+ /* $sql = "SELECT r.id, r.datainizio, r.datafine, r.isrisolto,t.descrizione, r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+  WHERE t.isaperto = 1 AND r.fk_dipendente = ? and t.id=?";*/ 
+  $sql="SELECT r.id, r.datainizio, r.datafine, r.isrisolto,t.descrizione, r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket and t.id=?";
   $sth = $conn->prepare($sql);
-  $sth->bind_param('si', $fk_dipendente, $id);
+  $sth->bind_param('i',$id);
   $sth->execute();
   $data = $sth->get_result();
   if ($data != null) {
@@ -48,7 +49,7 @@ function IsMine($conn, $id_report)
   $fk_dipendente = $sth->get_result();
   $sth->close();
   $fk_dipendente = $fk_dipendente->fetch_assoc();
-  return $fk_dipendente["fk_dipendente"] == GetIDGivenUsername();
+  return $fk_dipendente["fk_dipendente"] == GetUser()[0];
 }
 function PrintSolutions($conn, $titoli, $testi, $ids, $id)
 {
