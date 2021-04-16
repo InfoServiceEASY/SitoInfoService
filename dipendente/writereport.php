@@ -3,7 +3,7 @@ session_start();
 include_once("../dal.php");
 Session();
 
-$title = "Scrivi nuovo report";
+$title = "Scrivi nuovo report";// titolo schifoso
 include '../template/privatepage_params.php';
 
 $id = $_GET['Id'];
@@ -11,7 +11,7 @@ $id = $_GET['Id'];
     $descrizione = $_POST["Descrizione"];
     $durata=$_POST["Tempo"];
     $isrisolto = $_POST["IsRisolto"] == "Sì"? 1:0;
-    $fk_utente = GetIDGivenUsername();
+    $fk_utente = GetUser()[0];
     InsertReport($durata,$descrizione, $isrisolto, $id, $fk_utente);
   }
 
