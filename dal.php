@@ -110,6 +110,7 @@ function GetSectors()
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
+    $esito = "";
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
     $stmt->bind_param('s', $username);
@@ -123,9 +124,9 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
     $stmt->close();
     $conn->close();
     if ($resultU->num_rows > 0)
-        return 'Username già utilizzato';
+        $esito = 'Username già utilizzato';
     else if ($resultE->num_rows > 0)
-        return 'Email già utilizzata';
+        $esito = 'Email già utilizzata';
     else {
         $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
         $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
@@ -136,26 +137,23 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
             $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
             $stmt->bind_param('sss', $firstname, $lastname, $phone);
             if ($stmt->execute() === true) {
-                $stmt->close();
-                $conn->close();
-                return "<script>window.sendEmail('$email','$username')</script>" .
+                $esito = "<script>window.sendEmail('$email','$username')</script>" .
                     "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
-            } else {
-                $stmt->close();
-                $conn->close();
-                return 'C\'è stato un problema riprova più tardi';
-            }
-        } else {
-            $stmt->close();
-            $conn->close();
-            return 'C\'è stato un problema riprova più tardi';
-        }
+            } else
+                $esito = 'C\'è stato un problema riprova più tardi';
+        } else
+            $esito = 'C\'è stato un problema riprova più tardi';
+
+        $stmt->close();
+        $conn->close();
+        return $esito;
     }
 }
 
 function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
 {
     $conn = DataConnect();
+    $esito = "";
     $id = GetIDGivenUsername();
     $stmt = $conn->prepare('UPDATE cliente SET nome=?,cognome=?,cellulare=? WHERE fk_utenza=?');
     $stmt->bind_param('sssi', $nome, $cognome, $cellulare, $id);
@@ -163,19 +161,16 @@ function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
         $stmt->close();
         $stmt = $conn->prepare('UPDATE utenza SET username=?,email=? WHERE id=?');
         $stmt->bind_param('ssi', $username, $email, $id);
-        if ($stmt->execute() === true) {
-            $stmt->close();
-            $conn->close();
-        } else {
-            $stmt->close();
-            $conn->close();
-            return 'C\'è stato un problema riprova più tardi';
-        }
-    } else {
-        $stmt->close();
-        $conn->close();
-        return 'C\'è stato un problema riprova più tardi';
-    }
+        if ($stmt->execute() === true)
+            $esito = '';
+        else
+            $esito = 'C\'è stato un problema riprova più tardi';
+    } else
+        $esito = 'C\'è stato un problema riprova più tardi';
+
+    $stmt->close();
+    $conn->close();
+    return $esito;
 }
 
 function Contact($firstname, $lastname, $phone, $email, $description)
@@ -198,23 +193,24 @@ function Contact($firstname, $lastname, $phone, $email, $description)
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
+    $esito = "";
     $id = GetIDGivenUsername();
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,Now(),?,(SELECT id FROM settore WHERE nome=?))');
     $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, $id, $settore);
-    if ($stmt->execute() === true) {
-        $stmt->close();
-        $conn->close();
-        return 'Ticket creato con successo.';
-    } else {
-        $stmt->close();
-        $conn->close();
-        return 'C\'è stato un problema, riprova più tardi';
-    }
+    if ($stmt->execute() === true)
+        $esito = 'Ticket creato con successo.';
+    else
+        $esito = 'C\'è stato un problema, riprova più tardi';
+
+    $stmt->close();
+    $conn->close();
+    return $esito;
 }
 
 function ConvalidTicket($choice, $comment, $id)
 {
     $conn = DataConnect();
+    $esito = "";
     $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
     $stmt->bind_param('sssi', $choice, $comment, $choice, $id);
     if ($stmt->execute() === true) {
@@ -223,25 +219,18 @@ function ConvalidTicket($choice, $comment, $id)
             $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
             $cond = 0;
             $stmt->bind_param('ii', $cond, $id);
-            if ($stmt->execute() === true) {
-                $stmt->close();
-                $conn->close();
-                return 'Report convalidato correttamente.';
-            } else {
-                $stmt->close();
-                $conn->close();
-                return 'C\'è stato un problema, riprova più tardi.';
-            }
-        } else {
-            $stmt->close();
-            $conn->close();
-            return 'Report convalidato correttamente.';
-        }
-    } else {
-        $stmt->close();
-        $conn->close();
-        return 'C\'è stato un problema, riprova più tardi.';
-    }
+            if ($stmt->execute() === true)
+                $esito = 'Report convalidato correttamente.';
+            else
+                $esito = 'C\'è stato un problema, riprova più tardi.';
+        } else
+            $esito = 'Report convalidato correttamente.';
+    } else
+        $esito = 'C\'è stato un problema, riprova più tardi.';
+
+    $stmt->close();
+    $conn->close();
+    return $esito;
 }
 
 function ShowTicket()
