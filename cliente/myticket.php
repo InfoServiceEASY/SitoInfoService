@@ -2,6 +2,7 @@
 session_start();
 include_once '../dal.php';
 Session();
+$ticket = ShowTicket();
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,6 +18,7 @@ Session();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="../assets/css/styles.min.css">
+    <link rel="stylesheet" href="../assets/css/stylesheetprivato.css">
 </head>
 
 <body>
@@ -28,9 +30,9 @@ Session();
                     <h2 class="text">I tuoi ticket</h2>
                 </div>
                 <h3>Ticket aperti</h3>
-                <?php echo ShowTicket()[0] ?>
+                <?php echo $ticket[0] ?>
                 <h3>Ticket chiusi</h3>
-                <?php echo ShowTicket()[1] ?>
+                <?php echo $ticket[1] ?>
             </div>
         </section>
     </main>
@@ -38,7 +40,6 @@ Session();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-    <script src="../assets/js/script.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $("#btnShowModal").click(function() {

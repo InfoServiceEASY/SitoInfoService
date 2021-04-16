@@ -22,18 +22,20 @@ function Session()
     }
 }
 
-function Login($usr, $pass)
+function Login($username, $password)
 {
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT * FROM utenza WHERE (email=? OR username=?) AND status=true');
-    $stmt->bind_param('ss', $usr, $usr);
+    $error = '';
+    $stmt = $conn->prepare('SELECT * FROM utenza WHERE (email=? OR username=?) AND status=1');
+    $stmt->bind_param('ss', $username, $username);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
+    $conn->close();
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        if (password_verify($pass, $row['password'])) {
-            $_SESSION['login'] = $usr;
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['login'] = $username;
             $_SESSION['utente'] = $row['username'];
             if ($row['IsAdmin'] && $row["IsDipendente"]) {
                 $_SESSION['member'] = "admin";
@@ -47,36 +49,17 @@ function Login($usr, $pass)
             }
             $conn->close();
             exit();
-        } else {
-            $conn->close();
-            return 'Password non corrispondente';
-        }
-    } else {
-        $conn->close();
-        return 'Username o password non corrispondenti';
-    }
-}
-
-function GetIDGivenUsername()
-{
-    $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT id FROM utenza WHERE username=?');
-    $stmt->bind_param('s', $_SESSION['utente']);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $stmt->close();
-    $conn->close();
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        return $row['id'];
+        } else
+            $error = 'Password non corrispondente';
     } else
-        return 'Errore';
+        $error = 'Username o password non corrispondenti';
+    return $error;
 }
 
-function GetNameGivenID()
+function GetUser()
 {
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT nome FROM cliente INNER JOIN utenza ON cliente.fk_utenza = utenza.id AND utenza.username=?');
+    $stmt = $conn->prepare('SELECT u.id,c.nome FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.username=?');
     $stmt->bind_param('s', $_SESSION['utente']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -84,7 +67,7 @@ function GetNameGivenID()
     $conn->close();
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        return $row['nome'];
+        return array($row['id'], $row['nome']);
     } else
         return 'Errore';
 }
@@ -102,15 +85,14 @@ function GetSectors()
         foreach ($result as $r) {
             $template .= '<option>' . $r['nome'] . '</option>';
         }
-        return $template;
-    } else {
-        return 'Errore';
-    }
+    } else
+        $template = 'Errore';
+    return $template;
 }
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
-    $esito = "";
+    $esito = '';
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
     $stmt->bind_param('s', $username);
@@ -131,13 +113,13 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
         $conn = DataConnect();
         $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
         $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
-        if ($stmt->execute() === true) {
+        if ($stmt->execute()) {
             $stmt->close();
             $conn->close();
             $conn = DataConnect();
             $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
             $stmt->bind_param('sss', $firstname, $lastname, $phone);
-            if ($stmt->execute() === true) {
+            if ($stmt->execute()) {
                 $esito = "<script>window.sendEmail('$email','$username')</script>" .
                     "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
             } else
@@ -154,15 +136,14 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
 function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
 {
     $conn = DataConnect();
-    $esito = "";
-    $id = GetIDGivenUsername();
+    $esito = '';
     $stmt = $conn->prepare('UPDATE cliente SET nome=?,cognome=?,cellulare=? WHERE fk_utenza=?');
-    $stmt->bind_param('sssi', $nome, $cognome, $cellulare, $id);
+    $stmt->bind_param('sssi', $nome, $cognome, $cellulare, GetUser()[0]);
     if ($stmt->execute() === true) {
         $stmt->close();
         $stmt = $conn->prepare('UPDATE utenza SET username=?,email=? WHERE id=?');
         $stmt->bind_param('ssi', $username, $email, $id);
-        if ($stmt->execute() === true)
+        if ($stmt->execute())
             $esito = '';
         else
             $esito = 'C\'è stato un problema riprova più tardi';
@@ -179,7 +160,7 @@ function Contact($firstname, $lastname, $phone, $email, $description)
     $conn = DataConnect();
     $stmt = $conn->prepare('INSERT INTO contatto (nome,cognome,cellulare,email,descrizione) VALUES (?,?,?,?,?)');
     $stmt->bind_param('sssss', $firstname, $lastname, $phone, $email, $description);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
         header("location:index.php");
@@ -194,11 +175,10 @@ function Contact($firstname, $lastname, $phone, $email, $description)
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
-    $esito = "";
-    $id = GetIDGivenUsername();
+    $esito = '';
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,Now(),?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, $id, $settore);
-    if ($stmt->execute() === true)
+    $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, GetUser()[1], $settore);
+    if ($stmt->execute())
         $esito = 'Ticket creato con successo.';
     else
         $esito = 'C\'è stato un problema, riprova più tardi';
@@ -211,16 +191,16 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 function ConvalidTicket($choice, $comment, $id)
 {
     $conn = DataConnect();
-    $esito = "";
+    $esito = '';
     $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
     $stmt->bind_param('sssi', $choice, $comment, $choice, $id);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $stmt->close();
         if ($choice == true) {
             $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
             $cond = 0;
             $stmt->bind_param('ii', $cond, $id);
-            if ($stmt->execute() === true)
+            if ($stmt->execute())
                 $esito = 'Report convalidato correttamente.';
             else
                 $esito = 'C\'è stato un problema, riprova più tardi.';
@@ -241,31 +221,35 @@ function ShowTicket()
     $closedticket = '<div class="row justify-content-center">';
     $contopen = 0;
     $contclose = 0;
-    $id = GetIDGivenUsername();
     $stmt = $conn->prepare('SELECT id,oggetto,tipologia,descrizione,dataapertura,isaperto FROM ticket WHERE fk_cliente=?');
-    $stmt->bind_param('i', $id);
+    $stmt->bind_param('i', GetUser()[0]);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
     $conn->close();
     foreach ($result as $r) {
-        if ($r['isaperto'] == true) {
+        (strlen($r['descrizione']) > 20 ? $descrizione = substr($r['descrizione'], 0, 20) . "..." : $descrizione = $r['descrizione']);
+        if ($r['isaperto'] == 1) {
             $contopen++;
             $openedticket .= '<div class="col-md-4 feature-box">' .
-                '<h4>' . $r['oggetto'] . '</h4>' .
-                '<p>' . $r['tipologia'] . '</p>' .
-                '<p>' . $r['descrizione'] . '</p>' .
-                '<p>' . $r['dataapertura'] . '</p>' .
+                '<label style="font-weight: bold;">Ticket numero:<h5>' . $r['id'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Oggetto:<h5>' . $r['oggetto'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Tipologia:<h5>' . $r['tipologia'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Descrizione:<h5>' . $descrizione . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Data apertura:<h5>' . $r['dataapertura'] . '</h5></label></br>' .
                 '<input type="hidden" name="id" value="' . $r['id'] . '"/>' .
-                '<a href="details.php?id=' . $r['id'] . '">Visualizza più dettagli</a>' .
+                '<a href="details.php?id=' . $r['id'] . '&page=ticket">Visualizza più dettagli</a>' .
                 '</div>';
-        } else if ($r['isaperto'] == false) {
+        } else if ($r['isaperto'] === 0) {
             $contclose++;
             $closedticket .= '<div class="col-md-4 feature-box">' .
-                '<h4>' . $r['oggetto'] . '</h4>' .
-                '<p>' . $r['tipologia'] . '</p>' .
-                '<p>' . $r['descrizione'] . '</p>' .
-                '<p>' . $r['dataapertura'] . '</p>' .
+                '<label style="font-weight: bold;">Ticket numero:<h5>' . $r['id'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Oggetto:<h5>' . $r['oggetto'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Tipologia:<h5>' . $r['tipologia'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Descrizione:<h5>' . $descrizione . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Data apertura:<h5>' . $r['dataapertura'] . '</h5></label></br>' .
+                '<input type="hidden" name="id" value="' . $r['id'] . '"/>' .
+                '<a href="details.php?id=' . $r['id'] . '&page=ticket">Visualizza più dettagli</a>' .
                 '</div>';
         }
     }
@@ -288,39 +272,33 @@ function ShowReport()
     $contclose = 0;
     $contrefused = 0;
     $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.isconvalidato,r.isrisolto,r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket WHERE t.fk_cliente=?');
-    $id = GetIDGivenUsername();
-    $stmt->bind_param('i', $id);
+    $stmt->bind_param('i', GetUser()[0]);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
     $conn->close();
     if ($result->num_rows > 0) {
         foreach ($result as $r) {
+            (strlen($r['descrizione']) > 20 ? $descrizione = substr($r['descrizione'], 0, 20) . "..." : $descrizione = $r['descrizione']);
             if (is_null($r['isconvalidato']) && $r['attività'] != null) {
                 $contopen++;
                 $openedreport .= '<div class="col-md-4 feature-box">' .
-                    '<h4>Ticket numero: ' . $r['id'] . '</h4>' .
-                    '<h4>' . $r['oggetto'] . '</h4>' .
-                    '<p>' . $r['tipologia'] . '</p>' .
-                    '<p>' . $r['descrizione'] . '</p>' .
-                    '<p>' . $r['attività'] . '</p>' .
-                    '<form action="" method="POST"' .
-                    '<div class="form-group">
-                    <label for="Commento">Commento</label>
-                    <textarea class="form-control" name="commento" required></textarea>' .
+                    '<label style="font-weight: bold;">Ticket numero:<h5>' . $r['id'] . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Oggetto:<h5>' . $r['oggetto'] . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Tipologia:<h5>' . $r['tipologia'] . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Descrizione:<h5>' . $descrizione . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Attività:<h5>' . $r['attività'] . '</h5></label></br>' .
                     '<input type="hidden" name="id" value="' . $r['id'] . '"/>' .
-                    '<button class="btn btn-primary btn-block" type="submit" name="yes">Sono d\'accordo</button>' .
-                    '<button class="btn btn-primary btn-block" type="submit" name="no">Non sono d\'accordo</button>' .
-                    '</div>' .
-                    '</form>';
+                    '<a href="details.php?id=' . $r['id'] . '&page=report">Convalida report</a>' .
+                    '</div>';
             } else if ($r['isconvalidato'] == 1 && $r['isrisolto'] == 1) {
                 $contclose++;
                 $closedreport .= '<div class="col-md-4 feature-box">' .
-                    '<h4>' . $r['oggetto'] . '</h4>' .
-                    '<p>' . $r['tipologia'] . '</p>' .
-                    '<p>' . $r['descrizione'] . '</p>' .
-                    '<p>' . $r['attività'] . '</p>' .
-                    '<p>' . $r['commento'] . '</p>' .
+                    '<label style="font-weight: bold;">Ticket numero:<h5>' . $r['id'] . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Oggetto:<h5>' . $r['oggetto'] . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Tipologia:<h5>' . $r['tipologia'] . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Descrizione:<h5>' . $descrizione . '</h5></label></br>' .
+                    '<label style="font-weight: bold;">Attività:<h5>' . $r['attività'] . '</h5></label></br>' .
                     '</div>';
             } else if ($r['isconvalidato'] === 0 || $r['isrisolto'] === 0) {
                 $contrefused++;
@@ -351,13 +329,10 @@ function ShowProfile()
     $conn = DataConnect();
     $template = '<div class="getting-started-info">';
     $stmt = $conn->prepare('SELECT c.nome,c.cognome,c.cellulare,u.username,u.email FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.id=?');
-    $id = GetIDGivenUsername();
-    $stmt->bind_param('i', $id);
+    $stmt->bind_param('i', GetUser()[0]);
     if ($stmt->execute() == true) {
         $result = $stmt->get_result();
         $result = $result->fetch_assoc();
-        $stmt->close();
-        $conn->close();
         $template .= '<form action="" style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item field" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
             '<div class="form-group"><label for="email">Cognome</label><input   class="form-control item field" name="cognome" type="text" value="' . $result['cognome'] . '" disabled></div>' .
             '<div class="form-group"><label for="email">Cellulare</label><input id="field" class="form-control item field" name="cellulare" type="text" value="' . $result['cellulare'] . '" disabled></div>' .
@@ -366,15 +341,14 @@ function ShowProfile()
             '<label><input type="checkbox" id="action" onclick="myFunction()"> Abilita modifica</label>' .
             '<button class="btn btn-primary btn-block" type="submit" name="send">Conferma</button>' .
             '</form>' . '</div>';
-        return array($result['nome'], $result['cognome'], $template);
-    } else {
-        $stmt->close();
-        $conn->close();
-        return 'C\'è stato un problema, riprova più tardi.';
-    }
+    } else
+        $template = 'C\'è stato un problema, riprova più tardi.';
+    $stmt->close();
+    $conn->close();
+    return array($result['nome'], $result['cognome'], $template);
 }
 
-function ShowDetails($id)
+function ShowTicketDetails($id)
 {
     $conn = DataConnect();
     $template = '<div class="row justify-content-center">';
@@ -384,8 +358,6 @@ function ShowDetails($id)
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
-            $stmt->close();
-            $conn->close();
             if (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
             if (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
             if (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
@@ -402,15 +374,45 @@ function ShowDetails($id)
                 '<label style="font-weight: bold;">Stato ticket:<h5>' . $status . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Commento:<h5>' . $comment . '</h5></label></br>' .
                 '</div></div>';
-            return $template;
-        } else {
-            $stmt->close();
-            $conn->close();
-            return 'Non c\'è nulla da visualizzare per questo ticket.';
-        }
-    } else {
-        $stmt->close();
-        $conn->close();
-        return 'C\'è stato un problema, riprova più tardi.';
-    }
+        } else
+            $template = 'Non c\'è nulla da visualizzare per questo ticket.';
+    } else
+        $template =  'C\'è stato un problema, riprova più tardi.';
+    $stmt->close();
+    $conn->close();
+    return $template;
+}
+
+function ShowReportDetails($id)
+{
+    $conn = DataConnect();
+    $template = '<div class="row justify-content-center">';
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,r.attività,r.datainizio,r.datafine FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
+    $stmt->bind_param('i', $id);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            if (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
+            if (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
+            if (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
+            $template .= '<div class="col-md-4 feature-box">' .
+                '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Tipologia:<h5>' . $result['tipologia'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Descrizione:<h5>' . $result['descrizione'] . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Data inzio risoluzione:<h5>' . $startdate . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Data fine risoluzione:<h5>' . $endate . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Attività:<h5>' . $activity . '</h5></label></br>' .
+                '<textarea class="form-control" name="commento" required></textarea></br>' .
+                '<button class="btn btn-primary btn-block" type="submit" name="yes">Convalida</button>' .
+                '<button class="btn btn-primary btn-block" type="submit" name="no">Non convalidare</button>' .
+                '</div></div>';
+        } else
+            $template = 'Non c\'è nulla da visualizzare per questo ticket.';
+    } else
+        $template =  'C\'è stato un problema, riprova più tardi.';
+    $stmt->close();
+    $conn->close();
+    return $template;
 }

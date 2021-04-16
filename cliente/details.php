@@ -2,6 +2,18 @@
 session_start();
 include_once '../dal.php';
 Session();
+
+if ($_GET['page'] == 'ticket')
+    $field = ShowTicketDetails($_GET['id']);
+else if ($_GET['page'] == 'report')
+    $field = ShowReportDetails($_GET['id']);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['yes']))
+        $error = ConvalidTicket(1, $_POST['commento'], $_POST['id']);
+    else if (isset($_POST['no']))
+        $error = ConvalidTicket(0, $_POST['commento'], $_POST['id']);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,7 +39,8 @@ Session();
                 <div class="block-heading">
                     <h2 class="text">Maggiori dettagli:</h2>
                 </div>
-                <?php echo ShowDetails($_GET['id']) ?>
+                <?php echo  $field ?>
+                <div><?php echo $error ?> </div>
             </div>
         </section>
     </main>

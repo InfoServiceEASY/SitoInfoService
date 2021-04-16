@@ -25,7 +25,7 @@ Session();
         <section class="clean-block features">
             <div class="container">
                 <div class="block-heading">
-                    <h2 class="text">Benvenuto <?php echo GetNameGivenID() ?></h2>
+                    <h2 class="text">Benvenuto <?php echo GetUser()[1] ?></h2>
                     <p>Qua puoi gestire il tuo profilo e i tuoi ticket.</p>
                 </div>
                 <div class="row justify-content-center">

@@ -2,12 +2,7 @@
 session_start();
 include_once '../dal.php';
 Session();
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['yes']))
-        $error = ConvalidTicket(true, $_POST['commento'], $_POST['id']);
-    else if (isset($_POST['no']))
-        $error = ConvalidTicket(false, $_POST['commento'], $_POST['id']);
-}
+$report = ShowReport();
 ?>
 
 <!DOCTYPE html>
@@ -36,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h2 class="text">I tuoi report</h2>
                 </div>
                 <h3>Report da convalidare</h3>
-                <?php echo ShowReport()[0] ?>
+                <?php echo $report[0] ?>
                 <h3>Report convalidati e risolti</h3>
-                <?php echo ShowReport()[1] ?>
+                <?php echo $report[1] ?>
                 <h3>Report non risolti</h3>
-                <?php echo ShowReport()[2] ?>
+                <?php echo $report[2] ?>
             </div>
         </section>
     </main>
