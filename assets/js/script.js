@@ -6,7 +6,6 @@ function menuacomparsa() {
     });
 }
 
-
 //line
 function chart(date) {
     var data = [];

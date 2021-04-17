@@ -15,20 +15,20 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-light clean-navbar">
+        <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="assets/img/logo.png" style="height: 60px;">
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item item"><a class="nav-link" href="public/about-us.php">ABOUT US</a></li>
+                    <li class="nav-item item"><a class="nav-link" href="public/contact-us.php">CONTACT US</a></li>
+                    <li class="nav-item item"><a class="nav-link" href="public/enrollment.php">SIGN UP</a></li>
+                    <li class="nav-item item"><a class="nav-link" href="public/login.php">LOGIN</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <main class="page landing-page">
         <section class="text-black-50 clean-block clean-hero" style="background-image: url(assets/img/homepage/1.jpg)">
-            <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-light clean-navbar">
-                <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="assets/img/logo.png" style="height: 60px;">
-                    <div class="collapse navbar-collapse" id="navcol-1">
-                        <ul class="nav navbar-nav ml-auto">
-                            <li class="nav-item item"><a class="nav-link" href="public/about-us.php">ABOUT US</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="public/contact-us.php">CONTACT US</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="public/enrollment.php">SIGN UP</a></li>
-                            <li class="nav-item item"><a class="nav-link" href="public/login.php">LOGIN</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
             <div class="text">
                 <h2>Conosci la nostra azienda</h2>
                 <p>InfoService rappresenta un approccio del tutto nuovo. Una moderna piattaforma CRM. Presenta un quadro completo del cliente, utilizzando tutti i dati a disposizione, ovunque si trovino. Garantisce l'agilità necessaria per innovare e crescere. Ma, soprattutto, offre la libertà di creare la miglior esperienza clienti possibile. Le aziende a cui ti affidi si affidano a InfoService.</p><a class="btn btn-outline-light btn-lg" type="button" href="public/about-us.php">Scopri di più</a>
@@ -84,7 +84,7 @@
                     <p>I dipendenti si sentono come a casa.</p>
                 </div>
                 <div class="carousel slide" data-ride="carousel" id="carousel-1">
-                    <div class="carousel-inner" style="height: 625px;">
+                    <div class="carousel-inner">
                         <div class="carousel-item active"><img class="w-100 d-block" src="assets/img/homepage/3.jpg" alt="Slide Image"></div>
                         <div class="carousel-item"><img class="w-100 d-block" src="assets/img/homepage/4.jpg" alt="Slide Image"></div>
                         <div class="carousel-item"><img class="w-100 d-block" src="assets/img/homepage/5.jpg" alt="Slide Image"></div>

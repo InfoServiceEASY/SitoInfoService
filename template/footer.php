@@ -1,4 +1,4 @@
-<footer class="page-footer dark footer" >
+<footer class="page-footer dark footer">
     <div class="container">
         <div class="row">
             <div class="col">
@@ -29,3 +29,31 @@
         <p>©2021 INFOSERVICE - All rigths reserved</p>
     </div>
 </footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
+<?php if ($_SERVER['REQUEST_URI'] == '/SitoInfoService/cliente/settings.php') 
+    echo '<script>
+function myFunction() {
+    var checkBox = document.getElementById("action");
+    var text = document.getElementById("field");
+    if (checkBox.checked == true) {
+        $(".field").prop("disabled", false);
+    } else {
+        $(".field").prop("disabled", true);
+    }
+}
+</script>';
+else if ($_SERVER['REQUEST_URI'] == '/SitoInfoService/cliente/writeticket.php')
+    echo '<script>
+$(document).ready(function() {
+    $("#btnShowModal").click(function() {
+        $("#exampleModal").modal("show");
+    });
+    $("#btnClose").click(function() {
+        $("#exampleModal").modal("toggle");
+    });
+});
+</script>';
+
+?>
