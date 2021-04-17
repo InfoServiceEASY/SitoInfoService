@@ -7,12 +7,11 @@ Session();
 <html>
 
 <head>
-    <?php $title = 'Dashboard - InfoService';
-    include_once '../template/head.php' ?>
+    <?php $title = 'Dashboard - InfoService'; include_once '../template/head.php' ?>
 </head>
 
 <body>
-    <?php include_once '../template/private-nav.php' ?>
+    <?php include_once '../template/navbar.php' ?>
     <main class="page landing-page">
         <section class="clean-block features">
             <div class="container">

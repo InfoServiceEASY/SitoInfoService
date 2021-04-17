@@ -32,7 +32,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.js"></script>
-<?php if ($_SERVER['REQUEST_URI'] == '/SitoInfoService/cliente/settings.php') 
+<?php if ($_SERVER['REQUEST_URI'] === '/SitoInfoService/cliente/settings.php' || $_SERVER['REQUEST_URI'] === '/cliente/settings.php' || $_SERVER['REQUEST_URI'] === '/infoservice/cliente/settings.php')
     echo '<script>
 function myFunction() {
     var checkBox = document.getElementById("action");
@@ -44,7 +44,7 @@ function myFunction() {
     }
 }
 </script>';
-else if ($_SERVER['REQUEST_URI'] == '/SitoInfoService/cliente/writeticket.php')
+else if ($_SERVER['REQUEST_URI'] === '/SitoInfoService/cliente/writeticket.php' || $_SERVER['REQUEST_URI'] === '/cliente/writeticket.php' || $_SERVER['REQUEST_URI'] === '/infoservice/cliente/writeticket.php')
     echo '<script>
 $(document).ready(function() {
     $("#btnShowModal").click(function() {

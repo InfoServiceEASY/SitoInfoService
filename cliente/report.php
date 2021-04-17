@@ -13,7 +13,7 @@ $report = ShowReport();
 </head>
 
 <body>
-    <?php include_once '../template/private-nav.php' ?>
+    <?php include_once '../template/navbar.php' ?>
     <main class="page landing-page">
         <section class="clean-block features">
             <div class="container">
