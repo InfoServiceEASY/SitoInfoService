@@ -15,10 +15,10 @@ $conn = DataConnect();
  WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
 */
 $query1 = "SELECT t.id, t.dataapertura,t.descrizione FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
- WHERE t.isaperto = 1 AND r.fk_dipendente =? and r.attività is null ";
+ WHERE t.isaperto = 1 AND r.fk_dipendente =? and r.isconvalidato is null "; //r.attività is null, ma se si sbaglia?
 $query2 = "SELECT t.id, t.dataapertura,t.descrizione FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
  AND r.fk_dipendente =?";
-function prova($sql, $h1)
+function prova($sql, $h1, $chiuso)
 {
   $conn = DataConnect();
   $id = GetUser()[0];
@@ -42,19 +42,19 @@ function prova($sql, $h1)
     <p> " . $row['descrizione'] . "</p>
     </br>
     <a href='$href2'> Visualizza report sull'attività</a>
-    </br>
-    <a href='$href'> Scrivi report sull'attività</a>
-    </div>";
+    </br>";
+    $template .= !($chiuso)? "<a href='$href'> Scrivi report sull'attività</a> </div>" :
+    "</div>";
       if ($i % 3 == 2) $template .= " </div>";
     }
     if ($data->num_rows % 3 != 0) $template .= " </div>";
   } else
-    $template .= "<p>al momento non hai ticket assegnati</p>";
+    $template .= "<p>Al momento non hai ticket assegnati</p>";
   $conn->close();
   echo $template;
 }
-prova($query1, "interventi aperti");
-prova($query2, "interventi chiusi");
+prova($query1, "Interventi aperti", false);
+prova($query2, "Interventi chiusi", true);
 
 #region la tua vecchia roba 
 /*if($data != null) {
