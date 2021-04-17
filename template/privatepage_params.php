@@ -3,21 +3,10 @@
 $letterautente = strtoupper($_SESSION['utente'][0]);
 //i nomi delle pagine devono essere parametroarraynometesto.php
 $sidebar_text = array();
-/*$nome = basename($_SERVER['PHP_SELF']); //pagecorrente
-switch($nome){ //dovrà essere invece $_SESSION['tipo_utente'] al posto di $nome e i casi saranno "customer", "employee", "helpdesk" 
-    case 'ticket.php': 
-        $sidebar_text = array("Dashboard", "Solutions","Ticket","Events","Profile","Status");
-    break;
-    case 'employee copy.php':
-        $sidebar_text = array("Dashboard","Events","Profile","Status");
-    break;
-    case '': //helpdesk
-        break;
-}*/
 
 if ($_SESSION["member"] == "cliente") {
   $sidebar_text = array("Solutions", "Ticket", "MyTicket");
-} else $_SESSION["member"] == "admin" ? $sidebar_text = array("Events", "Profile", "Status", "TicketAperti") : $sidebar_text = array("TicketList", "Events", "Profile", "Status");
+} else $_SESSION["member"] == "admin" ? $sidebar_text = array("TicketAperti","ticket") : $sidebar_text = array("TicketList", "Events", "Profile", "Status");
 
 ?>
 <!DOCTYPE html>

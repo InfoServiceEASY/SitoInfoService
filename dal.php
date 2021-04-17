@@ -59,7 +59,7 @@ function Login($username, $password)
 function GetUser()
 {
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT u.id,c.nome FROM '.$_SESSION["member"].' c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.username=?');
+    $stmt = $conn->prepare('SELECT u.id,c.nome FROM ' . $_SESSION["member"] . ' c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.username=?');
     $stmt->bind_param('s', $_SESSION['utente']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -71,7 +71,15 @@ function GetUser()
     } else
         return 'Errore';
 }
-
+function GetTicketRowgivenId($id)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT t.id, t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t INNER JOIN settore s ON s.id=t.fk_settore AND t.id=?');
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_assoc();
+}
 function GetSectors()
 {
     $conn = DataConnect();
@@ -415,4 +423,55 @@ function ShowReportDetails($id)
     $stmt->close();
     $conn->close();
     return $template;
+}
+
+
+function ShownewTickets()
+{
+    $uno = 1;
+    $template = "";
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
+    INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
+    AND t.isaperto=? ORDER BY t.dataapertura DESC');
+    $stmt->bind_param('i', $uno);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    if ($result->num_rows > 0) {
+        for ($i = 0; $i < $result->num_rows; $i++) {
+            $row = $result->fetch_assoc();
+            (strlen($row['descrizione']) > 5 ? $descrizione = substr($row['descrizione'], 0, 20) . "..." : $descrizione = $row['descrizione']);
+            $href = "AssegnaTicket.php?id=" . $row['id'];
+            if ($i % 3 == 0)
+                $template .= "<div class='containerone'>";
+            $template .= "
+        <div class='contenitore'>
+        <p>Intervento n." . $row['id'] . "</p><p> aperto il " . $row['dataapertura'] . "</p>
+        <p><strong>tipologia</strong> " . $row['tipologia'] . "</p>
+        <p><strong>settore</strong> " . $row['nome'] . "</p>
+        <p> <strong>oggetto</strong> " . $row['oggetto'] . "</p>
+        <p> <strong>descrizione</strong> " . $descrizione . "</p>
+        <a href='$href'> assegna ticket</a>
+        </div>";
+            if ($i % 3 == 2) $template .= " </div>";
+        }
+    }
+    return $template;
+}
+
+function createReport($idipendente, $idticket)
+{
+    $error = "";
+    $conn = DataConnect();
+    $query = "INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza FROM dipendente WHERE id=?),?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ii', $idipendente, $idticket);
+    if ($stmt->execute() === true) {
+        $error = "fatto";
+    } else
+        $error = "mi dispiace riprovera";
+
+    $conn->close();
+    return $error;
 }
