@@ -8,10 +8,14 @@ Session();
 $row = GetTicketRowgivenId($_GET["id"]);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if ($_POST['dipendenti'] != '0') {
-    createreport($_POST['dipendenti'], $row['id']);
-  } else
-    $error = "la prossima volta seleziona qualcuno";
+  if (isset($_POST['Assegna'])) {
+    if ($_POST['dipendenti'] != '0' && $_POST['scelta'] != '0') {
+      $error = createreport($_POST['dipendenti'], $row['id']);
+    } else
+      $error = "la prossima volta seleziona qualcuno";
+  } else if (isset($_POST['Elimina'])) {
+    $error = deleteTicket($row['id']);
+  }
   echo ("<script LANGUAGE='JavaScript'>
     window.alert('" . $error . "');
     window.location.href='TicketAperti.php';
@@ -89,8 +93,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   ?>
 
   <div style="float: right;">
-    <button class="btn btn-primary" type="submit">Cancella</button>
-    <button id="btnShowModal" class="btn btn-primary" type="submit">Conferma</button>
+    <button class="btn btn-primary" type="submit" name="Elimina">Elimina</button>
+    <button id="btnShowModal" class="btn btn-primary" type="submit" name="Assegna">Assegna</button>
   </div>
 </form>
 </div>

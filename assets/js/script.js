@@ -90,3 +90,13 @@ function sendEmail(email, username) {
         })
         .then(function(message) {});
 }
+
+function myFunction() {
+    var checkBox = document.getElementById("action");
+    var text = document.getElementById("field");
+    if (checkBox.checked == true) {
+        $(".field").prop("disabled", false);
+    } else {
+        $(".field").prop("disabled", true);
+    }
+}

@@ -4,17 +4,18 @@ include_once '../dal.php';
 Session();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = WriteTicket($_POST['oggetto'], $_POST['tipologia'], $_POST['settore'], $_POST['descrizione']);
-    echo ("<script LANGUAGE='JavaScript'>
-    window.alert('" . $error . "');
+    echo "<script LANGUAGE='JavaScript'>
+     window.alert('" . $error . "');
     window.location.href='dashboard.php';
-    </script>");
+    </script>";
 }
 ?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php $title = 'Nuovo ticket - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'Nuovo ticket - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>
@@ -53,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="descrizione" required></textarea>
                     </div>
                     <div>
-                        <button id="btnShowModal" class="btn btn-primary btn-block" type="submit">Conferma</button>
+                        <button class="btn btn-primary btn-block" type="submit">Conferma</button>
                     </div>
                 </form>
             </div>

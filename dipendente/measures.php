@@ -11,7 +11,7 @@ $conn = DataConnect();
 if (!isset($_GET["Cancella"])) {
  /* $sql = "SELECT r.id, r.datainizio, r.datafine, r.isrisolto,t.descrizione, r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
   WHERE t.isaperto = 1 AND r.fk_dipendente = ? and t.id=?";*/ 
-  $sql="SELECT r.id, r.datainizio, r.datafine, r.isrisolto,r.attività,t.descrizione, r.commento, t.isaperto FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket and t.id=?";
+  $sql="SELECT r.id, r.datainizio, r.datafine, r.isrisolto,r.attività,t.descrizione, r.commento, t.isaperto FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket where t.id=? and r.attività is not null";
   $sth = $conn->prepare($sql);
   $sth->bind_param('i',$id);
   $sth->execute();
@@ -51,10 +51,14 @@ if (!isset($_GET["Cancella"])) {
   }
 } else {
   $id_report = $_GET['ReportId'];
-  $sql = "UPDATE report set datainizio=null,datafine=null,durata=null,attività=null,isrisolto=null where id=? and commento=null";
+  $sql = "UPDATE report set datafine=null,durata=null,attività=null,isrisolto=null where id=? and isconvalidato is null";
   $sth = $conn->prepare($sql);
-  $sth->bind_param('i', $_GET["ReportId"]);
+  $sth->bind_param('i',  $id_report );
   $sth->execute();
+  echo ("<script LANGUAGE='JavaScript'>
+  window.alert('eliminato con successo');
+  window.location.href='Ticketlist.php';
+  </script>");
 }
 
 /*function PreparaTesti($data)

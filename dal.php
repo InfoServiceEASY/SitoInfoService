@@ -185,7 +185,7 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
     $conn = DataConnect();
     $esito = '';
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,Now(),?,(SELECT id FROM settore WHERE nome=?))');
-    $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, GetUser()[1], $settore);
+    $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, GetUser()[0], $settore);
     if ($stmt->execute())
         $esito = 'Ticket creato con successo.';
     else
@@ -433,7 +433,7 @@ function ShownewTickets()
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
     INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
-    AND t.isaperto=? ORDER BY t.dataapertura DESC');
+    AND t.isaperto=? ORDER BY t.dataapertura DESC limit 12');
     $stmt->bind_param('i', $uno);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -441,7 +441,7 @@ function ShownewTickets()
     if ($result->num_rows > 0) {
         for ($i = 0; $i < $result->num_rows; $i++) {
             $row = $result->fetch_assoc();
-            (strlen($row['descrizione']) > 5 ? $descrizione = substr($row['descrizione'], 0, 20) . "..." : $descrizione = $row['descrizione']);
+            (strlen($row['descrizione']) > 30 ? $descrizione = substr($row['descrizione'], 0, 30) . "..." : $descrizione = $row['descrizione']);
             $href = "AssegnaTicket.php?id=" . $row['id'];
             if ($i % 3 == 0)
                 $template .= "<div class='containerone'>";
@@ -467,6 +467,22 @@ function createReport($idipendente, $idticket)
     $query = "INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza FROM dipendente WHERE id=?),?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ii', $idipendente, $idticket);
+    if ($stmt->execute() === true) {
+        $error = "fatto";
+    } else
+        $error = "mi dispiace riprovera";
+
+    $conn->close();
+    return $error;
+}
+
+function deleteTicket($id)
+{
+    $error = "";
+    $conn = DataConnect();
+    $query = "delete from ticket where";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ii', $id);
     if ($stmt->execute() === true) {
         $error = "fatto";
     } else

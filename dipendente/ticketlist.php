@@ -14,10 +14,10 @@ $conn = DataConnect();
 /*$sql = "SELECT ticket.id, ticket.dataapertura,ticket.descrizione FROM ticket INNER JOIN report ON ticket.id = report.fk_ticket
  WHERE ticket.isaperto = 1 AND report.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
 */
-$query1 = "SELECT t.id, t.dataapertura,t.descrizione FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+$query1 = "SELECT t.id, t.dataapertura,t.descrizione , r.attività FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
  WHERE t.isaperto = 1 AND r.fk_dipendente =? and r.isconvalidato is null "; //r.attività is null, ma se si sbaglia?
 $query2 = "SELECT t.id, t.dataapertura,t.descrizione FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
- AND r.fk_dipendente =?";
+ AND r.fk_dipendente =? and  t.isaperto = 0 ";
 function prova($sql, $h1, $chiuso)
 {
   $conn = DataConnect();
@@ -43,7 +43,7 @@ function prova($sql, $h1, $chiuso)
     </br>
     <a href='$href2'> Visualizza report sull'attività</a>
     </br>";
-    $template .= !($chiuso)? "<a href='$href'> Scrivi report sull'attività</a> </div>" :
+    $template .= (is_null($row['attività']))? "<a href='$href'> Scrivi report sull'attività</a> </div>" :
     "</div>";
       if ($i % 3 == 2) $template .= " </div>";
     }
@@ -54,6 +54,7 @@ function prova($sql, $h1, $chiuso)
   echo $template;
 }
 prova($query1, "Interventi aperti", false);
+//prova($query3, "Interventi in attesa di convalida", false);
 prova($query2, "Interventi chiusi", true);
 
 #region la tua vecchia roba 
