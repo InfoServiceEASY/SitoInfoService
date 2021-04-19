@@ -404,7 +404,7 @@ function ShowReportDetails($id)
             if (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
             if (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
             if (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
-            $template .= '<div class="col-md-4 feature-box">' .
+            $template .= '<div class="col-md-4 feature-box"><form method="POST">' .
                 '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Tipologia:<h5>' . $result['tipologia'] . '</h5></label></br>' .
@@ -415,7 +415,7 @@ function ShowReportDetails($id)
                 '<textarea class="form-control" name="commento" required></textarea></br>' .
                 '<button class="btn btn-primary btn-block" type="submit" name="yes">Convalida</button>' .
                 '<button class="btn btn-primary btn-block" type="submit" name="no">Non convalidare</button>' .
-                '</div></div>';
+                '</form></div></div>';
         } else
             $template = 'Non c\'è nulla da visualizzare per questo ticket.';
     } else
@@ -425,6 +425,38 @@ function ShowReportDetails($id)
     return $template;
 }
 
+function ShowTicketStatus()
+{
+    $conn = DataConnect();
+    $template = array();
+    $choice = 1;
+    $stmt = $conn->prepare('SELECT COUNT(id) AS id FROM ticket WHERE fk_cliente=? AND isaperto=?');
+    $stmt->bind_param('is', GetUser()[0], $choice);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $template[0] = 'Hai ' . $result['id'] . ' ticket aperti';
+        } else
+            $template[0] = 'Non hai ticket aperti';
+    } else
+        $template[0] = 'C\'è stato un problema, riprova più tardi.';
+    $stmt->close();
+    $stmt = $conn->prepare('SELECT COUNT(r.id) AS id FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.fk_cliente=? AND r.attività IS NOT NULL AND r.isconvalidato IS NULL');
+    $stmt->bind_param('i', GetUser()[0]);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $result = $result->fetch_assoc();
+            $template[1] = 'Hai ' . $result['id'] . ' report da convalidare';
+        } else
+            $template[1] = 'Non hai report da convalidare';
+    } else
+        $template[1] = 'C\'è stato un problema, riprova più tardi.';
+    $stmt->close();
+    $conn->close();
+    return $template;
+}
 
 function ShownewTickets()
 {

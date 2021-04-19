@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-light clean-navbar">
     <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="../assets/img/logo.png" style="height: 60px;">
         <div class="collapse navbar-collapse" id="navcol-1">
@@ -22,10 +21,10 @@
         </ul>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Profilo
+                Impostazioni
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="settings.php">Impostazioni</a>
+                <a class="dropdown-item" href="settings.php">Profilo</a>
                 <a class="dropdown-item" href="../private/logout.php">Logout</a>
             </div>
         </div>

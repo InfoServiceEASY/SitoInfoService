@@ -16,7 +16,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-sm-6 col-lg-4">
-                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="../assets/img/avatars/avatar1.jpg">
+                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="../assets/img/avatars/avatar1.jpg" style="height: 500px;">
                             <div class="card-body info">
                                 <h4 class="card-title">Alessandro Ferrari</h4>
                                 <p class="card-text">Web Designer</p>
@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-4">
-                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="../assets/img/avatars/avatar2.jpg">
+                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="../assets/img/avatars/avatar2.jpg" style="height: 500px;">
                             <div class="card-body info">
                                 <h4 class="card-title">Marouan Ouadi</h4>
                                 <p class="card-text">Project Manager</p>
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="col-sm-6 col-lg-4">
-                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="../assets/img/avatars/avatar3.jpg">
+                        <div class="card clean-card text-center"><img class="card-img-top w-100 d-block" src="../assets/img/avatars/avatar3.jpg" style="height: 500px;">
                             <div class="card-body info">
                                 <h4 class="card-title">Alessandro Fedele</h4>
                                 <p class="card-text">Software Engineer</p>

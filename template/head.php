@@ -9,6 +9,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
 <link rel="stylesheet" href="../assets/css/styles.min.css">
-<?php if (strpos(dirname($_SERVER['REQUEST_URI']), "/cliente/myticket.php")!== false || strpos(dirname($_SERVER['REQUEST_URI']), "/cliente/report.php")!== false)
+<?php if (strpos($_SERVER['REQUEST_URI'], "/cliente/myticket.php") !== false || strpos($_SERVER['REQUEST_URI'], "/cliente/report.php") !== false)
     echo '<link rel="stylesheet" href="../assets/css/stylesheetprivato.css">';
 ?>

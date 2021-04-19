@@ -2,6 +2,7 @@
 session_start();
 include_once '../dal.php';
 Session();
+$status = ShowTicketStatus();
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,6 +18,24 @@ Session();
             <div class="container">
                 <div class="block-heading">
                     <h2 class="text">Benvenuto <?php echo GetUser()[1] ?></h2>
+                    <p>Controlla lo stato dei tuoi ticket</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 feature-box"><i class="icon-book-open icon" style="color: black;"></i>
+                        <h4>Ticket Aperti</h4>
+                        <p><?php echo $status[0] ?></p>
+                    </div>
+                    <div class="col-md-4 feature-box"><i class="icon-exclamation icon" style="color: black;"></i>
+                        <h4>Report da convalidare</h4>
+                        <p><?php echo $status[1] ?></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="clean-block features">
+            <div class="container">
+                <div class="block-heading">
+                    <h2 class="text">Gestisci i tuoi ticket e dati.</h2>
                     <p>Qua puoi gestire il tuo profilo e i tuoi ticket.</p>
                 </div>
                 <div class="row justify-content-center">
