@@ -86,7 +86,7 @@ function sendEmail(email, username) {
             From: "infoservicehelps@gmail.com",
             Subject: 'Signup | Verification',
             Body: "Please click this link to activate your account:\n\
-            http://localhost:8000/verify.php?email=" + email + "&usr=" + username,
+            http://localhost:8000/public/verify.php?email=" + email + "&usr=" + username,
         })
         .then(function(message) {});
 }
@@ -99,4 +99,44 @@ function myFunction() {
     } else {
         $(".field").prop("disabled", true);
     }
+}
+
+function tabellaprivata() {
+    $(document).ready(function() {
+        // Setup - add a text input to each footer cell
+        $('#search thead th').each(function() {
+            var title = $(this).text();
+            $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
+        });
+
+        // DataTable
+        var table = $('#search').DataTable({
+            responsive: true,
+            paging: false,
+            bInfo: false,
+            initComplete: function() {
+                // Apply the search
+                this.api().columns().every(function() {
+                    var that = this;
+                    $('input', this.header()).on('keyup change clear', function() {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            }
+        });
+
+        $('.filter').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+        new $.fn.dataTable.FixedHeader(table);
+        $("#search th.datepicker input").datepicker({
+            format: "yyyy-mm-dd",
+
+        });
+    });
 }

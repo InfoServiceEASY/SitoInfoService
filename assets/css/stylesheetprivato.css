@@ -73,3 +73,30 @@ div.contenitore {
 .custom-select {
     font-family: Arial;
 }
+
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+}
+
+.dataTables_wrapper .dataTables_filter {
+    float: right;
+    text-align: right;
+    visibility: hidden;
+}
+
+#search_wrapper {
+    width: 98%;
+}
+
+table.dataTable>tbody>tr.child span.dtr-title {
+    display: none;
+}
+
+#navlist li {
+    padding-top: 0%;
+    display: inline-block;
+    list-style-type: none;
+    padding-right: 20px;
+}

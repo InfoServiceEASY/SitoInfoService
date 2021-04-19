@@ -444,8 +444,8 @@ function ShownewTickets()
             (strlen($row['descrizione']) > 30 ? $descrizione = substr($row['descrizione'], 0, 30) . "..." : $descrizione = $row['descrizione']);
             $href = "AssegnaTicket.php?id=" . $row['id'];
             if ($i % 3 == 0)
-                $template .= "<div class='containerone'>";
-            $template .= "
+                echo  "<div class='containerone'>";
+          echo  "
         <div class='contenitore'>
         <p>Intervento n." . $row['id'] . "</p><p> aperto il " . $row['dataapertura'] . "</p>
         <p><strong>tipologia</strong> " . $row['tipologia'] . "</p>
@@ -454,10 +454,10 @@ function ShownewTickets()
         <p> <strong>descrizione</strong> " . $descrizione . "</p>
         <a href='$href'> assegna ticket</a>
         </div>";
-            if ($i % 3 == 2) $template .= " </div>";
+            if ($i % 3 == 2) echo " </div>";
         }
     }
-    return $template;
+    $conn->close();
 }
 
 function createReport($idipendente, $idticket)

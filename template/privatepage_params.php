@@ -6,7 +6,7 @@ $sidebar_text = array();
 
 if ($_SESSION["member"] == "cliente") {
   $sidebar_text = array("Solutions", "Ticket", "MyTicket");
-} else $_SESSION["member"] == "admin" ? $sidebar_text = array("TicketAperti","ticket") : $sidebar_text = array("TicketList");
+} else $_SESSION["member"] == "admin" ? $sidebar_text = array("TicketAperti", "ticket") : $sidebar_text = array("TicketList");
 
 ?>
 <!DOCTYPE html>
@@ -21,8 +21,12 @@ if ($_SESSION["member"] == "cliente") {
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
   <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
   <script src="../assets/js/jquery.min.js"></script>
- <script src="../assets/js/bootstrap.bundle.min.js"></script>
-<script src="../assets/js/script.js"></script>
+  <script src="../assets/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/script.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/sb-1.0.1/sp-1.2.2/datatables.min.css" />
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/sb-1.0.1/sp-1.2.2/datatables.min.js"></script>
+
 </head>
 
 <body onload="menuacomparsa();">
