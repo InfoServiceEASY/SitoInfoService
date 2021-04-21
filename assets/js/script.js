@@ -105,8 +105,15 @@ function tabellaprivata() {
     $(document).ready(function() {
         // Setup - add a text input to each footer cell
         $('#search thead th').each(function() {
-            var title = $(this).text();
-            $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
+            var title = $(this).text().trim();
+
+            //var prova = '"modifica\n"';
+            // console.log(title.localeCompare(prova));
+
+            //console.log("modifica");
+            //            console.log(title != "modifica");
+            if (title != "modifica")
+                $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
         });
 
         // DataTable
@@ -114,6 +121,9 @@ function tabellaprivata() {
             responsive: true,
             paging: false,
             bInfo: false,
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
             initComplete: function() {
                 // Apply the search
                 this.api().columns().every(function() {
@@ -133,10 +143,6 @@ function tabellaprivata() {
             e.stopPropagation();
         });
 
-        new $.fn.dataTable.FixedHeader(table);
-        $("#search th.datepicker input").datepicker({
-            format: "yyyy-mm-dd",
 
-        });
     });
 }

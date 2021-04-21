@@ -13,9 +13,9 @@ Session();
             <tr>
 
                 <th class="datepicker"><strong>data apertura</strong></td>
-                <th class="datepicker"><strong>oggetto</strong></td>
                 <th><strong>settore</strong></td>
-                <th><strong>descrizione</strong></td>
+                <th><strong>oggetto</strong></td>
+                <th><strong>modifica</strong></td>
             </tr>
         </thead>
         <tbody>
@@ -36,22 +36,29 @@ Session();
             }
 
             $total_pages_sql = "SELECT COUNT(*) FROM  ticket t
-    INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
-    AND t.isaperto=1 ORDER BY t.dataapertura DESC";
+            INNER JOIN settore s on s.id=t.fk_settore  where isassegnato=0
+            AND t.isaperto=1";
             $result = mysqli_query($conn, $total_pages_sql);
             $total_rows = mysqli_fetch_array($result)[0];
             $total_pages = ceil($total_rows / $no_of_records_per_page);
             $sql = "SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM  ticket t
-            INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
+            INNER JOIN settore s on s.id=t.fk_settore  where isassegnato=0
             AND t.isaperto=1 ORDER BY t.dataapertura DESC LIMIT $offset, $no_of_records_per_page";
             if (  $res_data = mysqli_query($conn, $sql)) {
                 while ($row = mysqli_fetch_array($res_data)) {
+                   // (strlen($row['descrizione']) > 20 ?  $descrizione=substr($row['descrizione'], 0, 20) . "..." : $descrizione=$row['descrizione']);
             ?>
                     <tr>
                         <td><?php echo $row["dataapertura"]; ?></td>
-                        <td><?php echo $row["oggetto"]; ?></td>
-                        <td><?php echo $row["nome"]; ?></td>
-                        <td><?php echo $row["descrizione"]; ?></td>
+                        <td><?php echo $row["nome"];  ?></td>
+                        <td><?php echo $row['oggetto'] ?></td>
+                       <?php echo '<td><button style="border-radius: 12px;background-color: #f44336; border: none;
+  color: white;
+  padding: 10px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;" onclick="location.href='."'AssegnaTicket.php?id=".$row['id']."'".'"'.">edit</button></td>"?> 
                     </tr>
                 <?php }
                 mysqli_close($conn);
@@ -66,9 +73,9 @@ Session();
         <tfoot>
             <tr>
                 <th><strong>data apertura</strong></td>
-                <th><strong>oggetto</strong></td>
                 <th><strong>settore</strong></td>
-                <th><strong>descrizione</strong></td>
+                <th><strong>oggetto</strong></td>
+                <th><strong>modifica</strong></td>
             </tr>
         </tfoot>
     </table>

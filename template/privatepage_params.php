@@ -17,16 +17,16 @@ if ($_SESSION["member"] == "cliente") {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title> <?php echo $title; ?></title>
   <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
-  <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
-  <script src="../assets/js/jquery.min.js"></script>
-  <script src="../assets/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/js/script.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/sb-1.0.1/sp-1.2.2/datatables.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/css/stylesheetprivato.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.24/sb-1.0.1/sp-1.2.2/datatables.min.css" />
 
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/sb-1.0.1/sp-1.2.2/datatables.min.js"></script>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/script.js"></script>
 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.24/sb-1.0.1/sp-1.2.2/datatables.min.js"></script>
 </head>
 
 <body onload="menuacomparsa();">
