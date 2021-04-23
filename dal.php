@@ -445,7 +445,7 @@ function ShownewTickets()
             $href = "AssegnaTicket.php?id=" . $row['id'];
             if ($i % 3 == 0)
                 echo  "<div class='containerone'>";
-          echo  "
+            echo  "
         <div class='contenitore'>
         <p>Intervento n." . $row['id'] . "</p><p> aperto il " . $row['dataapertura'] . "</p>
         <p><strong>tipologia</strong> " . $row['tipologia'] . "</p>
@@ -468,7 +468,15 @@ function createReport($idipendente, $idticket)
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ii', $idipendente, $idticket);
     if ($stmt->execute() === true) {
-        $error = "fatto";
+        $conn->close();
+        $uno = 1;
+        $conn = DataConnect();
+        $query = "update ticket set isassegnato=? where id=?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ii', $uno, $idticket);
+        if ($stmt->execute() === true) {
+            $error = "fatto";
+        }
     } else
         $error = "mi dispiace riprovera";
 

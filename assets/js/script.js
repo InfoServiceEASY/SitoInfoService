@@ -103,6 +103,8 @@ function myFunction() {
 
 function tabellaprivata() {
     $(document).ready(function() {
+        //$("tr:even").css("background-color", "#672146");
+        //$("tr:odd").css("background-color", "#EFF1F1");
         // Setup - add a text input to each footer cell
         $('#search thead th').each(function() {
             var title = $(this).text().trim();
