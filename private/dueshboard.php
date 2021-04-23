@@ -2,7 +2,60 @@
 session_start();
 include_once '../dal.php';
 Session();
+?>
+<!--
+    <div>
+      <br>
+      <p >positive</p>
+      <p style="float: left; font-size:30px">0%</p>
+    <img  src="
+    https://eucfassetsgreen.freshdesk.com/production/a/assets/images/empty-states/unresolved-empty-eb60bb2b7b369cedbde7f34f11ec516e84dee3f466fd453f4bc621dcea912c98.svg" 
+    alt="unresolved" width="50px">
+    <p>negative</p>
+      <span>0%</span>
+    <img style="margin-top: 60px;" src="
+    https://eucfassetsgreen.freshdesk.com/production/a/assets/images/empty-states/unresolved-empty-eb60bb2b7b369cedbde7f34f11ec516e84dee3f466fd453f4bc621dcea912c98.svg" 
+    alt="unresolved">
+    </div>-->
 
+
+<style>
+  a {
+    padding: 5px;
+    float: right;
+  }
+
+  .containerone {
+    box-sizing: border-box;
+    background-color: rgb(235, 239, 243);
+    height: 100px;
+  }
+
+  div.containerr {
+    background-color: white;
+    height: 80%;
+    margin-right: 0.57%;
+    margin-top: 10px;
+    text-align: center;
+    float: left;
+    width: 16%;
+    position: relative;
+  }
+
+  div.containerr:first-child {
+    margin-left: 0.57%;
+  }
+
+  .containerr:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+  }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<script>
+  chart(<?php echo json_encode($data); ?>);
+</script>
+
+<?php
 $conn = DataConnect();
 $nomeColonna = 1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
 $condizione = "";
@@ -31,24 +84,88 @@ foreach ($result as $row) {
     "somma" => $row["count"]
   ));
 }
+function FeedBack($conn){
+    $sql = "SELECT MAX(r.isconvalidato) AS valore FROM report r
+    WHERE r.isconvalidato is not null
+    GROUP BY r.fk_ticket";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $counter_1 = 0;
+    $counter_0 = 0;
+    foreach($result as $r)
+    {
+        $num = $r["valore"];
+        $num == 0 ? $counter_0++ : $counter_1++;
+    }
+    $percentage = 100*($counter_1/ ($counter_1 + $counter_0));
+    return array("Il ". strval($percentage). "% dei nostri clienti è soddisfatto del nostro servizio.", strval($percentage));
+}
 function Bars($conn){
     $sql = "SELECT r.fk_ticket, COUNT(r.fk_dipendente) AS NumDipendenti, t.descrizione 
     FROM report r INNER JOIN ticket t ON r.fk_ticket = t.id
+    WHERE t.isaperto = 1
     GROUP BY fk_ticket";
     $stmt2 = $conn -> prepare($sql);
     $stmt2 -> execute();
     $data2 = $stmt2 ->get_result();
-    $lista_perc_interventi = $data2 -> fetch_assoc();
-    for($i = 0; $i < $data2 ->num_rows; $i++){
-        $perc = 100*($lista_perc_interventi[$i]['NumDipendenti'])/($lista_perc_interventi[$i]['NumDipendenti']+1);
-    echo "<h4 class='small font-weight-bold'>$lista_perc_interventi[$i]['descrizione']<span class='float-right'>$perc%</span></h4>
-    <div class='progress mb-4'>
-        <div class='progress-bar bg-danger' aria-valuenow='20' aria-valuemin='0' aria-valuemax='100' style='width: $perc%;'><span class='sr-only'>%</span></div>
-    </div>";
+    $colors = array("danger", "primary", "warning", "info", "success"); //rosso, blue, giallo, azzurro, verde
+    //var_dump($lista_perc_interventi);
+    for($i = 0; $i < $data2 -> num_rows; $i++){
+        $lista_perc_interventi = $data2 -> fetch_assoc();
+        $parole = explode(' ', $lista_perc_interventi['descrizione']);
+        $testo = $parole[0] . ' ' . $parole[1] . ' ' . $parole[2] . ' ' . $parole[3];
+        $dipendenti = $lista_perc_interventi['NumDipendenti'];
+        $perc = 100*($dipendenti)/($dipendenti+1);
+        $color = $perc >= 75? $colors[count($colors) - 1] : ($perc < 50? $colors[0] : $colors[rand(1,count($colors) - 2)]);
+    echo "<h4 class='small font-weight-bold'>".$testo."<span class='float-right'>".strval($perc)."%</span></h4>";
+    echo "<div class='progress mb-4'>
+        <div class= '" ."progress-bar bg-".strval($color)."' aria-valuenow=".strval($perc)." aria-valuemin='0' aria-valuemax='100' style='width: $perc%;'><span class='sr-only'>%</span></div>
+        </div>";
     }
 }
 $title = "Dashboard";
 include_once '../template/privatepage_params.php'; ?>
+<div class="containerone">
+  <div class="containerr">
+    <a>
+      <p>Unresolved</p>
+    </a> 0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>solved</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>Overdue</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>Unassigned</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>Open</p>
+    </a>
+    0
+  </div>
+  <div class="containerr">
+    <a>
+      <p>On Hold</p>
+    </a>
+    0
+  </div>
+</div>
+<br>
+
+<div style=" height: 275px; width: 100%;" id="lineChart"> </div>
 <div class="row">
     <div class="col-lg-6 mb-4">
         <div class="card shadow mb-4">
@@ -57,26 +174,53 @@ include_once '../template/privatepage_params.php'; ?>
             </div>
             <div class="card-body">
                 <?php Bars($conn); ?>
-                <h4 class="small font-weight-bold">Server migration<span class="float-right">20%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span class="sr-only">20%</span></div>
-                </div>
-                <h4 class="small font-weight-bold">Sales tracking<span class="float-right">40%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%;"><span class="sr-only">40%</span></div>
-                </div>
-                <h4 class="small font-weight-bold">Customer Database<span class="float-right">60%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-primary" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"><span class="sr-only">60%</span></div>
-                </div>
-                <h4 class="small font-weight-bold">Payout Details<span class="float-right">80%</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-info" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%;"><span class="sr-only">80%</span></div>
-                </div>
-                <h4 class="small font-weight-bold">Account setup<span class="float-right">Complete!</span></h4>
-                <div class="progress mb-4">
-                    <div class="progress-bar bg-success" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"><span class="sr-only">100%</span></div>
-                </div>
             </div>
         </div>
     </div>
+    <div class="col-lg-5 col-xl-4">
+    <?php $feed = FeedBack($conn);?>
+                            <div class="card shadow mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="text-primary font-weight-bold m-0">Feedback</h6>
+                                    
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area"><canvas data-bs-chart="{
+                                        &quot;type&quot;:&quot;doughnut&quot;,
+                                        &quot;data&quot;:
+                                        {&quot;labels&quot;: [&quot;Satisfied Clients&quot;,&quot;Other Clients&quot;],&quot;datasets&quot;:[{
+                                        &quot;label&quot;:&quot;A&quot;,
+                                        &quot;backgroundColor&quot;:&quot;#1cc88a&quot;,
+                                        &quot;borderColor&quot;:[&quot;#ffffff&quot;],
+                                        &quot;data&quot;:[&quot;<?php echo $feed[1]; ?>&quot;]
+                                        }
+                                        ]},
+                                        &quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:true},&quot;title&quot;:{}}}"></canvas></div>
+                                    <div class="text-center small mt-4"><span class="mr-2"><i class="fas fa-circle text-primary"></i>&nbsp;<?php echo $feed[0]; ?></span></div>
+                                </div>
+                            </div>
+                        </div>
+</div>    
+
+<footer class="bg-white sticky-footer">
+                <div class="container my-auto">
+                    <div class="text-center my-auto copyright"><span>Copyright © Infoservice 2021</span></div>
+                </div>
+            </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="assets/js/theme.js"></script>
+
+
+
+
+
+
+
+
+
+
