@@ -124,50 +124,71 @@ function Bars($conn){
         </div>";
     }
 }
+function Stats($conn){
+  $solved_unresolved = "SELECT COUNT(isaperto) AS val FROM ticket 
+  GROUP BY isaperto
+  ORDER BY isaperto";
+  $assigned_unassigned = "SELECT COUNT(isassegnato) AS val FROM ticket 
+  GROUP BY isassegnato
+  ORDER BY isassegnato";
+
+  $stmt1 = $conn -> prepare($solved_unresolved);
+  $stmt1 -> execute();
+  $data1 = $stmt1 ->get_result();
+  $stmt2 = $conn -> prepare($assigned_unassigned);
+  $stmt2 -> execute();
+  $data2 = $stmt2 ->get_result();
+  $i = 0;
+  $solved = $data1 -> fetch_assoc()['val'];
+  $unresolved = $data1-> fetch_assoc()['val'];
+  $assigned = $data2-> fetch_assoc()['val'];
+  $unassigned = $data2-> fetch_assoc()['val'];
+  return array("Solved" => $solved,
+  "Unresolved" => $unresolved,
+  "Assigned" => $assigned,
+  "Unassigned" => $unassigned);
+}
 $title = "Dashboard";
-include_once '../template/privatepage_params.php'; ?>
-<div class="containerone">
-  <div class="containerr">
-    <a>
+include_once '../template/privatepage_params.php'; 
+$stats = Stats($conn);
+?>
+<div class="containerone" style="width:97%; float: left;">
+  <div class="containerr" style="width:120%; float: left;">
+    <a style="float: left; font-size: 200%;">
       <p>Unresolved</p>
-    </a> 0
-  </div>
-  <div class="containerr">
-    <a>
-      <p>solved</p>
+      </br> 
+      <?php echo $stats["Unresolved"];?>
     </a>
-    0
   </div>
-  <div class="containerr">
-    <a>
-      <p>Overdue</p>
+  <div class="containerr"  style="width:120%; float: left;">
+    <a style="float: left; font-size: 200%;">
+      <p>Solved</p>
+      </br>
+      <?php echo $stats["Solved"]; ?>
     </a>
-    0
   </div>
-  <div class="containerr">
-    <a>
+  <div class="containerr" style="width:120%; float: left;">
+    <a style="float: left; font-size: 200%;">
+      <p>Assigned</p>
+      </br>
+      <?php echo $stats["Assigned"]; ?>
+    </a> 
+    
+  </div>
+  <div class="containerr" style="width:120%; float: left;">
+    <a style="float: left; font-size: 200%;">
       <p>Unassigned</p>
+      </br>
+      <?php echo $stats["Unassigned"]; ?>
     </a>
-    0
-  </div>
-  <div class="containerr">
-    <a>
-      <p>Open</p>
-    </a>
-    0
-  </div>
-  <div class="containerr">
-    <a>
-      <p>On Hold</p>
-    </a>
-    0
   </div>
 </div>
 <br>
 
-<div style=" height: 275px; width: 100%;" id="lineChart"> </div>
-<div class="row">
-    <div class="col-lg-6 mb-4">
+<div style=" height: 275px; width: 95%;" id="lineChart">
+ </div>
+<div class="row" style="width: 100%;">
+    <div class="col-lg-6 mb-4" style="width: 50%;">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="text-primary font-weight-bold m-0">Projects</h6>
@@ -177,30 +198,41 @@ include_once '../template/privatepage_params.php'; ?>
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-xl-4">
+    <div class="col-lg-5 col-xl-4" style="width: 50%;">
     <?php $feed = FeedBack($conn);?>
-                            <div class="card shadow mb-4">
+                            <div class="card shadow mb-4" style="width: 150%;">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="text-primary font-weight-bold m-0">Feedback</h6>
                                     
                                 </div>
-                                <div class="card-body">
-                                    <div class="chart-area"><canvas data-bs-chart="{
-                                        &quot;type&quot;:&quot;doughnut&quot;,
-                                        &quot;data&quot;:
-                                        {&quot;labels&quot;: [&quot;Satisfied Clients&quot;,&quot;Other Clients&quot;],&quot;datasets&quot;:[{
-                                        &quot;label&quot;:&quot;A&quot;,
-                                        &quot;backgroundColor&quot;:&quot;#1cc88a&quot;,
-                                        &quot;borderColor&quot;:[&quot;#ffffff&quot;],
-                                        &quot;data&quot;:[&quot;<?php echo $feed[1]; ?>&quot;]
-                                        }
-                                        ]},
-                                        &quot;options&quot;:{&quot;maintainAspectRatio&quot;:false,&quot;legend&quot;:{&quot;display&quot;:true},&quot;title&quot;:{}}}"></canvas></div>
+                                <div class="card-body" style="width: 145%;">
+                                    <div class="chart-area">
+                                    <canvas data-bs-chart='{
+                                      "type":"doughnut",
+                                      "data": {"labels":
+                                      [<?php echo $feed[0]; ?>],
+                                      "datasets":[
+                                      {"label":"",
+                                      "backgroundColor":["#1cc88a"],
+                                      "borderColor":["#ffffff"],
+                                      "data":
+                                      [&quot;<?php echo $feed[1];?>&quot;,
+                                       &quot;<?php echo strval(100 - intval($feed[1])); ?>&quot;
+                                       ]
+                                       }
+                                       ]},
+                                       "options":
+                                       {"maintainAspectRatio":false,
+                                       "legend":{"display":false},
+                                       "title":{}}}"'>
+                                    </canvas>
+                                    </div>
                                     <div class="text-center small mt-4"><span class="mr-2"><i class="fas fa-circle text-primary"></i>&nbsp;<?php echo $feed[0]; ?></span></div>
                                 </div>
                             </div>
                         </div>
-</div>    
+</div>
+<!--data-bs-chart='{"type":"doughnut","data":{"labels":["<?php echo $feed[0]; ?>","",""],"datasets":[{"label":"","backgroundColor":["#4e73df","#1cc88a","#36b9cc"],"borderColor":["#ffffff"],"data":[&quot;<?php echo $feed[1]; ?>&quot;, &quot;<?php echo strval(100 - intval($feed[1])); ?>&quot;]}]},"options":{"maintainAspectRatio":false,"legend":{"display":false},"title":{}}} -->    
 
 <footer class="bg-white sticky-footer">
                 <div class="container my-auto">
