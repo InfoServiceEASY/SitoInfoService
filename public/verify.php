@@ -4,7 +4,7 @@ if (isset($_GET["email"]) && isset($_GET["usr"])) {
     $conn = DataConnect();
     $status = 1;
     $stmt = $conn->prepare('UPDATE utenza SET status=? WHERE email=? AND username=?');
-    $stmt->bind_param('ss', $status, $_GET["email"], $_GET["usr"]);
+    $stmt->bind_param('iss', $status, $_GET["email"], $_GET["usr"]);
     if ($stmt->execute() === true) {
         $stmt->close();
         $conn->close();
