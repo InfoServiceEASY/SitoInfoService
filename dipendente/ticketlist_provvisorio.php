@@ -5,8 +5,8 @@ $title = 'Interventi dipendente'; // mettere titolo più corto
 include_once '../dal.php';
 include '../template/privatepage_params.php'; ?>
 <?php
-$aperto = isset($_GET["aperto"])? ($_GET["aperto"] == 1 ? true: false) : null;
-$pageno = isset($_GET['pageno'])? $_GET['pageno'] : 1;
+$aperto = isset($_GET["aperto"]) ? ($_GET["aperto"] == 1 ? true : false) : null;
+$pageno = isset($_GET['pageno']) ? $_GET['pageno'] : 1;
 $conn = DataConnect();
 #region commenti
 /*$query1 = "SELECT t.id, t.dataapertura,t.descrizione , r.attività FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
@@ -52,139 +52,143 @@ function prova($sql, $h1, $chiuso)
 //prova($query1, "Interventi aperti", false);
 //prova($query2, "Interventi chiusi", true);
 #endregion 
-if(! is_null($aperto)){  
-    $nome_colonne = array("Id", "Data Apertura", "Nome", "Oggetto");
-    $total_pages = Table($nome_colonne,$pageno, $aperto);
-    echo '<div  class="contiene">';  
-    echo "<p class='inlineLeft'  >pagina ". strval($pageno) ." su ". strval($total_pages) ." pagine</p>"; 
+if (!is_null($aperto)) {
+    $nome_colonne = array("Id", "Data Apertura", "Nome", "Oggetto", "modifica");
+    $total_pages = Table($conn, $nome_colonne, $pageno, $aperto);
+    echo '<div  class="contiene">';
+    //echo "<p class='inlineLeft'  >pagina " . strval($pageno) . " su " . strval($total_pages) . " pagine</p>";
     echo '<p style = "font-size: 200%; text-align:center;">';
-    $num_aperto = strval($aperto? 1:0);
-    for($i=1; $i <= $total_pages; $i++)
+    $num_aperto = strval($aperto ? 1 : 0);
+    for ($i = 1; $i <= $total_pages; $i++)
         echo "<a href = '?pageno=$i&aperto=$num_aperto'> $i </a>";
-    echo '</p>
-    <p style = "font-size: 200%; text-align:center;">'; 
-    echo "<a href='?pageno=1&aperto=$num_aperto'>   &lt;&lt;   </a>"; 
-?>    
+    echo '</p>';
+    echo '<p style = "font-size: 200%; text-align:center;">';
+    echo "<a href='?pageno=1&aperto=$num_aperto'>   &lt;&lt;   </a>";
+?>
     <a href="<?php if ($pageno <= 1) {
                     echo '#';
                 } else {
-                    echo "?pageno=" . ($pageno - 1)."&aperto=".$num_aperto;
-                } ?>"> &lt; </a>    
-    <a href="#"> <?php echo $pageno; ?> </a>            
+                    echo "?pageno=" . ($pageno - 1) . "&aperto=" . $num_aperto;
+                } ?>"> &lt; </a>
+    <a> <?php echo $pageno; ?> </a>
     <a href="<?php if ($pageno >= $total_pages) {
                     echo '#';
                 } else {
-                    echo "?pageno=" . ($pageno + 1)."&aperto=".$num_aperto;
-                } ?>">  &gt;    </a>
-    <a href="?pageno=<?php echo $total_pages."&aperto=".$num_aperto; ?>">    &gt;&gt;    </a> <!--</li> -->
-</p>
-</div>
-<?php } 
-else{?>
+                    echo "?pageno=" . ($pageno + 1) . "&aperto=" . $num_aperto;
+                } ?>"> &gt; </a>
+    <a href="?pageno=<?php echo $total_pages . "&aperto=" . $num_aperto; ?>"> &gt;&gt; </a>
+    </p>
+    </div>
+<?php } else { ?>
     <h1 style="font-size: 300%"> Visualizza Interventi</h1>
     </br>
     </br>
     <a href="?pageno=1&aperto=0" style="text-decoration: none; color:white;">
-    <button class = "btn-primary" style="float:center; width: 100%; height:100%; font-size: 200%">
-    </br>
-    </br>
-    </br>
-     Visualizza i tuoi interventi chiusi
-    </br>
-    </br>
-    </br>
-     </button>
-     </a>
+        <button class="btn-primary" style="float:center; width: 100%; height:100%; font-size: 200%">
+            </br>
+            </br>
+            </br>
+            Visualizza i tuoi interventi chiusi
+            </br>
+            </br>
+            </br>
+        </button>
+    </a>
     </br>
     </br>
     </br>
     </br>
     <a href="?pageno=1&aperto=1" style="text-decoration: none; color:white;">
-    <button class = "btn-primary" style="float:center; width: 100%; height:100%; font-size: 200%">
+        <button class="btn-primary" style="float:center; width: 100%; height:100%; font-size: 200%">
+            </br>
+            </br>
+            </br>
+            Visualizza i tuoi interventi aperti
+            </br>
+            </br>
+            </br>
+        </button>
+    </a>
     </br>
     </br>
     </br>
-    Visualizza i tuoi interventi aperti
-     </br>
-     </br>
-     </br>
-    </button>
-    </a> 
     </br>
     </br>
     </br>
     </br>
-    </br>
-    </br>
-    </br>
-    <?php
+<?php
 }
 ?>
 
-<script >tabellaprivata()</script>
-<?php 
+<script>
+    tabellaprivata()
+</script>
+<?php
 #region Methods
-function HeadRow($nome_colonne){
+function HeadRow($nome_colonne)
+{
     $template = '<tr>';
-    foreach($nome_colonne as $colonna){
+    foreach ($nome_colonne as $colonna) {
         $template .= "<th><strong> $colonna </strong></td>";
-        }
+    }
     $template .= '</tr>';
     return $template;
 }
-function TableBeginningPrint($nome_colonne){
+function TableBeginningPrint($nome_colonne)
+{
     echo '<table id="search" style="width: 100%">';
-        echo "<thead>";
-        echo HeadRow($nome_colonne);
-        echo "</thead>";
-        echo '<tbody>'; 
+    echo "<thead>";
+    echo HeadRow($nome_colonne);
+    echo "</thead>";
+    echo '<tbody>';
 }
-function Table_content($conn, $query, $aperto){
-  $conn = DataConnect();
-  $id = GetUser()[0];
-  $sth = $conn->prepare($query);
-  $sth->bind_param('i', $id);
-  $sth->execute();
-  $res_data = $sth->get_result();
-  if (  $res_data = mysqli_query($conn, $query)) {
-    while ($row = mysqli_fetch_array($res_data)) {
-  ?>
-    <tr>
-        <td><?php echo $row["id"]; ?></td>
-        <td><?php echo $row["DataApertura"]; ?></td>
-        <td><?php echo $row["Nome"];  ?></td>
-        <td><?php echo $row['Oggetto'] ?></td>
-        <?php echo $aperto? 
-        '<td><button id="unico" onclick="location.href='."'measures.php?id=".$row['id']."'".'"'.">Visualizza Precedenti Report</button></td>".
-        '<td><button id="unico" onclick="location.href='."'writereport.php?id=".$row['id']."'".'"'.">Scrivi Report</button></td>"
-        : '<td><button id="unico" onclick="location.href='."'measures.php?id=".$row['id']."'".'"'.">Visualizza Precedenti Report</button></td>";
-        ?> 
-    </tr>
-  <?php }
+function Table_content($conn, $query, $aperto)
+{
+    $id = GetUser()[0];
+    $sth = $conn->prepare($query);
+    $sth->bind_param('i', $id);
+    $sth->execute();
+    $resultE = $sth->get_result();
+    if ($resultE->num_rows > 0) {
+        while ($row = $resultE->fetch_assoc()) {
+?>
+            <tr>
+                <td><?php echo $row["id"]; ?></td>
+                <td><?php echo $row["DataApertura"]; ?></td>
+                <td><?php echo $row["Nome"];  ?></td>
+                <td><?php echo $row['Oggetto'] ?></td>
+                <?php echo $aperto ?
+                    '<td><button id="unico" onclick="location.href=' . "'measures.php?id=" . $row['id'] . "'" . '"' . ">Visualizza Precedenti Report</button>" .
+                    '<button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['id'] . "'" . '"' . ">Scrivi Report</button></td>"
+                    : '<td><button id="unico" onclick="location.href=' . "'measures.php?id=" . $row['id'] . "'" . '"' . ">Visualizza Precedenti Report</button></td>";
+                ?>
+            </tr>
+        <?php }
         mysqli_close($conn);
     } else {
         ?>
         <tr>
             <td colspan="5">No results found.</td>
-        <?php
+    <?php
     }
 }
-function TableEndPrint($nome_colonne){
+function TableEndPrint($nome_colonne)
+{
     echo "</tbody>
         <tfoot>";
-        echo HeadRow($nome_colonne);
-        echo "</tfoot>
+    echo HeadRow($nome_colonne);
+    echo "</tfoot>
         </table>";
 }
-function Table($nome_colonne, $pageno,$aperto){
+function Table($conn, $nome_colonne, $pageno, $aperto)
+{
     $no_of_records_per_page = 10;
     $offset = ($pageno - 1) * $no_of_records_per_page;
-    $conn =DataConnect();
-    $total_pages_sql = 
-    "SELECT t.isaperto, r.fk_dipendente, COUNT(*) AS TotalRows
+    $total_pages_sql =
+        "SELECT t.isaperto, r.fk_dipendente, COUNT(*) AS TotalRows
     FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
-	WHERE".  ($aperto == 1? "(t.isaperto = 1 and r.fk_dipendente = ? and r.isconvalidato is null)" : "(r.fk_dipendente = ? and t.isaperto = 0)").
-	"GROUP BY t.isaperto, r.fk_dipendente";// fai il count in modo che ti ritorni la somma delle righe
+	WHERE" .  ($aperto == 1 ? "(t.isaperto = 1 and r.fk_dipendente = ? and r.isconvalidato is null)" : "(r.fk_dipendente = ? and t.isaperto = 0)") .
+        "GROUP BY t.isaperto, r.fk_dipendente"; // fai il count in modo che ti ritorni la somma delle righe
     $id = GetUser()[0];
     $sth = $conn->prepare($total_pages_sql);
     $sth->bind_param('i', $id);
@@ -194,10 +198,10 @@ function Table($nome_colonne, $pageno,$aperto){
     $total_rows = mysqli_fetch_array($result)["TotalRows"];
     $total_pages = floor($total_rows / $no_of_records_per_page) + 1;
     $query = null;
-    if($aperto){
+    if ($aperto) {
         $query = "SELECT t.id, t.dataapertura AS DataApertura,t.descrizione AS Oggetto, r.attività AS Nome FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
         WHERE t.isaperto = 1 AND r.fk_dipendente =? and r.isconvalidato is null LIMIT $offset, $no_of_records_per_page"; //r.attività is null, ma se si sbaglia?
-    } else{
+    } else {
         $query = "SELECT t.id, t.dataapertura AS DataApertura,t.descrizione AS Oggetto, r.attività AS Nome FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
             AND r.fk_dipendente =? and  t.isaperto = 0 LIMIT $offset, $no_of_records_per_page";
     }
@@ -214,8 +218,9 @@ function Table($nome_colonne, $pageno,$aperto){
     return $total_pages;
 }
 #endregion Methods
-?>
-<br>
-</div>
-</body>
-</html>
+    ?>
+    <br>
+    </div>
+    </body>
+
+    </html>

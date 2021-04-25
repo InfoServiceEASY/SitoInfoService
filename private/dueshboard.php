@@ -213,7 +213,7 @@ $stats = Stats($conn);
                                       [<?php echo $feed[0]; ?>],
                                       "datasets":[
                                       {"label":"",
-                                      "backgroundColor":["#1cc88a"],
+                                      "backgroundColor":["#1cc88a", "#ee0018"],
                                       "borderColor":["#ffffff"],
                                       "data":
                                       [&quot;<?php echo $feed[1];?>&quot;,
