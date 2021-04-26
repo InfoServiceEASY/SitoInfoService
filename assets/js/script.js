@@ -86,7 +86,7 @@ function sendEmail(email, username) {
             From: "infoservicehelps@gmail.com",
             Subject: 'Signup | Verification',
             Body: "Please click this link to activate your account:\n\
-            http://localhost:8000/verify.php?email=" + email + "&usr=" + username,
+            http://localhost:8000/public/verify.php?email=" + email + "&usr=" + username,
         })
         .then(function(message) {});
 }
@@ -99,4 +99,52 @@ function myFunction() {
     } else {
         $(".field").prop("disabled", true);
     }
+}
+
+function tabellaprivata() {
+    $(document).ready(function() {
+        //$("tr:even").css("background-color", "#672146");
+        //$("tr:odd").css("background-color", "#EFF1F1");
+        // Setup - add a text input to each footer cell
+        $('#search thead th').each(function() {
+            var title = $(this).text().trim();
+
+            //var prova = '"modifica\n"';
+            // console.log(title.localeCompare(prova));
+
+            //console.log("modifica");
+            //            console.log(title != "modifica");
+            if (title != "modifica")
+                $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
+        });
+
+        // DataTable
+        var table = $('#search').DataTable({
+            responsive: true,
+            paging: false,
+            bInfo: false,
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            initComplete: function() {
+                // Apply the search
+                this.api().columns().every(function() {
+                    var that = this;
+                    $('input', this.header()).on('keyup change clear', function() {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            }
+        });
+
+        $('.filter').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+
+    });
 }

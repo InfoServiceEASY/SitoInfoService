@@ -9,7 +9,7 @@ $condizione = "";
 if ($_SESSION["member"] == "admin") $condizione = 1;
 elseif ($_SESSION["member"] == "cliente") {
   $nomeColonna = "fk_cliente";
-  $condizione = GetIDGivenUsername();
+  $condizione = GetUser()[0];
 }
 $query = "SELECT dataapertura , count(*) AS count FROM `ticket` where YEAR(dataapertura)>=YEAR(CURDATE())-2 and " . $nomeColonna . "=? group by dataapertura";
 
