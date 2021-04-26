@@ -516,6 +516,21 @@ function createReport($idipendente, $idticket)
     return $error;
 }
 
+function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente)
+{
+  //fk_ticket in report. n report 1 ticket.
+  $conn = DataConnect();
+  $stmt = $conn->prepare('UPDATE report SET datafine=Now(),durata=?,attività=?,isrisolto=? WHERE fk_ticket=? AND fk_dipendente=? AND isnull(isconvalidato)');
+  $stmt->bind_param('ssiii', $durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente);
+  if ($stmt->execute() === true)
+    $error = 'Fatto';
+  else
+    $error = 'Mi dispiace riprova';
+  $stmt->close();
+  $conn->close();
+  return $error;
+}
+
 function deleteTicket($id)
 {
     $error = "";
