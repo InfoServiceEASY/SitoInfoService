@@ -499,3 +499,57 @@ function deleteTicket($id)
     $conn->close();
     return $error;
 }
+
+function Tabella($query)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    return $result;
+}
+function PagineTotali($total_pages_sql,$num_records_per_page)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare($total_pages_sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $total_rows = $result->fetch_assoc()['cont'];
+    $total_pages = ceil($total_rows / $num_records_per_page);
+    return $total_pages;
+}
+function Paginazione($pageno, $total_pages)
+{
+    echo  '<div  class="contiene">';
+    echo "<p class='inlineLeft'  >pagina " . $pageno . " su " . $total_pages . " pagine</p>";
+    echo ' <ul  class="inlineRight"  id="navlist">';
+    echo '<li ><a href="?pageno=1">First</a></li>';
+    echo '<li  class="';
+    if ($pageno <= 1) {
+        echo 'disabled';
+    };
+    echo '">';
+    echo '   <a href="';
+    if ($pageno <= 1) {
+        echo '#';
+    } else {
+        echo "?pageno=" . ($pageno - 1);
+    };
+    echo '">Prev</a></li>';
+
+    echo '<li  class="';
+    if ($pageno >= $total_pages) {
+        echo 'disabled';
+    };
+    echo '">';
+    echo ' <a href="';
+    if ($pageno >= $total_pages) {
+        echo '#';
+    } else {
+        echo "?pageno=" . ($pageno + 1);
+    };
+    echo '">Next</a></li>';
+    echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
+}
