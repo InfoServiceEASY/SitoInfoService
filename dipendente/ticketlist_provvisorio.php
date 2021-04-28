@@ -55,6 +55,7 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
     <th><strong> DataApertura </strong></td>
     <th><strong> Nome </strong></td>
     <th><strong> Oggetto </strong></td>
+    <th><strong> Attività </strong></td>
     <th><strong> modifica</td>
     </thead>
     <tbody>';
@@ -71,10 +72,12 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
                 <td><?php echo $row["DataApertura"]; ?></td>
                 <td><?php echo $row["Nome"];  ?></td>
                 <td><?php echo $row['Oggetto'] ?></td>
-                <?php echo $aperto ?
-                    '<td><button id="unico" onclick="location.href=' . "'measures.php?id=" . $row['id'] . "'" . '"' . ">Visualizza Precedenti Report</button>" .
+                <td><?php echo $row["Attività"];  ?></td>
+                <?php 
+                echo $aperto ?
+                    '<td><button id="unico" onclick="location.href=' . "'measures.php?id=" . $row['id']. "&aperto=1" . "'" . '"' . ">Visualizza Precedenti Report</button>" .
                     '<button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['id'] . "'" . '"' . ">Scrivi Report</button></td>"
-                    : '<td><button id="unico" onclick="location.href=' . "'measures.php?id=" . $row['id'] . "'" . '"' . ">Visualizza Precedenti Report</button></td>";
+                    : '<td><button id="unico" onclick="location.href=' . "'measures.php?id=" . $row['id'] . "&aperto=0". "'" . '"' . ">Visualizza Precedenti Report</button></td>";
                 ?>
             </tr>
         <?php }
@@ -91,6 +94,7 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
      <th><strong> DataApertura </strong></td>
      <th><strong> Nome </strong></td>
      <th><strong> Oggetto </strong></td>
+     <th><strong> Attività </strong></td>
      <th><strong> modifica </strong></td>
      </tfoot>
      </table>';
@@ -138,10 +142,10 @@ function Table($conn, $pageno, $aperto)
     $total_rows = mysqli_fetch_array($result)["TotalRows"];
     $total_pages = floor($total_rows / $no_of_records_per_page) + 1;
     $query = $aperto?   
-    "SELECT t.id, t.dataapertura AS DataApertura,t.descrizione AS Oggetto, r.attività AS Nome FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+    "SELECT t.id, t.dataapertura AS DataApertura,t.oggetto AS Nome,t.descrizione AS Oggetto, r.attività AS Attività FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
     WHERE t.isaperto = 1 AND r.fk_dipendente =? and r.isconvalidato is null LIMIT $offset, $no_of_records_per_page"
     : 
-    "SELECT t.id, t.dataapertura AS DataApertura,t.descrizione AS Oggetto, r.attività AS Nome FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
+    "SELECT t.id, t.dataapertura AS DataApertura,t.oggetto AS Nome,t.descrizione AS Oggetto, r.attività AS Attività FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
         AND r.fk_dipendente =? and  t.isaperto = 0 LIMIT $offset, $no_of_records_per_page";
     //si comincia a stampare
     //aperti o chiusi
