@@ -103,17 +103,8 @@ function myFunction() {
 
 function tabellaprivata() {
     $(document).ready(function() {
-        //$("tr:even").css("background-color", "#672146");
-        //$("tr:odd").css("background-color", "#EFF1F1");
-        // Setup - add a text input to each footer cell
         $('#search thead th').each(function() {
             var title = $(this).text().trim();
-
-            //var prova = '"modifica\n"';
-            // console.log(title.localeCompare(prova));
-
-            //console.log("modifica");
-            //            console.log(title != "modifica");
             if (title != "modifica")
                 $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
         });

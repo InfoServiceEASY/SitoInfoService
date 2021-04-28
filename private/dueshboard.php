@@ -1,5 +1,7 @@
 <?php
 session_start();
+$title = "Dashboard";
+include_once '../template/privatepage_params.php'; 
 include_once '../dal.php';
 Session();
 ?>
@@ -148,8 +150,7 @@ function Stats($conn){
   "Assigned" => $assigned,
   "Unassigned" => $unassigned);
 }
-$title = "Dashboard";
-include_once '../template/privatepage_params.php'; 
+
 $stats = Stats($conn);
 ?>
 <div class="containerone" style="width:97%; float: left;">
