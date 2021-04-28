@@ -207,20 +207,19 @@ $stats = Stats($conn);
                                 </div>
                                 <div class="card-body" style="width: 145%;">
                                     <div class="chart-area">
-                                    <canvas data-bs-chart='{
-                                      "type":"doughnut",
+                                    <canvas data-bs-chart='{{&quot;type&quot;:&quot;doughnut&quot;,
                                       "data": {"labels":
                                       [<?php echo $feed[0]; ?>],
-                                      "datasets":[
+                                      "datasets":
+                                      [
                                       {"label":"",
                                       "backgroundColor":["#1cc88a", "#ee0018"],
                                       "borderColor":["#ffffff"],
-                                      "data":
+                                      "data":{
                                       [&quot;<?php echo $feed[1];?>&quot;,
                                        &quot;<?php echo strval(100 - intval($feed[1])); ?>&quot;
                                        ]
-                                       }
-                                       ]},
+                                       }]},
                                        "options":
                                        {"maintainAspectRatio":false,
                                        "legend":{"display":false},

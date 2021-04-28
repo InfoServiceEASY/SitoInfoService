@@ -1,6 +1,6 @@
 <?php
 session_start();
-$title = 'interventi dipendente';
+$title = 'Interventi dipendente';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
@@ -68,13 +68,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $variabile = $_GET["scelta"];
     $conn = DataConnect();
     if ($variabile == 1) {
-      $sql = "SELECT dipendente.id, concat(nome, ' ', cognome) AS fullname  FROM k113bann4ponykr2.dipendente
+      $sql = "SELECT dipendente.id, concat(nome, ' ', cognome) AS fullname  FROM dipendente
                 INNER JOIN lavora on dipendente.fk_utenza=lavora.fk_dipendente
                 WHERE lavora.fk_settore=(SELECT id FROM settore WHERE settore.nome= ? )";
       $stmt = $conn->prepare($sql);
       $stmt->bind_param('s', $row["nome"]);
     } else {
-      $sql = "SELECT id, concat(nome, ' ', cognome) AS fullname FROM k113bann4ponykr2.dipendente";
+      $sql = "SELECT id, concat(nome, ' ', cognome) AS fullname FROM dipendente";
       $stmt = $conn->prepare($sql);
     }
     $stmt->execute();
