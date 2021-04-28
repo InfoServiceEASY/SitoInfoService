@@ -77,6 +77,8 @@ function TableEndPrint($nome_colonne){
             $result = mysqli_query($conn, $total_pages_sql);
             $total_rows = mysqli_fetch_array($result)[0];
             $total_pages = ceil($total_rows / $no_of_records_per_page);
+            //$sql = "SELECT r.id, r.datainizio, r.datafine, r.isrisolto,r.attività,t.descrizione, r.commento, t.isaperto FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket where t.id=? and r.attività is not null
+            //LIMIT $offset, $no_of_records_per_page";
             $sql = "qui fai la sua select e ci lasci questo => LIMIT $offset, $no_of_records_per_page";
             if (  $res_data = mysqli_query($conn, $sql)) {
                 while ($row = mysqli_fetch_array($res_data)) {

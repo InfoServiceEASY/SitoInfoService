@@ -1,5 +1,7 @@
 <?php
 session_start();
+$title = "Dashboard";
+include_once '../template/privatepage_params.php';
 include_once '../dal.php';
 Session();
 ?>
@@ -111,17 +113,22 @@ function Bars($conn){
     $data2 = $stmt2 ->get_result();
     $colors = array("danger", "primary", "warning", "info", "success"); //rosso, blue, giallo, azzurro, verde
     //var_dump($lista_perc_interventi);
+    $j = 0; 
     for($i = 0; $i < $data2 -> num_rows; $i++){
-        $lista_perc_interventi = $data2 -> fetch_assoc();
+      $lista_perc_interventi = $data2 -> fetch_assoc();
+      $dipendenti = $lista_perc_interventi['NumDipendenti'];
+      $perc = 100*($dipendenti)/($dipendenti+1);
+        if(($j < 4 && rand(0,50) < 30) || $perc < 33 || $perc > 67){
+        //quattro random, più quelli completati a meno di un terzo o più di due terzi
         $parole = explode(' ', $lista_perc_interventi['descrizione']);
         $testo = $parole[0] . ' ' . $parole[1] . ' ' . $parole[2] . ' ' . $parole[3];
-        $dipendenti = $lista_perc_interventi['NumDipendenti'];
-        $perc = 100*($dipendenti)/($dipendenti+1);
         $color = $perc >= 75? $colors[count($colors) - 1] : ($perc < 50? $colors[0] : $colors[rand(1,count($colors) - 2)]);
-    echo "<h4 class='small font-weight-bold'>".$testo."<span class='float-right'>".strval($perc)."%</span></h4>";
-    echo "<div class='progress mb-4'>
+      echo "<h4 class='small font-weight-bold'>".$testo."<span class='float-right'>".strval($perc)."%</span></h4>";
+      echo "<div class='progress mb-4'>
         <div class= '" ."progress-bar bg-".strval($color)."' aria-valuenow=".strval($perc)." aria-valuemin='0' aria-valuemax='100' style='width: $perc%;'><span class='sr-only'>%</span></div>
         </div>";
+      $j++;  
+      }
     }
 }
 function Stats($conn){
@@ -148,8 +155,7 @@ function Stats($conn){
   "Assigned" => $assigned,
   "Unassigned" => $unassigned);
 }
-$title = "Dashboard";
-include_once '../template/privatepage_params.php'; 
+ 
 $stats = Stats($conn);
 ?>
 <div class="containerone" style="width:97%; float: left;">
