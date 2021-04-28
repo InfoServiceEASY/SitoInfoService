@@ -338,7 +338,7 @@ function ShowProfile()
     $template = '<div class="getting-started-info">';
     $stmt = $conn->prepare('SELECT c.nome,c.cognome,c.cellulare,u.username,u.email FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.id=?');
     $stmt->bind_param('i', GetUser()[0]);
-    if ($stmt->execute() == true) {
+    if ($stmt->execute() === true) {
         $result = $stmt->get_result();
         $result = $result->fetch_assoc();
         $template .= '<form action="" style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item field" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
@@ -360,17 +360,23 @@ function ShowTicketDetails($id)
 {
     $conn = DataConnect();
     $template = '<div class="row justify-content-center">';
-    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.datainizio,r.datafine,r.isrisolto,r.commento FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.datainizio,r.datafine,r.isrisolto,r.commento,r.isconvalidato FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
     $stmt->bind_param('i', $id);
-    if ($stmt->execute() == true) {
+    if ($stmt->execute() === true) {
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
-            if (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
-            if (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
-            if (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
-            if ($result['isrisolto'] == 0 ? $status = 'Non ancora risolto' : $status = 'Risolto');
-            if (is_null($result['commento']) ? $comment = 'Non hai ancora <a href="report.php">commentato</a>' : $comment = $result['commento']);
+            (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
+            (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
+            (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
+            ($result['isrisolto'] === 0 ? $status = 'Non ancora risolto' : $status = 'Risolto');
+            if (is_null($result['commento']) && is_null($result['isconvalidato'])) {
+                $tag = '<h5>Convalida <a href="report.php">qua</a></h5></br>';
+                $comment = 'Non hai ancora aggiunto nessun comento';
+            } else if (is_null($result['commento']) && !is_null($result['isconvalidato']))
+                $comment = 'Non hai aggiunto nessun commento.';
+            else
+                $comment = $result['commento'];
             $template .= '<div class="col-md-4 feature-box">' .
                 '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
@@ -380,7 +386,7 @@ function ShowTicketDetails($id)
                 '<label style="font-weight: bold;">Data fine risoluzione:<h5>' . $endate . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Attività:<h5>' . $activity . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Stato ticket:<h5>' . $status . '</h5></label></br>' .
-                '<label style="font-weight: bold;">Commento:<h5>' . $comment . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Commento:<h5>' . $comment . '</h5></label></br>' . $tag .
                 '</div></div>';
         } else
             $template = 'Non c\'è nulla da visualizzare per questo ticket.';
@@ -401,9 +407,9 @@ function ShowReportDetails($id)
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
-            if (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
-            if (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
-            if (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
+            (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
+            (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
+            (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
             $template .= '<div class="col-md-4 feature-box"><form method="POST">' .
                 '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
@@ -412,7 +418,7 @@ function ShowReportDetails($id)
                 '<label style="font-weight: bold;">Data inzio risoluzione:<h5>' . $startdate . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Data fine risoluzione:<h5>' . $endate . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Attività:<h5>' . $activity . '</h5></label></br>' .
-                '<textarea class="form-control" name="commento" required></textarea></br>' .
+                '<textarea class="form-control" name="commento" placeholder="Opzionale"></textarea></br>' .
                 '<button class="btn btn-primary btn-block" type="submit" name="yes">Convalida</button>' .
                 '<button class="btn btn-primary btn-block" type="submit" name="no">Non convalidare</button>' .
                 '</form></div></div>';
@@ -461,7 +467,6 @@ function ShowTicketStatus()
 function ShownewTickets()
 {
     $uno = 1;
-    $template = "";
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
     INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
@@ -518,17 +523,17 @@ function createReport($idipendente, $idticket)
 
 function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente)
 {
-  //fk_ticket in report. n report 1 ticket.
-  $conn = DataConnect();
-  $stmt = $conn->prepare('UPDATE report SET datafine=Now(),durata=?,attività=?,isrisolto=? WHERE fk_ticket=? AND fk_dipendente=? AND isnull(isconvalidato)');
-  $stmt->bind_param('ssiii', $durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente);
-  if ($stmt->execute() === true)
-    $error = 'Fatto';
-  else
-    $error = 'Mi dispiace riprova';
-  $stmt->close();
-  $conn->close();
-  return $error;
+    //fk_ticket in report. n report 1 ticket.
+    $conn = DataConnect();
+    $stmt = $conn->prepare('UPDATE report SET datafine=Now(),durata=?,attività=?,isrisolto=? WHERE fk_ticket=? AND fk_dipendente=? AND isnull(isconvalidato)');
+    $stmt->bind_param('ssiii', $durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente);
+    if ($stmt->execute() === true)
+        $error = 'Fatto';
+    else
+        $error = 'Mi dispiace riprova';
+    $stmt->close();
+    $conn->close();
+    return $error;
 }
 
 function deleteTicket($id)
@@ -545,4 +550,58 @@ function deleteTicket($id)
 
     $conn->close();
     return $error;
+}
+
+function Tabella($query)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+    $conn->close();
+    return $result;
+}
+function PagineTotali($total_pages_sql, $num_records_per_page)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare($total_pages_sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $total_rows = $result->fetch_assoc()['cont'];
+    $total_pages = ceil($total_rows / $num_records_per_page);
+    return $total_pages;
+}
+function Paginazione($pageno, $total_pages)
+{
+    echo  '<div  class="contiene">';
+    echo "<p class='inlineLeft'  >pagina " . $pageno . " su " . $total_pages . " pagine</p>";
+    echo ' <ul  class="inlineRight"  id="navlist">';
+    echo '<li ><a href="?pageno=1">First</a></li>';
+    echo '<li  class="';
+    if ($pageno <= 1) {
+        echo 'disabled';
+    };
+    echo '">';
+    echo '   <a href="';
+    if ($pageno <= 1) {
+        echo '#';
+    } else {
+        echo "?pageno=" . ($pageno - 1);
+    };
+    echo '">Prev</a></li>';
+
+    echo '<li  class="';
+    if ($pageno >= $total_pages) {
+        echo 'disabled';
+    };
+    echo '">';
+    echo ' <a href="';
+    if ($pageno >= $total_pages) {
+        echo '#';
+    } else {
+        echo "?pageno=" . ($pageno + 1);
+    };
+    echo '">Next</a></li>';
+    echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
 }
