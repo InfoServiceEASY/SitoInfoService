@@ -5,6 +5,7 @@
  <?php
     if (strpos(dirname($_SERVER['REQUEST_URI']), "/public") !== false)
         echo '
+
             <li class="nav-item item"><a class="nav-link" href="../index.php">HOME</a></li>
             <li class="nav-item item"><a class="nav-link" href="about-us.php">ABOUT US</a></li>
             <li class="nav-item item"><a class="nav-link" href="contact-us.php">CONTACT US</a></li>
@@ -20,10 +21,10 @@
         </ul>
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Profilo
+                Impostazioni
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="settings.php">Impostazioni</a>
+                <a class="dropdown-item" href="settings.php">Profilo</a>
                 <a class="dropdown-item" href="../private/logout.php">Logout</a>
             </div>
         </div>
