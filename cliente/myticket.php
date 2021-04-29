@@ -4,11 +4,13 @@ include_once '../dal.php';
 Session();
 $ticket = ShowTicket();
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php $title = 'I miei ticket - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'I miei ticket - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>

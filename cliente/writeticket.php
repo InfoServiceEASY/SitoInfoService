@@ -10,11 +10,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </script>";
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php $title = 'Nuovo ticket - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'Nuovo ticket - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>

@@ -2,8 +2,10 @@
 session_start();
 include_once '../dal.php';
 Session();
+
 $profile = ShowProfile();
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $error = UpdateProfile($_POST['nome'], $_POST['cognome'], $_POST['cellulare'], $_POST['username'], $_POST['email']);
 }
 ?>
@@ -12,7 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html>
 
 <head>
-    <?php $title = 'Il mio profilo - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'Il mio profilo - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>
@@ -26,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div>
                     <?php echo $profile[2] ?>
+                    <?php echo $error ?>
                 </div>
             </div>
         </section>
