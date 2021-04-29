@@ -144,16 +144,13 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
 function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
 {
     $conn = DataConnect();
-    $esito = '';
     $stmt = $conn->prepare('UPDATE cliente SET nome=?,cognome=?,cellulare=? WHERE fk_utenza=?');
     $stmt->bind_param('sssi', $nome, $cognome, $cellulare, GetUser()[0]);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $stmt->close();
         $stmt = $conn->prepare('UPDATE utenza SET username=?,email=? WHERE id=?');
-        $stmt->bind_param('ssi', $username, $email, $id);
-        if ($stmt->execute())
-            $esito = '';
-        else
+        $stmt->bind_param('ssi', $username, $email, GetUser()[0]);
+        if (!$stmt->execute())
             $esito = 'C\'è stato un problema riprova più tardi';
     } else
         $esito = 'C\'è stato un problema riprova più tardi';
@@ -199,12 +196,11 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 function ConvalidTicket($choice, $comment, $id)
 {
     $conn = DataConnect();
-    $esito = '';
     $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
     $stmt->bind_param('sssi', $choice, $comment, $choice, $id);
     if ($stmt->execute()) {
         $stmt->close();
-        if ($choice == true) {
+        if ($choice === 1) {
             $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
             $cond = 0;
             $stmt->bind_param('ii', $cond, $id);
@@ -237,7 +233,7 @@ function ShowTicket()
     $conn->close();
     foreach ($result as $r) {
         (strlen($r['descrizione']) > 20 ? $descrizione = substr($r['descrizione'], 0, 20) . "..." : $descrizione = $r['descrizione']);
-        if ($r['isaperto'] == 1) {
+        if ($r['isaperto'] === 1) {
             $contopen++;
             $openedticket .= '<div class="col-md-4 feature-box">' .
                 '<label style="font-weight: bold;">Ticket numero:<h5>' . $r['id'] . '</h5></label></br>' .
@@ -299,7 +295,7 @@ function ShowReport()
                     '<input type="hidden" name="id" value="' . $r['id'] . '"/>' .
                     '<a href="details.php?id=' . $r['id'] . '&page=report">Convalida report</a>' .
                     '</div>';
-            } else if ($r['isconvalidato'] == 1 && $r['isrisolto'] == 1) {
+            } else if ($r['isconvalidato'] === 1 && $r['isrisolto'] === 1) {
                 $contclose++;
                 $closedreport .= '<div class="col-md-4 feature-box">' .
                     '<label style="font-weight: bold;">Ticket numero:<h5>' . $r['id'] . '</h5></label></br>' .
@@ -338,7 +334,7 @@ function ShowProfile()
     $template = '<div class="getting-started-info">';
     $stmt = $conn->prepare('SELECT c.nome,c.cognome,c.cellulare,u.username,u.email FROM cliente c INNER JOIN utenza u ON c.fk_utenza = u.id AND u.id=?');
     $stmt->bind_param('i', GetUser()[0]);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $result = $stmt->get_result();
         $result = $result->fetch_assoc();
         $template .= '<form action="" style="border-radius: 25px" method="POST">' . '<div class="form-group"><label for="email">Nome</label><input class="form-control item field" name="nome" type="text" value="' . $result['nome'] . '" disabled></div>' .
@@ -362,7 +358,7 @@ function ShowTicketDetails($id)
     $template = '<div class="row justify-content-center">';
     $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,t.dataapertura,r.attività,r.datainizio,r.datafine,r.isrisolto,r.commento,r.isconvalidato FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
     $stmt->bind_param('i', $id);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
@@ -466,12 +462,12 @@ function ShowTicketStatus()
 
 function ShownewTickets()
 {
-    $uno = 1;
+    $cond = 1;
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
     INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
     AND t.isaperto=? ORDER BY t.dataapertura DESC limit 12');
-    $stmt->bind_param('i', $uno);
+    $stmt->bind_param('i', $cond);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
@@ -504,14 +500,14 @@ function createReport($idipendente, $idticket)
     $query = "INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza FROM dipendente WHERE id=?),?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ii', $idipendente, $idticket);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $conn->close();
         $uno = 1;
         $conn = DataConnect();
         $query = "update ticket set isassegnato=? where id=?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param('ii', $uno, $idticket);
-        if ($stmt->execute() === true) {
+        if ($stmt->execute()) {
             $error = "fatto";
         }
     } else
@@ -523,11 +519,10 @@ function createReport($idipendente, $idticket)
 
 function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente)
 {
-    //fk_ticket in report. n report 1 ticket.
     $conn = DataConnect();
     $stmt = $conn->prepare('UPDATE report SET datafine=Now(),durata=?,attività=?,isrisolto=? WHERE fk_ticket=? AND fk_dipendente=? AND isnull(isconvalidato)');
     $stmt->bind_param('ssiii', $durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente);
-    if ($stmt->execute() === true)
+    if ($stmt->execute())
         $error = 'Fatto';
     else
         $error = 'Mi dispiace riprova';
@@ -538,16 +533,15 @@ function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipende
 
 function deleteTicket($id)
 {
-    $error = "";
     $conn = DataConnect();
     $query = "delete from ticket where";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ii', $id);
-    if ($stmt->execute() === true) {
-        $error = "fatto";
+    if ($stmt->execute()) {
+        $error = 'Fatto';
     } else
-        $error = "mi dispiace riprovera";
-
+        $error = 'Mi dispiace riprova';
+    $stmt->close();
     $conn->close();
     return $error;
 }
