@@ -561,6 +561,7 @@ function Tabella($query)
     $conn->close();
     return $result;
 }
+
 function PagineTotali($total_pages_sql, $num_records_per_page)
 {
     $conn = DataConnect();
@@ -571,6 +572,7 @@ function PagineTotali($total_pages_sql, $num_records_per_page)
     $total_pages = ceil($total_rows / $num_records_per_page);
     return $total_pages;
 }
+
 function Paginazione($pageno, $total_pages)
 {
     echo  '<div  class="contiene">';
