@@ -5,7 +5,7 @@ if (isset($_GET["email"]) && isset($_GET["usr"])) {
     $status = 1;
     $stmt = $conn->prepare('UPDATE utenza SET status=? WHERE email=? AND username=?');
     $stmt->bind_param('iss', $status, $_GET["email"], $_GET["usr"]);
-    if ($stmt->execute() === true) {
+    if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
         $error = 'Bravo ti sei registrato con successo premi sul pulsante per accedere </p> </div>
