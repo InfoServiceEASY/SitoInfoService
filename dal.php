@@ -179,14 +179,12 @@ function Contact($firstname, $lastname, $phone, $email, $description)
 function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 {
     $conn = DataConnect();
-    $esito = '';
     $stmt = $conn->prepare('INSERT INTO ticket (oggetto,tipologia,descrizione,dataapertura,fk_cliente,fk_settore) VALUES (?,?,?,Now(),?,(SELECT id FROM settore WHERE nome=?))');
     $stmt->bind_param('sssis', $oggetto, $tipologia, $descrizione, GetUser()[0], $settore);
     if ($stmt->execute())
         $esito = 'Ticket creato con successo.';
     else
         $esito = 'C\'è stato un problema, riprova più tardi';
-
     $stmt->close();
     $conn->close();
     return $esito;
@@ -195,23 +193,28 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
 function ConvalidTicket($choice, $comment, $id)
 {
     $conn = DataConnect();
+    $cond = 0;
     $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
     $stmt->bind_param('sssi', $choice, $comment, $choice, $id);
     if ($stmt->execute()) {
         $stmt->close();
-        if ($choice === 1) {
-            $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
-            $cond = 0;
-            $stmt->bind_param('ii', $cond, $id);
-            if ($stmt->execute())
+        $stmt = $conn->prepare('UPDATE ticket SET isassegnato=? WHERE id=?');
+        $stmt->bind_param('ii', $cond, $id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            if ($choice === 1) {
+                $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
+                $stmt->bind_param('ii', $cond, $id);
+                if ($stmt->execute())
+                    $esito = 'Report convalidato correttamente.';
+                else
+                    $esito = 'C\'è stato un problema, riprova più tardi.';
+            } else
                 $esito = 'Report convalidato correttamente.';
-            else
-                $esito = 'C\'è stato un problema, riprova più tardi.';
         } else
-            $esito = 'Report convalidato correttamente.';
+            $esito = 'C\'è stato un problema, riprova più tardi.';
     } else
         $esito = 'C\'è stato un problema, riprova più tardi.';
-
     $stmt->close();
     $conn->close();
     return $esito;
@@ -500,24 +503,21 @@ function ShownewTickets()
 
 function createReport($idipendente, $idticket)
 {
-    $error = "";
     $conn = DataConnect();
-    $query = "INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza FROM dipendente WHERE id=?),?)";
-    $stmt = $conn->prepare($query);
+    $stmt = $conn->prepare('INSERT INTO report (datainizio,fk_dipendente,fk_ticket) VALUES (NOW(),(select fk_utenza FROM dipendente WHERE id=?),?)');
     $stmt->bind_param('ii', $idipendente, $idticket);
     if ($stmt->execute()) {
+        $stmt->close();
         $conn->close();
-        $uno = 1;
+        $cond = 1;
         $conn = DataConnect();
-        $query = "update ticket set isassegnato=? where id=?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param('ii', $uno, $idticket);
-        if ($stmt->execute()) {
-            $error = "fatto";
-        }
+        $stmt = $conn->prepare('UPDATE ticket SET isassegnato=? WHERE id=?');
+        $stmt->bind_param('ii', $cond, $idticket);
+        if ($stmt->execute())
+            $error = 'Fatto';
     } else
-        $error = "mi dispiace riprovera";
-
+        $error = 'Mi dispiace riprova';
+    $stmt->close();
     $conn->close();
     return $error;
 }
@@ -539,7 +539,7 @@ function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipende
 function deleteTicket($id)
 {
     $conn = DataConnect();
-    $query = "delete from ticket where";
+    $query = "DELETE FROM ticket WHERE";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ii', $id);
     if ($stmt->execute()) {

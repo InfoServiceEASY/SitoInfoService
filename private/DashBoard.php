@@ -1,24 +1,7 @@
 <?php
-session_start();
 $title = 'Dashboard';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
-Session();
-
-///$nomeColonna = 1; 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
-/*
-if ($_SESSION['member'] == 'admin')
-  $condizione = 1;
-elseif ($_SESSION['member'] == 'cliente') {
-  $nomeColonna = 'fk_cliente';
-  $condizione = GetUser()[0];
-}
-
-if ($_SESSION["member"] == "dipendente") {
-  $sql = "SELECT t.dataapertura, count(*) AS count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
-  WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
-  $condizione = $_SESSION['utente'];
-}*/
 
 $conn = DataConnect();
 $stmt = $conn->prepare('SELECT dataapertura , count(*) AS count FROM ticket WHERE YEAR(dataapertura)>=YEAR(CURDATE())-2 GROUP BY dataapertura');
