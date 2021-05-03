@@ -15,9 +15,9 @@ $aperto = isset($_GET["aperto"]) ? ($_GET["aperto"] == 1 ? true : false) : null;
 $no_of_records_per_page = 10;
 $offset = ($pageno - 1) * $no_of_records_per_page;
 $id = GetUser()[0];
-//$total_pages_sql = "SELECT "; FAI LA QUERY! COUNT
+$total_pages_sql = "SELECT r.fk_diepndente, COUNT(*) AS TotalRows FROM report r inner join t on r.fk_ticket = t.idticket WHERE r.fk_diepndente = ? and t.isaperto = ? ORDER BY r.fk_diepndente"; 
 $sth = $conn->prepare($total_pages_sql);
-$sth->bind_param('i', $id);
+$sth->bind_param('ii', $id, intval($aperto));
 $sth->execute();
 $result = $sth->get_result();
 $total_rows = mysqli_fetch_array($result)["TotalRows"];
