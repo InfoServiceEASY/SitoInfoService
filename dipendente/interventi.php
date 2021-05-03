@@ -10,12 +10,12 @@ Session();
 <script >tabellaprivata()</script>
 <?php
 $conn = DataConnect();
-$id = $_GET['Id'];
+$id = $_GET['id'];
 $total_rows = 0;
 $total_pages = 1;
 $pageno = isset($_GET['pageno'])? $_GET['pageno']: 1;
 $aperto = isset($_GET["aperto"]) ? ($_GET["aperto"] == 1 ? true : false) : null;
-if(Ticket_Assigned_ToMe($conn, $id)){
+if(ReportOfthis($conn, $id)){
     if(!is_null($aperto)){
         $no_of_records_per_page = 10;
         $offset = ($pageno - 1) * $no_of_records_per_page;
@@ -55,6 +55,7 @@ if(Ticket_Assigned_ToMe($conn, $id)){
         if ($data != null) {
             while($data->num_rows > 0){
                 //record
+                $row = $data ->fetch_assoc();
                 ?>
                 <td><?php echo $row["Id"]; ?></td>
                 <td><?php echo $row["DataInizio"]; ?></td>
@@ -65,10 +66,11 @@ if(Ticket_Assigned_ToMe($conn, $id)){
                 <td><?php echo $row["Attività"];  ?></td>
                 <?php
                 if(($aperto) && IsMine($conn, $row["Id"]))
-                        echo'<td><button id="unico" onclick="location.href='."'writereport.php?ReportId=".$row['Id']."'".'"'.">Modifica Report</button></td>".
-                        '<td><button id="unico" onclick="location.href='."'interventi.php?ReportId=".$row['Id']."&Cancella=yes"."'".'"'.">Cancella Report</button></td>";
+                        echo'<td><button id="unico" onclick="location.href='."'writereport.php?id=".$row['Id']."'".'"'.">Modifica Report</button></td>".
+                        '<td><button id="unico" onclick="location.href='."'interventi.php?id=".$row['Id']."&Cancella=yes"."'".'"'.">Cancella Report</button></td>";
                     else echo '<td></td>';
-            }}else {
+            }
+        }else {
                 ?>
                 <tr>
                     <td colspan="5">No results found.</td>
@@ -130,8 +132,7 @@ if(Ticket_Assigned_ToMe($conn, $id)){
     else{
         echo "<h1>Errore nella specifica dello stato dei ticket.</h1>";
     }
-}
-else{
-    "<h1>Ticket non assegnato al dipendente.</h1>";
+} else{
+    echo "<h1>Il ticket relativo agli interventi non è stato mai assegnato a questo dipendente.</h1>";
 }
 ?>

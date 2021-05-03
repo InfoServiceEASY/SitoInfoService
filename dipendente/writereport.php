@@ -5,8 +5,8 @@ include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
 $conn = DataConnect();
-$id = $_GET['Id'];
-if(IsMine($conn, $id)){
+$id = $_GET['id'];
+if(ReportOfthis($conn, $id)){
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $isrisolto = $_POST['IsRisolto'] == "Sì" ? 1 : 0;
     $error = InsertReport($_POST['Tempo'], $_POST['Descrizione'], $isrisolto, $id, GetUser()[0]);
