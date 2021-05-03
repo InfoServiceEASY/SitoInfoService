@@ -22,10 +22,7 @@ if ($stmt->execute()) {
     $error = 'C\'è stato un problema riprova più tardi';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (isset($_POST['yes']))
-        $error = ConvalidTicket(1, $_POST['commento'], $_POST['id']);
-    else if (isset($_POST['no']))
-        $error = ConvalidTicket(0, $_POST['commento'], $_POST['id']);
+    $error = ConvalidTicket($_POST['commento'], $_POST['tipologia'], $_POST['id']);
 }
 ?>
 

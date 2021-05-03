@@ -190,31 +190,74 @@ function WriteTicket($oggetto, $tipologia, $settore, $descrizione)
     return $esito;
 }
 
-function ConvalidTicket($choice, $comment, $id)
+function ConvalidTicket($comment, $tipologia, $id)
 {
     $conn = DataConnect();
-    $cond = 0;
-    $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
-    $stmt->bind_param('sssi', $choice, $comment, $choice, $id);
-    if ($stmt->execute()) {
-        $stmt->close();
-        $stmt = $conn->prepare('UPDATE ticket SET isassegnato=? WHERE id=?');
-        $stmt->bind_param('ii', $cond, $id);
+    if ($tipologia === 'Sono d\'accordo') {
+        $cond = 1;
+        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=? WHERE fk_ticket=?');
+        $stmt->bind_param('ssi', $comment, $cond, $id);
         if ($stmt->execute()) {
             $stmt->close();
-            if ($choice === 1) {
-                $stmt = $conn->prepare('UPDATE ticket SET isaperto=? WHERE id=?');
-                $stmt->bind_param('ii', $cond, $id);
-                if ($stmt->execute())
-                    $esito = 'Report convalidato correttamente.';
-                else
-                    $esito = 'C\'è stato un problema, riprova più tardi.';
-            } else
+            $cond = 0;
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=?,isaperto=? WHERE id=?');
+            $stmt->bind_param('ssi', $cond, $cond, $id);
+            if ($stmt->execute())
                 $esito = 'Report convalidato correttamente.';
+            else
+                $esito = 'C\'è stato un problema, riprova più tardi.';
+        }
+    } else if ($tipologia === 'Non sono d\'accordo, continua supporto') {
+        $cond = 0;
+        $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
+        $stmt->bind_param('sssi', $cond, $comment, $cond, $id);
+        if ($stmt->execute())
+            $esito = 'Report convalidato correttamente.';
+        else
+            $esito = 'C\'è stato un problema, riprova più tardi.';
+    } else if ($tipologia === 'Non sono d\'accordo, termina supporto') {
+        $cond = 0;
+        $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
+        $stmt->bind_param('sssi', $cond, $comment, $cond, $id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=?,isaperto=? WHERE id=?');
+            $stmt->bind_param('ssi', $cond, $cond, $id);
+            if ($stmt->execute()) {
+                $esito = 'Report convalidato correttamente.';
+            } else
+                $esito = 'C\'è stato un problema, riprova più tardi.';
         } else
             $esito = 'C\'è stato un problema, riprova più tardi.';
-    } else
-        $esito = 'C\'è stato un problema, riprova più tardi.';
+    } else if ($tipologia === 'Continua supporto') {
+        $cond = 0;
+        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=? WHERE fk_ticket=?');
+        $stmt->bind_param('ssi', $comment, $cond, $id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=? WHERE id=?');
+            $stmt->bind_param('si', $cond, $id);
+            if ($stmt->execute())
+                $esito = 'Report convalidato correttamente.';
+            else
+                $esito = 'C\'è stato un problema, riprova più tardi.';
+        } else
+            $esito = 'C\'è stato un problema, riprova più tardi.';
+    } else if ($tipologia === 'Termina supporto') {
+        $cond = 0;
+        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=? WHERE fk_ticket=?');
+        $stmt->bind_param('ssi', $comment, $cond, $id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=?,isaperto=? WHERE id=?');
+            $stmt->bind_param('ssi', $cond, $cond, $id);
+            if ($stmt->execute())
+                $esito = 'Report convalidato correttamente.';
+            else
+                $esito = 'C\'è stato un problema, riprova più tardi.';
+        } else
+            $esito = 'C\'è stato un problema, riprova più tardi.';
+    }
     $stmt->close();
     $conn->close();
     return $esito;
@@ -406,7 +449,7 @@ function ShowTicketDetails($id)
 function ShowReportDetails($id)
 {
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,r.attività,r.datainizio,r.datafine FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
+    $stmt = $conn->prepare('SELECT t.id,t.oggetto,t.tipologia,t.descrizione,r.attività,r.datainizio,r.datafine,r.isrisolto FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket AND t.id=?');
     $stmt->bind_param('i', $id);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
@@ -415,6 +458,8 @@ function ShowReportDetails($id)
             (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
             (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
             (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
+            ($result['isrisolto'] === 1 ? $option = '<option>Sono d\'accordo</option><option>Non sono d\'accordo, continua supporto</option><option>Non sono d\'accordo, termina supporto</option>'
+                : $option = '<option>Continua supporto</option><option>Termina supporto</option>');
             $template = '<form method="POST">' .
                 '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
@@ -424,8 +469,9 @@ function ShowReportDetails($id)
                 '<label style="font-weight: bold;">Data fine risoluzione:<h5>' . $endate . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Attività:<h5>' . $activity . '</h5></label></br>' .
                 '<textarea class="form-control" style="width:500px;" name="commento" placeholder="Se vuoi esprimi un pensiero."></textarea></br>' .
-                '<button class="btn btn-primary" type="submit" name="yes">Convalida</button>' .
-                '<button class="btn btn-primary" style="margin-left:20px;" type="submit" name="no">Non convalidare</button>' .
+                '<div class="form-group"><select class="form-control" style="width:500px;" id="exampleFormControlSelect1" name="tipologia" required>
+                <option>--</option>' . $option . '</select></div>' .
+                '<button class="btn btn-primary" type="submit">Convalida</button>' .
                 '</form>';
         } else
             $template = 'Non c\'è nulla da visualizzare per questo ticket.';
