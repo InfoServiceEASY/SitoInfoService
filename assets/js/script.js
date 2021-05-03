@@ -8,16 +8,18 @@ function menuacomparsa() {
 
 //line
 function chart(date) {
-    var data = [];
-    var dataSeries = { type: "line" };
-    var dataPoints = [];
+    /*   var data = [];
+       var dataSeries = { type: "line" };
+       var dataPoints = [];*/
     for (var i = 0; i < date.length; i += 1) {
-        dataPoints.push({
-            x: new Date(date[i]["data"]),
-            y: date[i]["somma"]
-        });
+
+        /* dataPoints.push({
+
+             x: new Date(date[i]["data"]),
+             y: date[i]["somma"]
+         });*/
     }
-    dataSeries.dataPoints = dataPoints;
+    /*dataSeries.dataPoints = dataPoints;
     data.push(dataSeries);
 
     //Better to construct options first and then pass it as a parameter
@@ -32,8 +34,8 @@ function chart(date) {
         },
         pointSize: 20,
         data: data // random data
-    };
-
+};
+*/
     var chart = new CanvasJS.Chart("lineChart", options);
     var startTime = new Date();
     chart.render();
