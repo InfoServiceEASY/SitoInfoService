@@ -18,7 +18,7 @@ if ($_SESSION["member"] == "dipendente") {
 $conn->close();
 $conn = DataConnect();
 
-$stmt = $conn->prepare('SELECT MONTH(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=2020  GROUP BY MONTH(dataapertura) order by MONTH(dataapertura)');
+$stmt = $conn->prepare("SELECT monthname(str_to_date(MONTH(dataapertura),'%m')) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=2020  GROUP BY MONTH(dataapertura) order by MONTH(dataapertura)");
 $stmt->execute();
 $result = $stmt->get_result();
 $mese = array();
@@ -321,9 +321,9 @@ foreach ($result as $row) {
         <script src="assets/js/theme.js"></script>
         <script>
             var chartData = {
-                labels: <?php  $mese?>,
+                labels: <?php echo json_encode($mese); ?>,
                 datasets: [{
-                    data: <?php  $somma?>,
+                    data: <?php echo json_encode($somma); ?>,
                 }]
             };
             var chLine = document.getElementById("chLine");
