@@ -2,7 +2,8 @@
 <html>
 
 <head>
-    <?php $title = 'FAQ - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'FAQ - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>

@@ -9,7 +9,8 @@ $report = ShowReport();
 <html>
 
 <head>
-    <?php $title = 'I miei report - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'I miei report - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>

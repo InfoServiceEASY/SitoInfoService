@@ -4,11 +4,13 @@ include_once '../dal.php';
 Session();
 $status = ShowTicketStatus();
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php $title = 'Dashboard - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'Dashboard - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>

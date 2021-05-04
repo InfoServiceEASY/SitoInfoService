@@ -35,7 +35,7 @@ Session();
 
         $offset = ($pageno - 1) * $no_of_records_per_page;
         $sql = "SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM  ticket t
-            INNER JOIN settore s on s.id=t.fk_settore  where isassegnato=0
+            INNER JOIN settore s ON s.id=t.fk_settore  WHERE isassegnato=0
             AND t.isaperto=1 ORDER BY t.dataapertura DESC LIMIT $offset, $no_of_records_per_page";
         $result = Tabella($sql);
         if ($result->num_rows > 0) {
