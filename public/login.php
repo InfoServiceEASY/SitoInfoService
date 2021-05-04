@@ -1,15 +1,17 @@
 <?php
 session_start();
 include_once '../dal.php';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $error = Login($_POST['email'], $_POST['password']);
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php $title = 'Login - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'Login - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>

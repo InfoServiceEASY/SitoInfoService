@@ -2,11 +2,9 @@
 session_start();
 include_once '../dal.php';
 Session();
-
 $con = DataConnect();
 $stmt = $con->prepare('SELECT id FROM ticket WHERE id=? AND fk_cliente=?');
 $stmt->bind_param('ii', $_GET['id'], GetUser()[0]);
-
 if ($stmt->execute()) {
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {

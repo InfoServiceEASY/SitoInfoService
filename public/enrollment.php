@@ -1,15 +1,16 @@
 <?php
 include_once '../dal.php';
-$error="Registrati per entrare a far parte di noi.";
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $error =  Register($_POST['firstname'], $_POST['lastname'], $_POST['username'], $_POST['phone'], $_POST['email'], $_POST['password']);
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <?php $title = 'Register - InfoService'; include_once '../template/head.php' ?>
+    <?php $title = 'Registrazione - InfoService';
+    include_once '../template/head.php' ?>
 </head>
 
 <body>
@@ -19,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="block-heading">
                     <h2 class="text">Sign Up</h2>
+                    <p>Registrati per entrare a far parte di noi.</p>
                     <p><?php echo $error ?></p>
                 </div>
                 <form style="border-radius: 25px" method="POST">

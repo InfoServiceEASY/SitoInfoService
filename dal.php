@@ -100,45 +100,47 @@ function GetSectors()
 
 function Register($firstname, $lastname, $username, $phone, $email, $password)
 {
-    $esito = '';
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT * FROM utenza WHERE username=?');
     $stmt->bind_param('s', $username);
-    $stmt->execute();
-    $resultU = $stmt->get_result();
-    $stmt->close();
-    $stmt = $conn->prepare('SELECT * FROM utenza WHERE email=?');
-    $stmt->bind_param('s', $email);
-    $stmt->execute();
-    $resultE = $stmt->get_result();
-    $stmt->close();
-    $conn->close();
-    if ($resultU->num_rows > 0)
-        $esito = 'Username già utilizzato';
-    else if ($resultE->num_rows > 0)
-        $esito = 'Email già utilizzata';
-    else {
-        $conn = DataConnect();
-        $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
-        $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
+    if ($stmt->execute()) {
+        $resultU = $stmt->get_result();
+        $stmt->close();
+        $stmt = $conn->prepare('SELECT * FROM utenza WHERE email=?');
+        $stmt->bind_param('s', $email);
         if ($stmt->execute()) {
+            $resultE = $stmt->get_result();
             $stmt->close();
             $conn->close();
-            $conn = DataConnect();
-            $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
-            $stmt->bind_param('sss', $firstname, $lastname, $phone);
-            if ($stmt->execute()) {
-                $esito = "<script>window.sendEmail('$email','$username')</script>" .
-                    "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
-            } else
-                $esito = 'C\'è stato un problema riprova più tardi';
+            if ($resultU->num_rows > 0)
+                $esito = 'Username già utilizzato';
+            else if ($resultE->num_rows > 0)
+                $esito = 'Email già utilizzata';
+            else {
+                $conn = DataConnect();
+                $stmt = $conn->prepare('INSERT INTO utenza (username,password,email) VALUES (?,?,?)');
+                $stmt->bind_param('sss', $username, password_hash($password, PASSWORD_DEFAULT), $email);
+                if ($stmt->execute()) {
+                    $stmt->close();
+                    $conn->close();
+                    $conn = DataConnect();
+                    $stmt = $conn->prepare('INSERT INTO cliente (nome,cognome,cellulare,fk_utenza) VALUES (?,?,?,(SELECT MAX(id) FROM utenza))');
+                    $stmt->bind_param('sss', $firstname, $lastname, $phone);
+                    if ($stmt->execute()) {
+                        $esito = "<script>window.sendEmail('$email','$username')</script>" .
+                            "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
+                    } else
+                        $esito = 'C\'è stato un problema riprova più tardi';
+                } else
+                    $esito = 'C\'è stato un problema riprova più tardi';
+            }
         } else
             $esito = 'C\'è stato un problema riprova più tardi';
-
-        $stmt->close();
-        $conn->close();
-        return $esito;
-    }
+    } else
+        $esito = 'C\'è stato un problema riprova più tardi';
+    $stmt->close();
+    $conn->close();
+    return $esito;
 }
 
 function UpdateProfile($nome, $cognome, $cellulare, $username, $email)
@@ -277,7 +279,7 @@ function ShowTicket()
         $stmt->close();
         $conn->close();
         foreach ($result as $r) {
-            (strlen($r['descrizione']) > 20 ? $descrizione = substr($r['descrizione'], 0, 20) . "..." : $descrizione = $r['descrizione']);
+            (strlen($r['descrizione']) > 20 ? $descrizione = substr($r['descrizione'], 0, 20) . '...' : $descrizione = $r['descrizione']);
             if ($r['isaperto'] === 1) {
                 $contopen++;
                 $openedticket .= '<div class="col-md-4 feature-box">' .
@@ -399,7 +401,7 @@ function ShowProfile()
             '<div class="form-group"><label for="email">Email</label><input class="form-control item field" name="email" type="email" value="' . $result['email'] . '" disabled></div>' .
             '<label><input type="checkbox" id="action" onclick="myFunction()"> Abilita modifica</label>' .
             '<button class="btn btn-primary btn-block" type="submit" name="send">Conferma</button>' .
-            '</form>' . '</div>';
+            '</form></div>';
     } else
         $template = 'C\'è stato un problema, riprova più tardi.';
     $stmt->close();
@@ -455,11 +457,16 @@ function ShowReportDetails($id)
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
-            (is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio']);
-            (is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine']);
-            (is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività']);
-            ($result['isrisolto'] === 1 ? $option = '<option>Sono d\'accordo</option><option>Non sono d\'accordo, continua supporto</option><option>Non sono d\'accordo, termina supporto</option>'
-                : $option = '<option>Continua supporto</option><option>Termina supporto</option>');
+            is_null($result['datainizio']) ? $startdate = 'Non ancora iniziato' : $startdate = $result['datainizio'];
+            is_null($result['datafine']) ? $endate = 'Non ancora terminato' : $endate = $result['datafine'];
+            is_null($result['attività']) ? $activity = 'Ancora nessuna attività' : $activity = $result['attività'];
+            if ($result['isrisolto'] === 1) {
+                $option = '<option>Sono d\'accordo</option><option>Non sono d\'accordo, continua supporto</option><option>Non sono d\'accordo, termina supporto</option>';
+                $status = 'Risolto';
+            } else if ($result['isrisolto'] === 0) {
+                $option = '<option>Continua supporto</option><option>Termina supporto</option>';
+                $status = 'Non risolto';
+            }
             $template = '<form method="POST">' .
                 '<label style="font-weight: bold;">Ticket numero:<h5>' . $result['id'] . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Oggetto:<h5>' . $result['oggetto'] . '</h5></label></br>' .
@@ -468,6 +475,7 @@ function ShowReportDetails($id)
                 '<label style="font-weight: bold;">Data inzio risoluzione:<h5>' . $startdate . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Data fine risoluzione:<h5>' . $endate . '</h5></label></br>' .
                 '<label style="font-weight: bold;">Attività:<h5>' . $activity . '</h5></label></br>' .
+                '<label style="font-weight: bold;">Stato problema:<h5>' . $status . '</h5></label></br>' .
                 '<textarea class="form-control" style="width:500px;" name="commento" placeholder="Se vuoi esprimi un pensiero."></textarea></br>' .
                 '<div class="form-group"><select class="form-control" style="width:500px;" id="exampleFormControlSelect1" name="tipologia" required>
                 <option>--</option>' . $option . '</select></div>' .
@@ -562,7 +570,7 @@ function createReport($idipendente, $idticket)
         if ($stmt->execute())
             $error = 'Fatto';
     } else
-        $error = 'Mi dispiace riprova';
+        $error = 'C\'è stato un problema, riprova più tardi.';
     $stmt->close();
     $conn->close();
     return $error;
@@ -576,7 +584,7 @@ function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipende
     if ($stmt->execute())
         $error = 'Fatto';
     else
-        $error = 'Mi dispiace riprova';
+        $error = 'C\'è stato un problema, riprova più tardi.';
     $stmt->close();
     $conn->close();
     return $error;
@@ -591,7 +599,7 @@ function deleteTicket($id)
     if ($stmt->execute()) {
         $error = 'Fatto';
     } else
-        $error = 'Mi dispiace riprova';
+        $error = 'C\'è stato un problema, riprova più tardi.';
     $stmt->close();
     $conn->close();
     return $error;
@@ -637,7 +645,6 @@ function Paginazione($pageno, $total_pages)
         echo "?pageno=" . ($pageno - 1);
     };
     echo '">Prev</a></li>';
-
     echo '<li  class="';
     if ($pageno >= $total_pages) {
         echo 'disabled';

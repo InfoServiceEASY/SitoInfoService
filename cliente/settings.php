@@ -2,9 +2,7 @@
 session_start();
 include_once '../dal.php';
 Session();
-
 $profile = ShowProfile();
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $error = UpdateProfile($_POST['nome'], $_POST['cognome'], $_POST['cellulare'], $_POST['username'], $_POST['email']);
 }
