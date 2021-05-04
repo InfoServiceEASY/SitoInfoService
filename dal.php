@@ -130,15 +130,17 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
                             "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
                     } else
                         $esito = 'C\'è stato un problema riprova più tardi';
-                } else
+                } else {
                     $esito = 'C\'è stato un problema riprova più tardi';
+                    $stmt->close();
+                    $conn->close();
+                }
             }
         } else
             $esito = 'C\'è stato un problema riprova più tardi';
     } else
         $esito = 'C\'è stato un problema riprova più tardi';
-    $stmt->close();
-    $conn->close();
+
     return $esito;
 }
 

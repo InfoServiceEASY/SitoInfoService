@@ -88,7 +88,7 @@ function sendEmail(email, username) {
             From: "infoservicehelps@gmail.com",
             Subject: 'Signup | Verification',
             Body: "Please click this link to activate your account:\n\
-            http://localhost:8000/public/verify.php?email=" + email + "&usr=" + username,
+            http://extra.isii.it:40084/public/verify.php?email=" + email + "&usr=" + username,
         })
         .then(function(message) {});
 }
