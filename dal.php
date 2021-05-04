@@ -130,15 +130,17 @@ function Register($firstname, $lastname, $username, $phone, $email, $password)
                             "<div>Ti sei registrato e l'e-mail di attivazione è stata inviata alla tua casella di posta. Fare clic sul collegamento di attivazione per attivare il proprio account.</div><br>";
                     } else
                         $esito = 'C\'è stato un problema riprova più tardi';
-                } else
+                } else {
                     $esito = 'C\'è stato un problema riprova più tardi';
+                    $stmt->close();
+                    $conn->close();
+                }
             }
         } else
             $esito = 'C\'è stato un problema riprova più tardi';
     } else
         $esito = 'C\'è stato un problema riprova più tardi';
-    $stmt->close();
-    $conn->close();
+
     return $esito;
 }
 
@@ -515,13 +517,11 @@ function ShowTicketStatus()
     return $template;
 }
 
-function ShownewTickets()
+function ShowCommenti()
 {
-    $cond = 1;
+    $cond = 0;
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
-    INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
-    AND t.isaperto=? ORDER BY t.dataapertura DESC limit 12');
+    $stmt = $conn->prepare('SELECT * FROM contatto where vistato =?');
     $stmt->bind_param('i', $cond);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -530,17 +530,16 @@ function ShownewTickets()
         for ($i = 0; $i < $result->num_rows; $i++) {
             $row = $result->fetch_assoc();
             (strlen($row['descrizione']) > 30 ? $descrizione = substr($row['descrizione'], 0, 30) . "..." : $descrizione = $row['descrizione']);
-            $href = "AssegnaTicket.php?id=" . $row['id'];
+            $href = "gestionecontatto.php?id=" . $row['id'];
             if ($i % 3 == 0)
                 echo  "<div class='containerone'>";
             echo  "
         <div class='contenitore'>
-        <p>Intervento n." . $row['id'] . "</p><p> aperto il " . $row['dataapertura'] . "</p>
-        <p><strong>tipologia</strong> " . $row['tipologia'] . "</p>
-        <p><strong>settore</strong> " . $row['nome'] . "</p>
-        <p> <strong>oggetto</strong> " . $row['oggetto'] . "</p>
+        <p>domanda n." . $row['id'] . "</p><p> fatta il  " . $row['dataapertura'] . "</p>
+        <p><strong>nome</strong> " . $row['nome'] . "</p>
+        <p><strong>cognome</strong> " . $row['cognome'] . "</p>
         <p> <strong>descrizione</strong> " . $descrizione . "</p>
-        <a href='$href'> assegna ticket</a>
+        <a href='$href'> rispondi</a>
         </div>";
             if ($i % 3 == 2) echo " </div>";
         }
