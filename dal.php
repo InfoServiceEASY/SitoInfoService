@@ -25,7 +25,6 @@ function Session()
 function Login($username, $password)
 {
     $conn = DataConnect();
-    $error = '';
     $stmt = $conn->prepare('SELECT * FROM utenza WHERE (email=? OR username=?) AND status=1');
     $stmt->bind_param('ss', $username, $username);
     $stmt->execute();
@@ -196,14 +195,12 @@ function ConvalidTicket($comment, $tipologia, $id)
 {
     $conn = DataConnect();
     if ($tipologia === 'Sono d\'accordo') {
-        $cond = 1;
-        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=? WHERE fk_ticket=?');
-        $stmt->bind_param('ssi', $comment, $cond, $id);
+        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=1 WHERE fk_ticket=?');
+        $stmt->bind_param('si', $comment, $id);
         if ($stmt->execute()) {
             $stmt->close();
-            $cond = 0;
-            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=?,isaperto=? WHERE id=?');
-            $stmt->bind_param('ssi', $cond, $cond, $id);
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=0,isaperto=0 WHERE id=?');
+            $stmt->bind_param('i', $id);
             if ($stmt->execute())
                 $esito = 'Report convalidato correttamente.';
             else
@@ -211,20 +208,19 @@ function ConvalidTicket($comment, $tipologia, $id)
         }
     } else if ($tipologia === 'Non sono d\'accordo, continua supporto') {
         $cond = 0;
-        $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
-        $stmt->bind_param('sssi', $cond, $comment, $cond, $id);
+        $stmt = $conn->prepare('UPDATE report SET isrisolto=0,commento=?,isconvalidato=0 WHERE fk_ticket=?');
+        $stmt->bind_param('si',$comment, $id);
         if ($stmt->execute())
             $esito = 'Report convalidato correttamente.';
         else
             $esito = 'C\'è stato un problema, riprova più tardi.';
     } else if ($tipologia === 'Non sono d\'accordo, termina supporto') {
-        $cond = 0;
-        $stmt = $conn->prepare('UPDATE report SET isrisolto=?,commento=?,isconvalidato=? WHERE fk_ticket=?');
-        $stmt->bind_param('sssi', $cond, $comment, $cond, $id);
+        $stmt = $conn->prepare('UPDATE report SET isrisolto=0,commento=?,isconvalidato=0 WHERE fk_ticket=?');
+        $stmt->bind_param('si', $comment, $id);
         if ($stmt->execute()) {
             $stmt->close();
-            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=?,isaperto=? WHERE id=?');
-            $stmt->bind_param('ssi', $cond, $cond, $id);
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=0,isaperto=0 WHERE id=?');
+            $stmt->bind_param('i', $id);
             if ($stmt->execute()) {
                 $esito = 'Report convalidato correttamente.';
             } else
@@ -232,13 +228,12 @@ function ConvalidTicket($comment, $tipologia, $id)
         } else
             $esito = 'C\'è stato un problema, riprova più tardi.';
     } else if ($tipologia === 'Continua supporto') {
-        $cond = 0;
-        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=? WHERE fk_ticket=?');
-        $stmt->bind_param('ssi', $comment, $cond, $id);
+        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=0 WHERE fk_ticket=?');
+        $stmt->bind_param('si', $comment, $id);
         if ($stmt->execute()) {
             $stmt->close();
-            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=? WHERE id=?');
-            $stmt->bind_param('si', $cond, $id);
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=0 WHERE id=?');
+            $stmt->bind_param('i', $id);
             if ($stmt->execute())
                 $esito = 'Report convalidato correttamente.';
             else
@@ -246,13 +241,12 @@ function ConvalidTicket($comment, $tipologia, $id)
         } else
             $esito = 'C\'è stato un problema, riprova più tardi.';
     } else if ($tipologia === 'Termina supporto') {
-        $cond = 0;
-        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=? WHERE fk_ticket=?');
-        $stmt->bind_param('ssi', $comment, $cond, $id);
+        $stmt = $conn->prepare('UPDATE report SET commento=?,isconvalidato=0 WHERE fk_ticket=?');
+        $stmt->bind_param('si', $comment, $id);
         if ($stmt->execute()) {
             $stmt->close();
-            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=?,isaperto=? WHERE id=?');
-            $stmt->bind_param('ssi', $cond, $cond, $id);
+            $stmt = $conn->prepare('UPDATE ticket SET isassegnato=0,isaperto=0 WHERE id=?');
+            $stmt->bind_param('i', $id);
             if ($stmt->execute())
                 $esito = 'Report convalidato correttamente.';
             else
@@ -493,9 +487,8 @@ function ShowReportDetails($id)
 function ShowTicketStatus()
 {
     $conn = DataConnect();
-    $choice = 1;
-    $stmt = $conn->prepare('SELECT COUNT(id) AS id FROM ticket WHERE fk_cliente=? AND isaperto=?');
-    $stmt->bind_param('is', GetUser()[0], $choice);
+    $stmt = $conn->prepare('SELECT COUNT(id) AS id FROM ticket WHERE fk_cliente=? AND isaperto=1');
+    $stmt->bind_param('i', GetUser()[0]);
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         if ($result->num_rows > 0) {
