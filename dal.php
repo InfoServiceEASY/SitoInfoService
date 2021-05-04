@@ -524,7 +524,7 @@ function ShowTicketStatus()
 
 function ShownewTickets()
 {
-    $uno = 1;
+    $cond = 1;
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
     INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
