@@ -6,8 +6,10 @@ include_once '../template/privatepage_params.php';
 
 $conn = DataConnect();
 $cond = 0;
+$stampare="";
+$id=$_GET['id'];
 $stmt = $conn->prepare('SELECT * FROM contatto WHERE id=? AND vistato=?');
-$stmt->bind_param('ii', $_GET['id'], $cond);
+$stmt->bind_param('ii', $id, $cond);
 $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
@@ -15,17 +17,28 @@ if ($result->num_rows > 0) {
   $row = $result->fetch_assoc();
   if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['Rispondi'])&& isset($_POST['textarea'])) {
-     echo "<script>window.sendEmail1(".$_POST['textarea'].")</script>";
-    } else if (isset($_POST['Elimina'])) {
+      $email=$row['email'];
+      $risposta=$_POST['textarea'];
+      $domanda=$row['descrizione'];
+     $stampare= "<script>window.sendmessaggio('$domanda','$risposta','$email');</script>";    
+     $stmt = $conn->prepare('update contatto set vistato=1 , risposta=? WHERE id=?');
+    $stmt->bind_param('si', $_POST['textarea'],$id);
+    if ($stmt->execute())
+       $error="la risposta è stata inviata correttamente";
+    else 
+       $error="c'è stato un problema ritenta";
+    } 
+    else if (isset($_POST['Elimina'])) 
       $error = deleteTicket($row['id']);
-    }
+    echo $stampare;
     echo ("<script LANGUAGE='JavaScript'>
     window.alert('" . $error . "');
     window.location.href='TicketAperti.php';
     </script>");
-  }
+    
+  }}
 ?>
-<form>
+<form method="POST">
 <div class="form-group">
     <label><?php echo $row['id'] . " creato il  " . $row['dataapertura'] ?></label>
   </div>

@@ -170,7 +170,7 @@ function Contact($firstname, $lastname, $phone, $email, $description)
     if ($stmt->execute()) {
         $stmt->close();
         $conn->close();
-        header("location:index.php");
+        header("location:../index.php");
         exit();
     } else {
         $stmt->close();
@@ -517,20 +517,29 @@ function ShowTicketStatus()
     return $template;
 }
 
-function ShowCommenti()
+function ShowCommenti($cond)
 {
-    $cond = 0;
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT * FROM contatto where vistato =?');
     $stmt->bind_param('i', $cond);
     $stmt->execute();
     $result = $stmt->get_result();
     $stmt->close();
+    $risposta = "";
+    $link="";
     if ($result->num_rows > 0) {
         for ($i = 0; $i < $result->num_rows; $i++) {
             $row = $result->fetch_assoc();
-            (strlen($row['descrizione']) > 30 ? $descrizione = substr($row['descrizione'], 0, 30) . "..." : $descrizione = $row['descrizione']);
             $href = "gestionecontatto.php?id=" . $row['id'];
+            if ($cond == 0) {
+                (strlen($row['descrizione']) > 30 ? $descrizione = substr($row['descrizione'], 0, 30) . "..." : $descrizione = $row['descrizione']);
+                $link= "<a href='$href'> rispondi</a>";
+            } else {
+                $descrizione = $row['descrizione'];
+                $risposta = "<p> <strong>risposta</strong> " . $row['risposta'] . "</p>";
+            }
+
+
             if ($i % 3 == 0)
                 echo  "<div class='containerone'>";
             echo  "
@@ -538,11 +547,15 @@ function ShowCommenti()
         <p>domanda n." . $row['id'] . "</p><p> fatta il  " . $row['dataapertura'] . "</p>
         <p><strong>nome</strong> " . $row['nome'] . "</p>
         <p><strong>cognome</strong> " . $row['cognome'] . "</p>
-        <p> <strong>descrizione</strong> " . $descrizione . "</p>
-        <a href='$href'> rispondi</a>
-        </div>";
+        <p> <strong>domanda</strong> " . $descrizione . "</p>"
+                . $risposta .
+                    $link."</div>";
             if ($i % 3 == 2) echo " </div>";
         }
+        if($result->num_rows<3) echo "</div>";
+    }
+    else{
+        echo "<p> non ci sono domande</p>";
     }
     $conn->close();
 }
