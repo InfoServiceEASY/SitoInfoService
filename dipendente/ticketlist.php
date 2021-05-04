@@ -7,6 +7,10 @@ $aperto = isset($_GET['aperto']) ? ($_GET['aperto'] == 1 ? true : false) : null;
 $pageno = isset($_GET['pageno']) ? $_GET['pageno'] : 1;
 $conn = DataConnect();
 if (!is_null($aperto)) {
+    ?> 
+    <h1 style="padding-bottom: 50px;"> I tuoi interventi <?php echo $aperto? "aperti" : "chiusi"; ?> </h1>
+
+    <?php
     Table($conn, $pageno, $aperto);
 } else { ?>
     <h1 style="font-size: 300%"> Visualizza Interventi</h1>
