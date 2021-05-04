@@ -1,34 +1,32 @@
 <?php
 session_start();
-$title = "Scrivi nuovo report";
+$title = 'Nuovo report';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
 $conn = DataConnect();
-$id = $_GET['id'];
-if(ReportOfthis($conn, $id)){
-  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (ReportOfthis($conn, $_GET['id'])) {
+  if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $isrisolto = $_POST['IsRisolto'] == "Sì" ? 1 : 0;
-    $error = InsertReport($_POST['Tempo'], $_POST['Descrizione'], $isrisolto, $id, GetUser()[0]);
-    if ($isrisolto == 0){
-      $remove = "UPDATE Ticket set isassegnato = 0 WHERE id = ?";
-      $stmt = $conn -> prepare($remove);
-      $stmt -> bind_param('i',$id);
-      $stmt -> execute(); 
+    $error = InsertReport($_POST['Tempo'], $_POST['Descrizione'], $isrisolto, $_GET['id'], GetUser()[0]);
+    if ($isrisolto === 0) {
+      $stmt = $conn->prepare('UPDATE Ticket SET isassegnato=0 WHERE id=?');
+      $stmt->bind_param('i', $_GET['id']);
+      $stmt->execute();
     }
     echo "<script LANGUAGE='JavaScript'>
     window.alert('" . $error . "');
     window.location.href='Ticketlist.php';
     </script>";
   }
-  ?>
+?>
 
   <h1 class="mt-4">Compila Report</h1>
   <br>
   <form method="POST">
     <div class="form-group">
       <label for="exampleFormControlInput1">Intervento</label>
-      <label style="color:darkgrey;text-align:centre;content-align:centre" name="Intervento">Intervento n. <?php echo "$id"; ?></label>
+      <label style="color:darkgrey;text-align:centre;content-align:centre" name="Intervento">Intervento n. <?php echo $_GET['id']; ?></label>
     </div>
     <div class="form-group">
       <label for="Tempo">Tempo impiegato (ore)?</label>
@@ -60,10 +58,8 @@ if(ReportOfthis($conn, $id)){
     });
   </script>
   </body>
-
   </html>
-  <?php 
-}
-else{
-  echo "<h1>Utente non autorizzato ad accedere alla scrittura o alla modifica di questo report.</h1>";  
-}?>
+<?php
+} else {
+  echo "<h1>Utente non autorizzato ad accedere alla scrittura o alla modifica di questo report.</h1>";
+} ?>

@@ -662,43 +662,43 @@ function Paginazione($pageno, $total_pages)
 
 function IsMine($conn, $id_report)
 {
-  $sth = $conn->prepare('SELECT fk_dipendente FROM report WHERE id=?');
-  $sth->bind_param('i', $id_report);
-  $sth->execute();
-  $fk_dipendente = $sth->get_result();
-  $sth->close();
+  $stmt = $conn->prepare('SELECT fk_dipendente FROM report WHERE id=?');
+  $stmt->bind_param('i', $id_report);
+  $stmt->execute();
+  $fk_dipendente = $stmt->get_result();
+  $stmt->close();
   $fk_dipendente = $fk_dipendente->fetch_assoc();
   return $fk_dipendente['fk_dipendente'] === GetUser()[0];
 }
 function Ticket_Assigned_ToMe($conn, $id_ticket){
     //anche nel passato
     $sql = "SELECT r.id AS id FROM report r WHERE r.fk_dipendente = ? && r.fk_ticket = ?";
-    $sth = $conn->prepare($sql);
-    $sth->bind_param('ii',GetUser()[0] ,$id_ticket);
-    $sth->execute();
-    $report_id = $sth->get_result();
-    $sth->close();
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ii',GetUser()[0] ,$id_ticket);
+    $stmt->execute();
+    $report_id = $stmt->get_result();
+    $stmt->close();
     $report_id = $report_id->fetch_assoc();
     return $report_id["id"] != null;
 }
 
 function ReportOfthis($conn, $id_ticket){
-    $sql = "SELECT fk_dipendente FROM report WHERE fk_ticket = ? and fk_dipendente = ?";
-    $sth = $conn->prepare($sql);
-    $sth->bind_param('ii',$id_ticket, GetUser()[0]);
-    $sth->execute();
-    $fk_dipendente = $sth->get_result();
-    $sth->close();
+    $stmt = $conn->prepare('SELECT fk_dipendente FROM report WHERE fk_ticket = ? AND fk_dipendente = ?');
+    $stmt->bind_param('ii',$id_ticket, GetUser()[0]);
+    $stmt->execute();
+    $fk_dipendente = $stmt->get_result();
+    $stmt->close();
     $fk_dipendente = $fk_dipendente->fetch_assoc();
     return $fk_dipendente["fk_dipendente"] != null;
 }
 
 function ContaTutto(){
     $conn = DataConnect();
-    $stmt = $conn->prepare('SELECT count(*) as count from ticket');
+    $stmt = $conn->prepare('SELECT count(*) AS count FROM ticket');
     $stmt->execute();
     $result = $stmt->get_result();
     $total_pages = intval($result->fetch_assoc()['count']);
+    $stmt->close();
     $conn->close();
     return $total_pages;
 }
