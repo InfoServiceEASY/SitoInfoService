@@ -653,8 +653,9 @@ function Paginazione($pageno, $total_pages)
     echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
 }
 
-function IsMine($conn, $id_report)
+function IsMine($id_report)
 {
+    $conn = DataConnect();
     $stmt = $conn->prepare('SELECT fk_dipendente FROM report WHERE id=?');
     $stmt->bind_param('i', $id_report);
     $stmt->execute();
@@ -663,9 +664,10 @@ function IsMine($conn, $id_report)
     $fk_dipendente = $fk_dipendente->fetch_assoc();
     return $fk_dipendente['fk_dipendente'] === GetUser()[0];
 }
-function Ticket_Assigned_ToMe($conn, $id_ticket)
+function Ticket_Assigned_ToMe($id_ticket)
 {
     //anche nel passato
+    $conn = DataConnect();
     $sql = "SELECT r.id AS id FROM report r WHERE r.fk_dipendente = ? && r.fk_ticket = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param('ii', GetUser()[0], $id_ticket);
@@ -676,8 +678,9 @@ function Ticket_Assigned_ToMe($conn, $id_ticket)
     return $report_id["id"] != null;
 }
 
-function ReportOfthis($conn, $id_ticket)
+function ReportOfthis($id_ticket)
 {
+    $conn = DataConnect();
     $stmt = $conn->prepare('SELECT fk_dipendente FROM report WHERE fk_ticket = ? AND fk_dipendente = ?');
     $stmt->bind_param('ii', $id_ticket, GetUser()[0]);
     $stmt->execute();

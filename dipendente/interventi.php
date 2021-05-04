@@ -18,7 +18,7 @@ $total_rows = 0;
 $total_pages = 1;
 $pageno = isset($_GET['pageno']) ? $_GET['pageno'] : 1;
 $aperto = isset($_GET["aperto"]) ? ($_GET['aperto'] === 1 ? true : false) : null;
-if (ReportOfthis($conn, $_GET['id'])) {
+if (ReportOfthis($_GET['id'])) {
     if (!is_null($aperto)) {
         $no_of_records_per_page = 10;
         $offset = ($pageno - 1) * $no_of_records_per_page;
@@ -64,7 +64,7 @@ if (ReportOfthis($conn, $_GET['id'])) {
                     <td><?php echo $row['Oggetto'] ?></td>
                     <td><?php echo $row["Attività"];  ?></td>
                 <?php
-                    if (($aperto) && IsMine($conn, $row["Id"]))
+                    if (($aperto) && IsMine($row["Id"]))
                         echo '<td><button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['Id'] . "'" . '"' . ">Modifica Report</button></td>" .
                             '<td><button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['Id'] . "&Cancella=yes" . "'" . '"' . ">Cancella Report</button></td>";
                     else echo '<td></td>';

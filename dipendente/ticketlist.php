@@ -83,8 +83,8 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
         <tr>
             <td colspan="5">No results found.</td>
         </tr>
-    <?php  }
-    echo '</tbody>
+    <?php  }?>
+    </tbody>
      <tfoot>
      <th><strong> Id </strong></td>
      <th><strong> DataApertura </strong></td>
@@ -92,8 +92,8 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
      <th><strong> Oggetto </strong></td>
      <th><strong> Attività </strong></td>
      <th><strong> modifica </strong></td>
-     </tfoot>
-     </table>';
+    </tfoot>
+     </table><?php
     echo '<div  class="contiene">';
     //echo "<p class='inlineLeft'  >pagina " . strval($pageno) . " su " . strval($total_pages) . " pagine</p>";
     echo '<p style = "font-size: 200%; text-align:center;">';
