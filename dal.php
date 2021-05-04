@@ -518,17 +518,17 @@ function createReport($idipendente, $idticket)
 
 function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente)
 {
-  //fk_ticket in report. n report 1 ticket.
-  $conn = DataConnect();
-  $stmt = $conn->prepare('UPDATE report SET datafine=Now(),durata=?,attività=?,isrisolto=? WHERE fk_ticket=? AND fk_dipendente=? AND isnull(isconvalidato)');
-  $stmt->bind_param('ssiii', $durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente);
-  if ($stmt->execute() === true)
-    $error = 'Fatto';
-  else
-    $error = 'Mi dispiace riprova';
-  $stmt->close();
-  $conn->close();
-  return $error;
+    //fk_ticket in report. n report 1 ticket.
+    $conn = DataConnect();
+    $stmt = $conn->prepare('UPDATE report SET datafine=Now(),durata=?,attività=?,isrisolto=? WHERE fk_ticket=? AND fk_dipendente=? AND isnull(isconvalidato)');
+    $stmt->bind_param('ssiii', $durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipendente);
+    if ($stmt->execute() === true)
+        $error = 'Fatto';
+    else
+        $error = 'Mi dispiace riprova';
+    $stmt->close();
+    $conn->close();
+    return $error;
 }
 
 function deleteTicket($id)
@@ -537,7 +537,7 @@ function deleteTicket($id)
     $conn = DataConnect();
     $query = "delete from ticket where";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ii', $id);
+    $stmt->bind_param('i', $id);
     if ($stmt->execute() === true) {
         $error = "fatto";
     } else
@@ -557,7 +557,7 @@ function Tabella($query)
     $conn->close();
     return $result;
 }
-function PagineTotali($total_pages_sql,$num_records_per_page)
+function PagineTotali($total_pages_sql, $num_records_per_page)
 {
     $conn = DataConnect();
     $stmt = $conn->prepare($total_pages_sql);
@@ -569,6 +569,7 @@ function PagineTotali($total_pages_sql,$num_records_per_page)
 }
 function Paginazione($pageno, $total_pages)
 {
+    if ($pageno > $total_pages) $pageno = $total_pages;
     echo  '<div  class="contiene">';
     echo "<p class='inlineLeft'  >pagina " . $pageno . " su " . $total_pages . " pagine</p>";
     echo ' <ul  class="inlineRight"  id="navlist">';
@@ -599,4 +600,46 @@ function Paginazione($pageno, $total_pages)
     };
     echo '">Next</a></li>';
     echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
+}
+function ContaTutto(){
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT count(*) as count from ticket');
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $total_pages = intval($result->fetch_assoc()['count']);
+    $conn->close();
+    return $total_pages;
+}
+function RitornaPercentuale($chiave,$total_pages)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare("SELECT count(*) as count from ticket where tipologia='".$chiave."'");
+    //$stmt->bind_param('s', $chiave);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $numero = intval($result->fetch_assoc()['count']);
+    $stmt->close();
+    return floor($numero / $total_pages * 100) . "%";
+}
+function RitornaNumero($chiave)
+{
+    $conn = DataConnect();
+    /*if ($chiave == "unresolved")
+        $query = 'select count(*) as count from ticket t1 where t1.id in (select t.id from ticket t inner join report on t.id= report.fk_ticket where report.isrisolto=0) ';
+    else if ($chiave == "unassigned")
+        $query = "select count(*) as count from ticket t1 where isassegnato=0";
+    else if ($chiave == "open")
+        $query = "select count(*) as count from ticket t1 where isaperto=1";
+    else if ($chiave == "solved")
+        $query = "select count(*) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where isaperto=0 and isrisolto=1";
+    *//*
+    $query = "SELECT SQL_CALC_FOUND_ROWS id from ticket where isassegnato=0;";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    
+    $query = "SELECT FOUND_ROWS() as count;";
+    $stmt = $conn->prepare($query);
+    $result = $stmt->get_result();
+    $num_rows =$result->fetch_assoc()['count'];*/
+    return intval(72);
 }
