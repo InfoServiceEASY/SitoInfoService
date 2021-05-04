@@ -20,12 +20,13 @@ if ($_SESSION["member"] == "dipendente") {
 
 $conn->close();
 $conn = DataConnect();
-if (isset($_GET['data']) && intval($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] < 2021 && $_GET['data'] > 2001) {
+if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= 2021 && $_GET['data'] >= 2001) {
     $data = intval($_GET['data']);
 } else {
     $data = 2019;
 }
-$stmt = $conn->prepare("SELECT monthname(str_to_date(MONTH(dataapertura),'%m')) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY MONTH(dataapertura) order by MONTH(dataapertura) limit 2");
+echo $data;
+$stmt = $conn->prepare("SELECT monthname(str_to_date(MONTH(dataapertura),'%m')) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY MONTH(dataapertura) order by MONTH(dataapertura)");
 $stmt->execute();
 $result = $stmt->get_result();
 $mese = array();
@@ -39,17 +40,13 @@ foreach ($result as $row) {
         $row["count"]
     ));
 }
-$tutto=ContaTutto();
+$tutto = ContaTutto($data);
 
-$featurerequest = RitornaPercentuale("Feature Request",$tutto);
-$domanda = RitornaPercentuale("Domanda",$tutto);
-$incidente = RitornaPercentuale("Incidente",$tutto);
-$problema = RitornaPercentuale("Problema",$tutto);
-/*
-$featurerequest =12;
-$domanda =12;
-$incidente =12;
-$problema =12;*/
+$featurerequest = RitornaPercentuale("Feature Request", $tutto, $data);
+$domanda = RitornaPercentuale("Domanda", $tutto, $data);
+$incidente = RitornaPercentuale("Incidente", $tutto, $data);
+$problema = RitornaPercentuale("Problema", $tutto, $data);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,7 +104,7 @@ $problema =12;*/
             <div class="d-flex flex-column" id="content-wrapper">
                 <div id="content">
 
-                    <div class="container-fluid">
+                                      <div class="container-fluid">
                         <div class="d-sm-flex justify-content-between align-items-center mb-4">
                             <h3 class="text-dark mb-0">Dashboard</h3>
                         </div>
@@ -118,7 +115,7 @@ $problema =12;*/
                                         <div class="row align-items-center no-gutters">
                                             <div class="col mr-2">
                                                 <div class="text-uppercase text-primary font-weight-bold text-xs mb-1"><span>unresolved</span></div>
-                                                <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unresolved') ?></span></div>
+                                                <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unresolved', $data) ?></span></div>
                                             </div>
                                             <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
                                         </div>
@@ -131,7 +128,7 @@ $problema =12;*/
                                         <div class="row align-items-center no-gutters">
                                             <div class="col mr-2">
                                                 <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Unassigned</span></div>
-                                                <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unassigned') ?></span></div>
+                                                <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unassigned', $data) ?></span></div>
                                             </div>
                                             <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
                                         </div>
@@ -146,7 +143,7 @@ $problema =12;*/
                                                 <div class="text-uppercase text-info font-weight-bold text-xs mb-1"><span>Open</span></div>
                                                 <div class="row no-gutters align-items-center">
                                                     <div class="col-auto">
-                                                        <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span><?php echo RitornaNumero('open') ?></span></div>
+                                                        <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span><?php echo RitornaNumero('open', $data) ?></span></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -160,7 +157,7 @@ $problema =12;*/
                                         <div class="row align-items-center no-gutters">
                                             <div class="col mr-2">
                                                 <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>Solved</span></div>
-                                                <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('solved') ?></span></div>
+                                                <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('solved', $data) ?></span></div>
                                             </div>
                                             <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
                                         </div>
@@ -186,19 +183,31 @@ $problema =12;*/
                                 </div>
                             </div>
                         </div>
-                       <div class="col-lg-5 col-xl-4">
+                        <div class="col-lg-5 col-xl-4">
                             <div class="card shadow mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="text-primary font-weight-bold m-0">Situazione ticket</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div style="height: 450px; " class="chart-area"><canvas data-bs-chart='{"type":"doughnut","data":{"labels":["risolti","non risolti","in lavorazione"],"datasets":[{"label":"","backgroundColor":["#4e73df","#1cc88a","#36b9cc"],"borderColor":["#ffffff","#ffffff","#ffffff"],"data":["50","30","15"]}]},"options":{"maintainAspectRatio":false,"legend":{"display":true},"title":{}}}'></canvas></div>
+                                    <div style="height: 450px; " class="chart-area">
+                                  <!--     <canvas data-bs-chart='{"type":"doughnut",
+                                    "data":{"labels":
+                                    ["risolti","non risolti","in lavorazione"],
+                                    "datasets":[
+                                    {"label":"",
+                                    "backgroundColor":["#4e73df","#1cc88a","#36b9cc"],
+                                    "borderColor":["#ffffff","#ffffff","#ffffff"],
+                                    "data":<?php echo '"' . RitornaNumero('solved', $data) . '","' . RitornaNumero('unresolved', $data) . '","' . RitornaNumero('open', $data) . '"' ?>  ]}]},
+                                    "options":{"maintainAspectRatio":false,"legend":{"display":true},"title":{}}}'></canvas>
+                                   -->
+                                       <canvas id="torta"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                    <div style="width:200%;">
+                  <div style="width:200%;">
                         <div class="col-lg-6 mb-4">
                             <div class="card shadow mb-4">
                                 <div class="card-header py-3">
@@ -228,7 +237,7 @@ $problema =12;*/
                 </div>
             </div>
             <script src="assets/js/jquery.min.js"></script>
-         
+
             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
             <script src="assets/js/bs-init.js"></script>
             <script>
@@ -257,10 +266,31 @@ $problema =12;*/
                         }
                     });
                 }
+
+                var torta = document.getElementById("torta");
+                if (torta) {
+                    new Chart(torta, {
+                        type: "doughnut",
+                        data: {
+                            labels: ["risolti", "non risolti", "in lavorazione"],
+                            datasets: [{
+                                "backgroundColor": ["#4e73df", "#1cc88a", "#36b9cc"],
+                                "borderColor": ["#ffffff", "#ffffff", "#ffffff"],
+                                "data": <?php echo '["' . RitornaNumero('solved', $data) . '","' . RitornaNumero('unresolved', $data) . '","' . RitornaNumero('open', $data) . '"]' ?>
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            legend: {
+                                display: true
+                            }
+                        }
+                    })
+                }
             </script>
             <?php $endtime = microtime(true); // Bottom of page
 
-printf("Page loaded in %f seconds", $endtime - $starttime );?>
+            printf("Page loaded in %f seconds", $endtime - $starttime); ?>
 </body>
 
 </html>
