@@ -524,7 +524,7 @@ function ShowTicketStatus()
 
 function ShownewTickets()
 {
-    $cond = 1;
+    $uno = 1;
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM ticket t
     INNER JOIN settore s on s.id=t.fk_settore LEFT JOIN report r ON t.id =r.fk_ticket where r.fk_ticket IS NULL 
@@ -658,4 +658,36 @@ function Paginazione($pageno, $total_pages)
     };
     echo '">Next</a></li>';
     echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
+}
+function IsMine($conn, $id_report)
+{
+  $sql = "SELECT fk_dipendente FROM report WHERE id = ?";
+  $sth = $conn->prepare($sql);
+  $sth->bind_param('i', $id_report);
+  $sth->execute();
+  $fk_dipendente = $sth->get_result();
+  $sth->close();
+  $fk_dipendente = $fk_dipendente->fetch_assoc();
+  return $fk_dipendente["fk_dipendente"] == GetUser()[0];
+}
+function Ticket_Assigned_ToMe($conn, $id_ticket){
+    //anche nel passato
+    $sql = "SELECT r.id AS id FROM report r WHERE r.fk_dipendente = ? && r.fk_ticket = ?";
+    $sth = $conn->prepare($sql);
+    $sth->bind_param('ii',GetUser()[0] ,$id_ticket);
+    $sth->execute();
+    $report_id = $sth->get_result();
+    $sth->close();
+    $report_id = $report_id->fetch_assoc();
+    return $report_id["id"] != null;
+}
+function ReportOfthis($conn, $id_ticket){
+    $sql = "SELECT fk_dipendente FROM report WHERE fk_ticket = ? and fk_dipendente = ?";
+    $sth = $conn->prepare($sql);
+    $sth->bind_param('ii',$id_ticket, GetUser()[0]);
+    $sth->execute();
+    $fk_dipendente = $sth->get_result();
+    $sth->close();
+    $fk_dipendente = $fk_dipendente->fetch_assoc();
+    return $fk_dipendente["fk_dipendente"] != null;
 }
