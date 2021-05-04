@@ -93,6 +93,21 @@ function sendEmail(email, username) {
         .then(function(message) {});
 }
 
+function sendEmail1(domanda, risposta, email) {
+    Email.send({
+            Host: "smtp.gmail.com",
+            Username: "infoservicehelps@gmail.com",
+            Password: "maroc100",
+            To: email,
+            From: "infoservicehelps@gmail.com",
+            Subject: 'Risposta alla tua domanda',
+            Body: "Please click this link to activate your account:\n\
+            http://extra.isii.it:40084/public/verify.php?email=" + email + "&usr=" + username,
+        })
+        .then(function(message) {});
+}
+
+
 function myFunction() {
     var checkBox = document.getElementById("action");
     var text = document.getElementById("field");

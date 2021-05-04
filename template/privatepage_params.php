@@ -6,8 +6,7 @@ $sidebar_text = array();
 
 if ($_SESSION["member"] == "cliente") {
   $sidebar_text = array("Solutions", "Ticket", "MyTicket");
-} else $_SESSION["member"] == "admin" ? $sidebar_text = array("Ticket aperti", "Ticket chiusi") : $sidebar_text = array("TicketList");
-
+} else $_SESSION["member"] == "admin" ? $sidebar_text = array("Ticket aperti", "Ticket chiusi", "Visualizza contatto") : $sidebar_text = array("TicketList");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,8 +59,6 @@ if ($_SESSION["member"] == "cliente") {
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="../private/Logout.php">LogOut</a>
                 <a class="dropdown-item" href="Impostazioni.php">Impostazioni</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
               </div>
             </li>
           </ul>

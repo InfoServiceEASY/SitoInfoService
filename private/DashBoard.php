@@ -1,7 +1,8 @@
 <?php
+session_start();
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
-
+Session();
 
 $conn = DataConnect();
 $nomeColonna = 1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
