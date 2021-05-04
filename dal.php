@@ -593,9 +593,9 @@ function InsertReport($durata, $descrizione, $isrisolto, $fk_ticket, $fk_dipende
 function deleteTicket($id)
 {
     $conn = DataConnect();
-    $query = "DELETE FROM ticket WHERE";
+    $query = 'DELETE FROM ticket WHERE';
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ii', $id);
+    $stmt->bind_param('i', $id);
     if ($stmt->execute()) {
         $error = 'Fatto';
     } else
@@ -615,7 +615,6 @@ function Tabella($query)
     $conn->close();
     return $result;
 }
-
 function PagineTotali($total_pages_sql, $num_records_per_page)
 {
     $conn = DataConnect();
@@ -629,6 +628,7 @@ function PagineTotali($total_pages_sql, $num_records_per_page)
 
 function Paginazione($pageno, $total_pages)
 {
+    if ($pageno > $total_pages) $pageno = $total_pages;
     echo  '<div  class="contiene">';
     echo "<p class='inlineLeft'  >pagina " . $pageno . " su " . $total_pages . " pagine</p>";
     echo ' <ul  class="inlineRight"  id="navlist">';
@@ -659,16 +659,16 @@ function Paginazione($pageno, $total_pages)
     echo '">Next</a></li>';
     echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
 }
+
 function IsMine($conn, $id_report)
 {
-  $sql = "SELECT fk_dipendente FROM report WHERE id = ?";
-  $sth = $conn->prepare($sql);
+  $sth = $conn->prepare('SELECT fk_dipendente FROM report WHERE id=?');
   $sth->bind_param('i', $id_report);
   $sth->execute();
   $fk_dipendente = $sth->get_result();
   $sth->close();
   $fk_dipendente = $fk_dipendente->fetch_assoc();
-  return $fk_dipendente["fk_dipendente"] == GetUser()[0];
+  return $fk_dipendente['fk_dipendente'] === GetUser()[0];
 }
 function Ticket_Assigned_ToMe($conn, $id_ticket){
     //anche nel passato
@@ -681,6 +681,7 @@ function Ticket_Assigned_ToMe($conn, $id_ticket){
     $report_id = $report_id->fetch_assoc();
     return $report_id["id"] != null;
 }
+
 function ReportOfthis($conn, $id_ticket){
     $sql = "SELECT fk_dipendente FROM report WHERE fk_ticket = ? and fk_dipendente = ?";
     $sth = $conn->prepare($sql);
@@ -690,4 +691,49 @@ function ReportOfthis($conn, $id_ticket){
     $sth->close();
     $fk_dipendente = $fk_dipendente->fetch_assoc();
     return $fk_dipendente["fk_dipendente"] != null;
+}
+
+function ContaTutto(){
+    $conn = DataConnect();
+    $stmt = $conn->prepare('SELECT count(*) as count from ticket');
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $total_pages = intval($result->fetch_assoc()['count']);
+    $conn->close();
+    return $total_pages;
+}
+
+function RitornaPercentuale($chiave,$total_pages)
+{
+    $conn = DataConnect();
+    $stmt = $conn->prepare("SELECT count(*) as count from ticket where tipologia='".$chiave."'");
+    //$stmt->bind_param('s', $chiave);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $numero = intval($result->fetch_assoc()['count']);
+    $stmt->close();
+    return floor($numero / $total_pages * 100) . "%";
+}
+
+function RitornaNumero($chiave)
+{
+    $conn = DataConnect();
+    /*if ($chiave == "unresolved")
+        $query = 'select count(*) as count from ticket t1 where t1.id in (select t.id from ticket t inner join report on t.id= report.fk_ticket where report.isrisolto=0) ';
+    else if ($chiave == "unassigned")
+        $query = "select count(*) as count from ticket t1 where isassegnato=0";
+    else if ($chiave == "open")
+        $query = "select count(*) as count from ticket t1 where isaperto=1";
+    else if ($chiave == "solved")
+        $query = "select count(*) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where isaperto=0 and isrisolto=1";
+    *//*
+    $query = "SELECT SQL_CALC_FOUND_ROWS id from ticket where isassegnato=0;";
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    
+    $query = "SELECT FOUND_ROWS() as count;";
+    $stmt = $conn->prepare($query);
+    $result = $stmt->get_result();
+    $num_rows =$result->fetch_assoc()['count'];*/
+    return intval(72);
 }

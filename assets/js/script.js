@@ -8,16 +8,18 @@ function menuacomparsa() {
 
 //line
 function chart(date) {
-    var data = [];
-    var dataSeries = { type: "line" };
-    var dataPoints = [];
+    /*   var data = [];
+       var dataSeries = { type: "line" };
+       var dataPoints = [];*/
     for (var i = 0; i < date.length; i += 1) {
-        dataPoints.push({
-            x: new Date(date[i]["data"]),
-            y: date[i]["somma"]
-        });
+
+        /* dataPoints.push({
+
+             x: new Date(date[i]["data"]),
+             y: date[i]["somma"]
+         });*/
     }
-    dataSeries.dataPoints = dataPoints;
+    /*dataSeries.dataPoints = dataPoints;
     data.push(dataSeries);
 
     //Better to construct options first and then pass it as a parameter
@@ -32,8 +34,8 @@ function chart(date) {
         },
         pointSize: 20,
         data: data // random data
-    };
-
+};
+*/
     var chart = new CanvasJS.Chart("lineChart", options);
     var startTime = new Date();
     chart.render();
@@ -60,7 +62,7 @@ function sidebar(arr, posizione) {
     for (const element of arr) {
         link = document.createElement('a');
         link.className = "list-group-item list-group-item-action bg-light";
-        href = "../" + posizione + "/" + element + ".php";
+        href = "../" + posizione + "/" + element.split(" ").join("") + ".php";
         link.href = href;
         link.innerHTML = element;
         div.appendChild(link);
@@ -103,17 +105,8 @@ function myFunction() {
 
 function tabellaprivata() {
     $(document).ready(function() {
-        //$("tr:even").css("background-color", "#672146");
-        //$("tr:odd").css("background-color", "#EFF1F1");
-        // Setup - add a text input to each footer cell
         $('#search thead th').each(function() {
             var title = $(this).text().trim();
-
-            //var prova = '"modifica\n"';
-            // console.log(title.localeCompare(prova));
-
-            //console.log("modifica");
-            //            console.log(title != "modifica");
             if (title != "modifica")
                 $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
         });

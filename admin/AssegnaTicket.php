@@ -5,22 +5,32 @@ include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
 
-$row = GetTicketRowgivenId($_GET["id"]);
+$conn = DataConnect();
+$zero = 0;
+$query = "select * from ticket where id=? and isassegnato=?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('ii', $_GET["id"], $zero);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
+if ($result->num_rows > 0) {
+  $row = GetTicketRowgivenId($_GET["id"]);
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  if (isset($_POST['Assegna'])) {
-    if ($_POST['dipendenti'] != '0' && $_POST['scelta'] != '0') {
-      $error = createreport($_POST['dipendenti'], $row['id']);
-    } else
-      $error = "la prossima volta seleziona qualcuno";
-  } else if (isset($_POST['Elimina'])) {
-    $error = deleteTicket($row['id']);
-  }
-  echo ("<script LANGUAGE='JavaScript'>
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['Assegna'])) {
+      if ($_POST['dipendenti'] != '0' && $_POST['scelta'] != '0') {
+        $error = createreport($_POST['dipendenti'], $row['id']);
+      } else
+        $error = "la prossima volta seleziona qualcuno";
+    } else if (isset($_POST['Elimina'])) {
+      $error = deleteTicket($row['id']);
+    }
+    echo ("<script LANGUAGE='JavaScript'>
     window.alert('" . $error . "');
     window.location.href='TicketAperti.php';
     </script>");
-}
+  }
+
 ?>
 
 <form method="POST">
@@ -97,7 +107,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <button id="btnShowModal" class="btn btn-primary" type="submit" name="Assegna">Assegna</button>
   </div>
 </form>
+<?php } else {
+  echo "<h1>ticket già assegnato o inesistente</h1>";
+}?>
 </div>
 </body>
+
 
 </html>

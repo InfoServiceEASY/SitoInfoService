@@ -6,7 +6,7 @@ $sidebar_text = array();
 
 if ($_SESSION["member"] == "cliente") {
   $sidebar_text = array("Solutions", "Ticket", "MyTicket");
-} else $_SESSION["member"] == "admin" ? $sidebar_text = array("ticketaperti", "Ticket") : $sidebar_text = array("TicketList");
+} else $_SESSION["member"] == "admin" ? $sidebar_text = array("Ticket aperti", "Ticket chiusi") : $sidebar_text = array("TicketList");
 
 ?>
 <!DOCTYPE html>
