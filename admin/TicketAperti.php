@@ -45,7 +45,7 @@ Session();
                     <td><?php echo $row["dataapertura"]; ?></td>
                     <td><?php echo $row["nome"];  ?></td>
                     <td><?php echo $row['oggetto'] ?></td>
-                    <?php echo '<td><button id="unico" onclick="location.href=' . "'AssegnaTicket.php?id=" . $row['id'] . "'" . '"' . ">edit</button></td>" ?>
+                    <?php echo '<td><button id="unico" onclick="location.href=' . "'assegnaticket.php?id=" . $row['id'] . "'" . '"' . ">assegna</button></td>" ?>
                 </tr>
             <?php }
         } else {

@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
       $email=$row['email'];
       $risposta=$_POST['textarea'];
       $domanda=$row['descrizione'];
-     $stampare= "<script>window.sendmessaggio('$domanda','$risposta','$email');</script>";    
+     echo "<script>window.sendmessaggio('$domanda','$risposta','$email');</script>";    
      $stmt = $conn->prepare('update contatto set vistato=1 , risposta=? WHERE id=?');
     $stmt->bind_param('si', $_POST['textarea'],$id);
     if ($stmt->execute())
@@ -30,8 +30,7 @@ if ($result->num_rows > 0) {
     } 
     else if (isset($_POST['Elimina'])) 
       $error = deleteTicket($row['id']);
-    echo $stampare;
-    echo ("<script LANGUAGE='JavaScript'>
+       echo ("<script LANGUAGE='JavaScript'>
     window.alert('" . $error . "');
     window.location.href='TicketAperti.php';
     </script>");

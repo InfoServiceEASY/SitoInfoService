@@ -4,10 +4,10 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 function DataConnect()
 {
-    $servername = "lmc8ixkebgaq22lo.chr7pe7iynqr.eu-west-1.rds.amazonaws.com";
-    $username = "htgt3cv7fwksdcw4";
-    $password = "lh21vdy7t1yjk7bk";
-    $dbname = "k113bann4ponykr2";
+    $servername = "127.0.0.1";
+    $username = "db_infoservice";
+    $password = "Er\$fZhr7I@3y";
+    $dbname = "db_infoservice";
     $conn = new mysqli($servername, $username, $password, $dbname);
     if ($conn->connect_error)
         die("Connection failed: " . $conn->connect_error);
@@ -38,13 +38,13 @@ function Login($username, $password)
             $_SESSION['utente'] = $row['username'];
             if ($row['IsAdmin'] && $row["IsDipendente"]) {
                 $_SESSION['member'] = "admin";
-                header("location:../private/DashBoard.php");
+                header("location:../private/dashboard.php");
             } else if (!$row["IsDipendente"]) {
                 $_SESSION['member'] = 'cliente';
                 header("location:../cliente/dashboard.php");
             } else {
                 $_SESSION['member'] = 'dipendente';
-                header("location:../private/DashBoard.php");
+                header("location:../private/dashboard.php");
             }
             $conn->close();
             exit();

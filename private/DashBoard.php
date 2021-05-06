@@ -27,7 +27,7 @@ if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= 2021 && 
 } else {
     $data = 2019;
 }
-$stmt = $conn->prepare("SELECT monthname(str_to_date(MONTH(dataapertura),'%m')) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY MONTH(dataapertura) order by MONTH(dataapertura)");
+$stmt = $conn->prepare("SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
 $stmt->execute();
 $result = $stmt->get_result();
 $mese = array();
@@ -122,7 +122,11 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 </form>
             </div>
             <div class="card-body">
+<<<<<<< Updated upstream
                 <div style="height: 450px; " class="chart-area">
+=======
+                <div style="height: 500px; " class="chart-area">
+>>>>>>> Stashed changes
                     <canvas id="chLine"></canvas>
                 </div>
             </div>
@@ -134,7 +138,11 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 <h6 class="text-primary font-weight-bold m-0">Situazione ticket</h6>
             </div>
             <div class="card-body">
+<<<<<<< Updated upstream
                 <div style="height: 450px; " class="chart-area">
+=======
+                <div style="height: 500px; " class="chart-area">
+>>>>>>> Stashed changes
                     <canvas id="torta"></canvas>
                 </div>
             </div>
