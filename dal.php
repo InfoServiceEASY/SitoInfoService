@@ -221,7 +221,6 @@ function ConvalidTicket($comment, $tipologia, $id)
                 $esito = 'C\'è stato un problema, riprova più tardi.';
         }
     } else if ($tipologia === 'Non sono d\'accordo, continua supporto') {
-        $cond = 0;
         $stmt = $conn->prepare('UPDATE report SET isrisolto=0,commento=?,isconvalidato=0 WHERE fk_ticket=?');
         $stmt->bind_param('si', $comment, $id);
         if ($stmt->execute())
