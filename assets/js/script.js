@@ -57,7 +57,7 @@ function sidebar(arr, posizione) {
     link = document.createElement('a');
     link.className = "list-group-item list-group-item-action bg-light";
     link.href = "../private/dashboard.php";
-    link.innerHTML = "dashboard";
+    link.innerHTML = "Dashboard";
     div.appendChild(link);
     for (const element of arr) {
         link = document.createElement('a');

@@ -122,11 +122,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 </form>
             </div>
             <div class="card-body">
-<<<<<<< Updated upstream
-                <div style="height: 450px; " class="chart-area">
-=======
                 <div style="height: 500px; " class="chart-area">
->>>>>>> Stashed changes
                     <canvas id="chLine"></canvas>
                 </div>
             </div>
@@ -138,11 +134,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 <h6 class="text-primary font-weight-bold m-0">Situazione ticket</h6>
             </div>
             <div class="card-body">
-<<<<<<< Updated upstream
-                <div style="height: 450px; " class="chart-area">
-=======
                 <div style="height: 500px; " class="chart-area">
->>>>>>> Stashed changes
                     <canvas id="torta"></canvas>
                 </div>
             </div>
