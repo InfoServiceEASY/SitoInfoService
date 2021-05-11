@@ -23,9 +23,9 @@ if (ReportOfthis($_GET['id'])) {
         $no_of_records_per_page = 10;
         $offset = ($pageno - 1) * $no_of_records_per_page;
         $total_pages_sql = "SELECT r.fk_dipendente, COUNT(*) AS TotalRows FROM 
-        report r INNER JOIN ticket t on r.fk_ticket = t.id WHERE r.fk_ticket = ? and r.fk_dipendente = ? ORDER BY r.fk_dipendente";
+        report r INNER JOIN ticket t on r.fk_ticket = t.id WHERE r.fk_ticket = ? and r.fk_dipendente = ? GROUP BY r.fk_dipendente";
         $stmt = $conn->prepare($total_pages_sql);
-        $stmt->bind_param('ii', $id, GetUser()[0]);
+        $stmt->bind_param('ii', $_GET['id'], GetUser()[0]);
         $stmt->execute();
         $result = $stmt->get_result();
         if (mysqli_fetch_array($result)['fk_dipendente'] != null) {
@@ -37,7 +37,7 @@ if (ReportOfthis($_GET['id'])) {
         FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
         where t.id=? and r.attività is not null LIMIT $offset, $no_of_records_per_page";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param('i', $id);
+            $stmt->bind_param('i', $_GET['id']);
             $stmt->execute();
             $data = $stmt->get_result();
             echo '<table id="search" style="width: 100%">

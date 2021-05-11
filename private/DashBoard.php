@@ -1,5 +1,6 @@
 <?php
 session_start();
+$title = 'Dashboard';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
@@ -7,14 +8,14 @@ Session();
 $conn = DataConnect();
 $nomeColonna = 1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
 $condizione = "";
-if ($_SESSION["member"] == "admin")
+if ($_SESSION["member"] === "admin")
     $condizione = 1;
-elseif ($_SESSION["member"] == "cliente") {
+elseif ($_SESSION["member"] === "cliente") {
     $nomeColonna = "fk_cliente";
     $condizione = GetUser()[0];
 }
 
-if ($_SESSION["member"] == "dipendente") {
+if ($_SESSION["member"] === "dipendente") {
     $sql = "SELECT t.dataapertura, count(*) AS count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
   WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
     $condizione = $_SESSION['utente'];
@@ -27,7 +28,7 @@ if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= 2021 && 
 } else {
     $data = 2019;
 }
-$stmt = $conn->prepare("SELECT monthname(str_to_date(MONTH(dataapertura),'%m')) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY MONTH(dataapertura) order by MONTH(dataapertura)");
+$stmt = $conn->prepare("SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
 $stmt->execute();
 $result = $stmt->get_result();
 $mese = array();
@@ -115,14 +116,14 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
     <div class="col-lg-7 col-xl-8">
         <div class="card shadow mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="text-primary font-weight-bold m-0">Ticket creati nel </h6>
+                <h6 class="text-primary font-weight-bold m-0">Ticket creati nel <?php echo $data?> </h6>
                 <form method="get">
                     <input type="number" name="data" placeholder="YYYY" min="2001" max="2021">
                     <button>ok</button>
                 </form>
             </div>
             <div class="card-body">
-                <div style="height: 450px; " class="chart-area">
+                <div style="height: 600px; " class="chart-area">
                     <canvas id="chLine"></canvas>
                 </div>
             </div>
@@ -134,7 +135,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 <h6 class="text-primary font-weight-bold m-0">Situazione ticket</h6>
             </div>
             <div class="card-body">
-                <div style="height: 450px; " class="chart-area">
+                <div style="height: 600px; " class="chart-area">
                     <canvas id="torta"></canvas>
                 </div>
             </div>

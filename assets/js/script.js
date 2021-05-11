@@ -47,7 +47,7 @@ function chart(date) {
 
 function reload(form, id) {
     var val = form.scelta.options[form.scelta.options.selectedIndex].value;
-    self.location = 'AssegnaTicket.php?id=' + id + '&scelta=' + val;
+    self.location = 'assegnaticket.php?id=' + id + '&scelta=' + val;
 }
 
 function sidebar(arr, posizione) {
@@ -57,12 +57,12 @@ function sidebar(arr, posizione) {
     link = document.createElement('a');
     link.className = "list-group-item list-group-item-action bg-light";
     link.href = "../private/dashboard.php";
-    link.innerHTML = "dashboard";
+    link.innerHTML = "Dashboard";
     div.appendChild(link);
     for (const element of arr) {
         link = document.createElement('a');
         link.className = "list-group-item list-group-item-action bg-light";
-        href = "../" + posizione + "/" + element.split(" ").join("") + ".php";
+        href = "../" + posizione + "/" + element.toLowerCase().split(" ").join("") + ".php";
         link.href = href;
         link.innerHTML = element;
         div.appendChild(link);

@@ -49,16 +49,12 @@ if ($_SESSION["member"] == "cliente") {
             <li class="nav-item active">
               <a class="nav-link" href="../index.php">Home <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
             <li class="nav-item dropdown">
               <a class="nav-link " href="#" id="navbarDropdown" role="button" style="background-color:#007bff;    border-radius: 50px;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?php echo $letterautente; ?>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="../private/Logout.php">LogOut</a>
-                <a class="dropdown-item" href="Impostazioni.php">Impostazioni</a>
+                <a class="dropdown-item" href="../private/logout.php">LogOut</a>
               </div>
             </li>
           </ul>

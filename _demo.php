@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
+<?php
+$to      = 'alessandro2002.f@gmail.com';
+$subject = 'the subject';
+$message = 'hello';
+$headers = 'From: ouadimarouan@gmail.com' . "\r\n" .
+    'Reply-To: alessandro2002.f@gmail.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
 
+mail($to, $subject, $message, $headers);
+?>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">

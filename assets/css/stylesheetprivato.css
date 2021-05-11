@@ -142,7 +142,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
 }
 
 #navlist a:hover {
-    background-color: red;
+    background-color: #007bff;
 }
 
 thead tr {
