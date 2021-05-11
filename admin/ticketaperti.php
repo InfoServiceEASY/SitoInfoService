@@ -1,10 +1,11 @@
 <?php
 session_start();
-$title = 'Interventi dipendente'; 
+$title = 'Ticket aperti';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
 ?>
+
 <h1 class="mt-4">I ticket Aperti</h1>
 <br>
 <script>
@@ -31,7 +32,7 @@ Session();
         $total_pages_sql = "SELECT COUNT(*) as cont FROM  ticket t
             INNER JOIN settore s on s.id=t.fk_settore  where isassegnato=0
             AND t.isaperto=1";
-        $total_pages = PagineTotali($total_pages_sql,$no_of_records_per_page);
+        $total_pages = PagineTotali($total_pages_sql, $no_of_records_per_page);
 
         $offset = ($pageno - 1) * $no_of_records_per_page;
         $sql = "SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM  ticket t
@@ -65,7 +66,7 @@ Session();
         </tr>
     </tfoot>
 </table>
-<?php Paginazione($pageno,$total_pages); ?>
+<?php Paginazione($pageno, $total_pages); ?>
 
 <br>
 </div>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-$title = 'interventi dipendente';
+$title = 'Interventi dipendente';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();

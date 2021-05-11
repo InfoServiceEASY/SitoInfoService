@@ -2,6 +2,18 @@
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
+/*function DataConnect()
+{
+    $servername = "127.0.0.1";
+    $username = "db_infoservice";
+    $password = "Er\$fZhr7I@3y";
+    $dbname = "db_infoservice";
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error)
+        die("Connection failed: " . $conn->connect_error);
+    return $conn;
+}*/
+
 function DataConnect()
 {
     $servername = "lmc8ixkebgaq22lo.chr7pe7iynqr.eu-west-1.rds.amazonaws.com";
@@ -38,13 +50,13 @@ function Login($username, $password)
             $_SESSION['utente'] = $row['username'];
             if ($row['IsAdmin'] && $row["IsDipendente"]) {
                 $_SESSION['member'] = "admin";
-                header("location:../private/DashBoard.php");
+                header("location:../private/dashboard.php");
             } else if (!$row["IsDipendente"]) {
                 $_SESSION['member'] = 'cliente';
                 header("location:../cliente/dashboard.php");
             } else {
                 $_SESSION['member'] = 'dipendente';
-                header("location:../private/DashBoard.php");
+                header("location:../private/dashboard.php");
             }
             $conn->close();
             exit();
@@ -209,7 +221,6 @@ function ConvalidTicket($comment, $tipologia, $id)
                 $esito = 'C\'è stato un problema, riprova più tardi.';
         }
     } else if ($tipologia === 'Non sono d\'accordo, continua supporto') {
-        $cond = 0;
         $stmt = $conn->prepare('UPDATE report SET isrisolto=0,commento=?,isconvalidato=0 WHERE fk_ticket=?');
         $stmt->bind_param('si', $comment, $id);
         if ($stmt->execute())

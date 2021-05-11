@@ -136,6 +136,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
             </div>
             <div class="card-body">
                 <div style="height: 600px; " class="chart-area">
+
                     <canvas id="torta"></canvas>
                 </div>
             </div>
