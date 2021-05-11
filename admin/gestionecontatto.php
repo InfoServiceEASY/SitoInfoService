@@ -20,6 +20,7 @@ if ($result->num_rows > 0) {
       $email=$row['email'];
       $risposta=$_POST['textarea'];
       $domanda=$row['descrizione'];
+      echo $domanda.$risposta.$email;
      echo "<script>window.sendmessaggio('$domanda','$risposta','$email');</script>";    
      $stmt = $conn->prepare('update contatto set vistato=1 , risposta=? WHERE id=?');
     $stmt->bind_param('si', $_POST['textarea'],$id);

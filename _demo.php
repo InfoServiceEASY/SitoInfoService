@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html>
-<?php
-$to      = 'alessandro2002.f@gmail.com';
-$subject = 'the subject';
-$message = 'hello';
-$headers = 'From: ouadimarouan@gmail.com' . "\r\n" .
-    'Reply-To: alessandro2002.f@gmail.com' . "\r\n" .
-    'X-Mailer: PHP/' . phpversion();
 
-mail($to, $subject, $message, $headers);
-?>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -22,9 +13,13 @@ mail($to, $subject, $message, $headers);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.10.0/baguetteBox.min.css">
     <link rel="stylesheet" href="assets/css/styles.min.css">
+    <script src="assets/js/script.js"></script>
 </head>
 
 <body>
+<?php
+  echo "<script>window.sendmessaggio('domanda','risposta','marouanouadi@gmail.com');</script>";    
+?>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-light clean-navbar">
         <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="../assets/img/logo.png" style="height: 60px;">
             <div class="collapse navbar-collapse" id="navcol-1">
