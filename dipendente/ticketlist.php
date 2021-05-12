@@ -17,15 +17,12 @@ if (!is_null($aperto)) {
     </br>
     </br>
     <a href="?pageno=1&aperto=0" style="text-decoration: none; color:white;">
-        <button class="btn-primary" style="float:center; width: 100%; height:100%; font-size: 200%; padding:10px; padding-bottom:100px;padding-top: 100px;">
+        <button class="btn-primary" style="float:left; width: 50%; height:1000%; font-size: 200%; padding:10px; padding-bottom:100px;padding-top: 100px;">
             Visualizza i tuoi interventi chiusi
         </button>
     </a>
-    </br>
-    </br>
-    </br>
     <a href="?pageno=1&aperto=1" style="text-decoration: none; color:white;">
-        <button class="btn-primary" style="float:center; width: 100%; height:100%; font-size: 200%; padding:10px; padding-bottom: 100px;padding-top: 100px;">
+        <button class="btn-primary" style="float:left; width: 50%; height:1000%; font-size: 200%; padding:10px; padding-bottom: 100px;padding-top: 100px;">
             Visualizza i tuoi interventi aperti
         </button>
     </a>
