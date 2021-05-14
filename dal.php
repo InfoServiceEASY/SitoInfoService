@@ -676,6 +676,47 @@ function Paginazione($pageno, $total_pages)
     echo '<li ><a href="?pageno=' . $total_pages . '">Last</a></li></ul></div>';
 }
 
+function Paginazione_dipendente($pageno, $total_pages, $num_aperto_str,$id_ticket, $pagename)
+{
+    $href_code = ($pagename == "interventi"?'&id='.strval($id_ticket): '').'&aperto='.$num_aperto_str;
+    if ($pageno > $total_pages) $pageno = $total_pages;
+    echo  '<div  class="contiene">';
+    echo "<p class='inlineLeft'  >pagina " . $pageno . " su " . $total_pages . " pagine</p>";
+    echo ' <ul  class="inlineRight"  id="navlist">';
+    echo '<li ><a href="?pageno=1&'.$href_code.'>First</a></li>';
+    echo '<li  class="';
+    if ($pageno <= 1) {
+        echo 'disabled';
+    };
+    echo '">';
+    echo '   <a href="';
+    if ($pageno <= 1) {
+        echo '#';
+    } else {
+        echo "?pageno=" . ($pageno - 1).$href_code;
+    };
+    echo '">Prev</a></li>';
+    echo '<li  class="';
+    if ($pageno >= $total_pages) {
+        echo 'disabled';
+    };
+    echo '">';
+    echo ' <a href="';
+    if ($pageno >= $total_pages) {
+        echo '#';
+    } else {
+        echo "?pageno=" . ($pageno + 1).$href_code;
+    };
+    echo '">Next</a></li>';
+    echo '<li ><a href="?pageno=' . $total_pages . $href_code. '">Last</a></li></ul></div>';
+}
+
+
+
+
+
+
+
 function IsMine($id_report)
 {
     $conn = DataConnect();

@@ -47,7 +47,7 @@ function HeadRow($nome_colonne)
 
 function Table_content($conn, $pageno, $total_pages, $query, $aperto)
 {
-    echo '<table id="search" style="width: 100%">
+    ?><table id="search" style="width: 100%">
     <thead>
     <th><strong> Id </strong></td>
     <th><strong> DataApertura </strong></td>
@@ -56,7 +56,7 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
     <th><strong> Attività </strong></td>
     <th><strong> modifica</td>
     </thead>
-    <tbody>';
+    <tbody><?php
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', GetUser()[0]);
     $stmt->execute();
@@ -72,9 +72,9 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
                 <td><?php echo $row["Attività"];  ?></td>
                 <?php
                 echo $aperto ?
-                    '<td><button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['id'] . "&aperto=1" . "'" . '"' . ">Visualizza Precedenti Report</button>" .
+                    '<td><button id="unico" onclick="location.href=' . "'interventi.php?pageno=1&id=" . $row['id'] . "&aperto=1" . "'" . '"' . ">Visualizza Precedenti Report</button>" .
                     '<button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['id'] . "'" . '"' . ">Scrivi Report</button></td>"
-                    : '<td><button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['id'] . "&aperto=0" . "'" . '"' . ">Visualizza Precedenti Report</button></td>";
+                    : '<td><button id="unico" onclick="location.href=' . "'interventi.php?pageno=1&id=" . $row['id'] . "&aperto=0" . "'" . '"' . ">Visualizza Precedenti Report</button></td>";
                 ?>
             </tr>
         <?php }
@@ -96,7 +96,7 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
     </tfoot>
      </table><?php
     echo '<div  class="contiene">';
-        Paginazione($pageno, $total_pages); ?>
+        Paginazione_dipendente($pageno, $total_pages,$aperto?"1":"0", null, "ticketlist"); ?>
     </div>
 <?php
 }

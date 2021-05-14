@@ -17,7 +17,8 @@ $conn = DataConnect();
 $total_rows = 0;
 $total_pages = 1;
 $pageno = isset($_GET['pageno']) ? $_GET['pageno'] : 1;
-$aperto = isset($_GET["aperto"]) ? ($_GET['aperto'] === 1 ? true : false) : null;
+$aperto = isset($_GET["aperto"]) ? ($_GET['aperto'] == 1 ? true : false) : null;
+$num_aperto = $aperto?"1":"0";
 if (ReportOfthis($_GET['id'])) {
     if (!is_null($aperto)) {
         $no_of_records_per_page = 10;
@@ -40,36 +41,36 @@ if (ReportOfthis($_GET['id'])) {
             $stmt->bind_param('i', $_GET['id']);
             $stmt->execute();
             $data = $stmt->get_result();
-            echo '<table id="search" style="width: 100%">
+            ?><table id="search" style="width: 100%">
             <thead>
             <th><strong> Id </strong></td>
-            <th><strong> DataInizio </strong></td>
-            <th><strong> DataFine </strong></td>
-            <th><strong> Risolto </strong></td>
-            <th><strong> Nome </strong></td>
             <th><strong> Oggetto </strong></td>
+            <th><strong> DataInizio/DataFine </strong></td>
+            <th><strong> Risolto </strong></td>
             <th><strong> Attività </strong></td>
-            <th><strong> modifica</td>
+            <th><strong> modifica</strong></td>
             </thead>
-            <tbody>';
+            <tbody><?php
             if ($data != null) {
-                while ($data->num_rows > 0) {
-                    $row = $data->fetch_assoc();
-?>
+                if($data->num_rows > 0){
+                while ($row = $data->fetch_assoc()) {
+                ?>
+                    <tr>
                     <td><?php echo $row["Id"]; ?></td>
-                    <td><?php echo $row["DataInizio"]; ?></td>
-                    <td><?php echo $row["DataFine"]; ?></td>
+                    <td><?php echo $row["Nome"]. ": </br>" . $row['Oggetto'] ?></td>
+                    <td><?php echo "DataInizio: </br>" . $row["DataInizio"]. "</br> DataFine: </br>" . $row["DataFine"]?></td>
                     <td><?php echo strval($row["Risolto"]) == "1" ? "Sì" : "No"; ?></td>
-                    <td><?php echo $row["Nome"];  ?></td>
-                    <td><?php echo $row['Oggetto'] ?></td>
-                    <td><?php echo $row["Attività"];  ?></td>
+                    <td><?php echo $row["Attività"];  ?></td> 
                 <?php
                     if (($aperto) && IsMine($row["Id"]))
-                        echo '<td><button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['Id'] . "'" . '"' . ">Modifica Report</button></td>" .
-                            '<td><button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['Id'] . "&Cancella=yes" . "'" . '"' . ">Cancella Report</button></td>";
+                        echo '<td><button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['Id'] . "'" . '"' . ">Modifica Report</button>" .
+                            '<button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['Id'] . "&Cancella=yes" . "'" . '"' . ">Cancella Report</button></td>";
                     else echo '<td></td>';
-		
+                ?>
+                </tr>
+                <?php    
                 }
+            }
 
             } else {
                 ?>
@@ -77,18 +78,16 @@ if (ReportOfthis($_GET['id'])) {
                     <td colspan="5">No results found.</td>
                 </tr>
         <?php  }
-            echo '</tbody>
+            ?></tbody>
             <tfoot>
             <th><strong> Id </strong></td>
-            <th><strong> DataInizio </strong></td>
-            <th><strong> DataFine </strong></td>
-            <th><strong> Risolto </strong></td>
-            <th><strong> Nome </strong></td>
             <th><strong> Oggetto </strong></td>
+            <th><strong> DataInizio/DataFine </strong></td>
+            <th><strong> Risolto </strong></td>
             <th><strong> Attività </strong></td>
-            <th><strong> modifica</td>
+            <th><strong> modifica</strong></td>
             </tfoot>
-            </table>';
+            </table><?php
         } else {
             $stmt = $conn->prepare('UPDATE report set datafine=null,durata=null,attività=null,isrisolto=null where id=? and isconvalidato is null');
             $stmt->bind_param('i',  $_GET['ReportId']);
@@ -99,7 +98,7 @@ if (ReportOfthis($_GET['id'])) {
         </script>");
         }
         echo '<div  class="contiene">';
-        Paginazione($pageno, $total_pages);
+        Paginazione_dipendente($pageno, $total_pages, $num_aperto, strval($_GET['id']), "interventi");
         ?>
         </div>
         <br>
