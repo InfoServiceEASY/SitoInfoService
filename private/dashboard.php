@@ -15,7 +15,7 @@ elseif ($_SESSION["member"] === "cliente") {
     $condizione = GetUser()[0];
 }
 
-if ($_SESSION["member"] === "dipendente") {
+if ($_SESSION["member"] == "dipendente") {
     $sql = "SELECT t.dataapertura, count(*) AS count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
   WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
     $condizione = $_SESSION['utente'];
@@ -23,10 +23,10 @@ if ($_SESSION["member"] === "dipendente") {
 
 $conn->close();
 $conn = DataConnect();
-if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= 2021 && $_GET['data'] >= 2001) {
+if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= intval(date("Y")) && $_GET['data'] >= 2001) {
     $data = intval($_GET['data']);
 } else {
-    $data = 2020;
+    $data = intval(date("Y")) - 1;
 }
 $stmt = $conn->prepare("SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
 $stmt->execute();
@@ -44,10 +44,10 @@ foreach ($result as $row) {
 }
 $tutto = ContaTutto($data);
 
-$featurerequest = RitornaPercentuale("Feature Request", $tutto, $data);
-$domanda = RitornaPercentuale("Domanda", $tutto, $data);
-$incidente = RitornaPercentuale("Incidente", $tutto, $data);
-$problema = RitornaPercentuale("Problema", $tutto, $data);
+$featurerequest = RitornaPercentuale("Feature Request", $tutto, $data, $_SESSION['member']);
+$domanda = RitornaPercentuale("Domanda", $tutto, $data, $_SESSION['member']);
+$incidente = RitornaPercentuale("Incidente", $tutto, $data, $_SESSION['member']);
+$problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
 
 ?>
 
@@ -61,7 +61,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 <div class="row align-items-center no-gutters">
                     <div class="col mr-2">
                         <div class="text-uppercase text-primary font-weight-bold text-xs mb-1"><span>unresolved</span></div>
-                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unresolved', $data) ?></span></div>
+                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unresolved', $data, $_SESSION['member']) ?></span></div>
                     </div>
                     <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
                 </div>
@@ -74,7 +74,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 <div class="row align-items-center no-gutters">
                     <div class="col mr-2">
                         <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Unassigned</span></div>
-                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unassigned', $data) ?></span></div>
+                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unassigned', $data, $_SESSION['member']) ?></span></div>
                     </div>
                     <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
                 </div>
@@ -89,7 +89,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                         <div class="text-uppercase text-info font-weight-bold text-xs mb-1"><span>Open</span></div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span><?php echo RitornaNumero('open', $data) ?></span></div>
+                                <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span><?php echo RitornaNumero('open', $data, $_SESSION['member']) ?></span></div>
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 <div class="row align-items-center no-gutters">
                     <div class="col mr-2">
                         <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>Solved</span></div>
-                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('solved', $data) ?></span></div>
+                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('solved', $data, $_SESSION['member']) ?></span></div>
                     </div>
                     <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
                 </div>
@@ -213,7 +213,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data);
                 datasets: [{
                     "backgroundColor": ["#4e73df", "#1cc88a", "#36b9cc"],
                     "borderColor": ["#ffffff", "#ffffff", "#ffffff"],
-                    "data": <?php echo '["' . RitornaNumero('solved', $data) . '","' . RitornaNumero('unresolved', $data) . '","' . RitornaNumero('open', $data) . '"]' ?>
+                    "data": <?php echo '["' . RitornaNumero('solved', $data, $_SESSION['member']) . '","' . RitornaNumero('unresolved', $data, $_SESSION['member']) . '","' . RitornaNumero('open', $data, $_SESSION['member']) . '"]' ?>
                 }]
             },
             options: {

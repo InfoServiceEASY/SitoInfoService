@@ -765,8 +765,13 @@ function ContaTutto()
     $conn->close();
     return $total_pages;
 }
-
-function RitornaPercentuale($chiave, $total_pages, $anno)
+function RitornaPercentuale($chiave, $total_pages, $anno, $kind_of_user){
+    return intval($kind_of_user == "dipendente"? 
+    RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
+    : 
+    RitornaPercentuale_helpdesk($chiave, $total_pages, $anno));
+}
+function RitornaPercentuale_helpdesk($chiave, $total_pages, $anno)
 {
     if ($total_pages > 0) {
         $conn = DataConnect();
@@ -780,8 +785,24 @@ function RitornaPercentuale($chiave, $total_pages, $anno)
     } else
         return "0%";
 }
-
-function RitornaNumero($chiave, $anno)
+function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
+{
+    if ($total_pages > 0) {
+        $conn = DataConnect();
+        $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_ticket = ?");
+        $stmt->bind_param('sii', $chiave, $anno, GetUser()[0]);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $numero = intval($result->fetch_assoc()['count']);
+        $stmt->close();
+        return floor($numero / $total_pages * 100) . "%";
+    } else
+        return "0%";
+}
+function RitornaNumero($chiave, $anno, $kind_of_user){
+    return intval($kind_of_user == "dipendente"? RitornaNumero_dipendente($chiave, $anno) : RitornaNumero_helpdesk($chiave, $anno));
+}
+function RitornaNumero_helpdesk($chiave, $anno)
 {
     $conn = DataConnect();
     if ($chiave == "unresolved")
@@ -794,6 +815,32 @@ function RitornaNumero($chiave, $anno)
         $query = "select count(*) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where isaperto=0 and isrisolto=1 and YEAR(dataapertura)=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $anno);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $num_rows = $result->fetch_assoc()['count'];
+    return $num_rows;
+}
+function RitornaNumero_dipendente($chiave, $anno)
+{
+    $conn = DataConnect();
+    $query = null;
+    switch($chiave){
+        case "unresolved":
+            $query = 'select count(distinct t1.id) as count from ticket t1 where t1.id in (select t.id from ticket t inner join report r on t.id= r.fk_ticket where r.isrisolto=0 and r.fk_dipendente=?) and YEAR(dataapertura)=?';
+            break;
+        case "unassigned":
+            $query = "select count(distinct t1.id) as count from ticket t1 inner join report r where t1.isassegnato=0 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
+        break;
+        case "open": 
+            $query = "select count(distinct t.id) as count from ticket t inner join report r where t.isaperto=1 and YEAR(t.dataapertura)=? and r.fk_dipendente=?";
+            break;
+        case "solved": 
+            $query = "select count(distinct t1.id) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where t1.isaperto=0 and r.isrisolto=1 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
+            break;
+    }
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ii', $anno, GetUser()[0]);
     $stmt->execute();
 
     $result = $stmt->get_result();
