@@ -68,7 +68,9 @@ if (ReportOfthis($_GET['id'])) {
                         echo '<td><button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['Id'] . "'" . '"' . ">Modifica Report</button></td>" .
                             '<td><button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['Id'] . "&Cancella=yes" . "'" . '"' . ">Cancella Report</button></td>";
                     else echo '<td></td>';
+		
                 }
+
             } else {
                 ?>
                 <tr>
@@ -96,8 +98,29 @@ if (ReportOfthis($_GET['id'])) {
         window.location.href='Ticketlist.php';
         </script>");
         }
-        echo '<div  class="contiene">';
-        Paginazione($pageno, $total_pages); ?>
+        echo '<div  class="contiene">
+            <p style = "font-size: 200%; text-align:center;">';
+        $num_aperto = strval($aperto ? 1 : 0);
+        for ($i = 1; $i <= $total_pages; $i++)
+            echo "<a href = '?pageno=$i&aperto=$num_aperto'> $i </a>";
+        echo '</p>';
+        echo '<p style = "font-size: 200%; text-align:center;">';
+        echo "<a href='?pageno=1&aperto=$num_aperto'>   &lt;&lt;   </a>";
+        ?>
+        <a href="<?php if ($pageno <= 1) {
+                        echo '#';
+                    } else {
+                        echo "?pageno=" . ($pageno - 1) . "&aperto=" . $num_aperto;
+                    } ?>"> &lt; </a>
+        <a> <?php echo $pageno; ?> </a>
+        <a href="<?php if ($pageno >= $total_pages) {
+                        echo '#';
+                    } else {
+                        echo "?pageno=" . ($pageno + 1) . "&aperto=" . $num_aperto;
+                    } ?>"> &gt; </a>
+        <a href="?pageno=<?php echo $total_pages . "&aperto=" . $num_aperto; ?>"> &gt;&gt; </a>
+        </p>
+        </div>
         <br>
         </div>
         </body>

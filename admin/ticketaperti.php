@@ -17,7 +17,7 @@ Session();
             <th><strong>data apertura</strong></td>
             <th><strong>settore</strong></td>
             <th><strong>oggetto</strong></td>
-            <th><strong>modifica</strong></td>
+            <th></td>
         </tr>
     </thead>
     <tbody>

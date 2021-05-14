@@ -16,7 +16,7 @@ Session();
             <th><strong>data apertura</strong></td>
             <th><strong>settore</strong></td>
             <th><strong>oggetto</strong></td>
-            <th><strong>modifica</strong></td>
+            <th></td>
         </tr>
     </thead>
     <tbody>
@@ -54,7 +54,7 @@ Session();
                     <td><?php echo $row['dataapertura']; ?></td>
                     <td><?php echo $row['nome'];  ?></td>
                     <td><?php echo $row['oggetto'] ?></td>
-                    <?php echo '<td><button id="unico" onclick="location.href=' . "'MostraTicket.php?id=" . $row['id'] . "'" . '"' . ">edit</button></td>" ?>
+                    <?php echo '<td><button id="unico" onclick="location.href=' . "'mostraticket.php?id=" . $row['id'] . "'" . '"' . ">visualizza</button></td>" ?>
                 </tr>
             <?php }
         } else {

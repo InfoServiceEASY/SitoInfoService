@@ -26,7 +26,7 @@ $conn = DataConnect();
 if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= 2021 && $_GET['data'] >= 2001) {
     $data = intval($_GET['data']);
 } else {
-    $data = 2019;
+    $data = 2020;
 }
 $stmt = $conn->prepare("SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
 $stmt->execute();
