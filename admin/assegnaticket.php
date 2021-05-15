@@ -7,8 +7,9 @@ Session();
 
 $conn = DataConnect();
 $cond = 0;
-$stmt = $conn->prepare('SELECT * FROM ticket WHERE id=? AND isassegnato=?');
-$stmt->bind_param('ii', $_GET['id'], $cond);
+$aperto=1;
+$stmt = $conn->prepare('SELECT * FROM ticket WHERE id=? AND isassegnato=? and isaperto=?');
+$stmt->bind_param('iii', $_GET['id'], $cond,$aperto);
 $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
@@ -25,7 +26,7 @@ if ($result->num_rows > 0) {
     }
     echo ("<script LANGUAGE='JavaScript'>
     window.alert('" . $error . "');
-    window.location.href='TicketAperti.php';
+    window.location.href='ticketaperti.php';
     </script>");
   }
 ?>

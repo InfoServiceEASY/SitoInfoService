@@ -51,7 +51,7 @@
                         <h4 class="question">Dipendente</h4>
                         <div class="answer">
                             <p>Username: dipendente</p>
-                            <p>Password: aR4ExuE</p></br>
+                            <p>Password: password</p></br>
                             <p>Username: sleblanc1</p>
                             <p>Password: X7Cuz5iSzx</p>
                         </div>
@@ -60,7 +60,7 @@
                         <h4 class="question">Help desk</h4>
                         <div class="answer">
                             <p>Username: helpdesk</p>
-                            <p>Password: sMuebQ</p>
+                            <p>Password: password</p>
                         </div>
                     </div>
                 </div>

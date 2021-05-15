@@ -43,8 +43,7 @@ foreach ($result as $row) {
     ));
 }
 $tutto = ContaTutto($data);
-
-$featurerequest = RitornaPercentuale("Feature Request", $tutto, $data, $_SESSION['member']);
+$featurerequest = RitornaPercentuale("Feature request", $tutto, $data, $_SESSION['member']);
 $domanda = RitornaPercentuale("Domanda", $tutto, $data, $_SESSION['member']);
 $incidente = RitornaPercentuale("Incidente", $tutto, $data, $_SESSION['member']);
 $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
@@ -151,21 +150,21 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
                 <h6 class="text-primary font-weight-bold m-0">Tipologie </h6>
             </div>
             <div class="card-body">
-                <h4 class="small font-weight-bold">Feature Request<span class="float-right"><?php echo $featurerequest ?></span></h4>
+                <h4 class="small font-weight-bold">Feature Request<span class="float-right"><?php echo $featurerequest.'%' ?></span></h4>
                 <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $featurerequest . '"' ?>><span class="sr-only"><?php echo $featurerequest ?></span></div>
+                    <div class="progress-bar bg-danger"  aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $featurerequest . '%"' ?>><span class="sr-only"><?php echo $featurerequest.'%' ?></span></div>
                 </div>
-                <h4 class="small font-weight-bold">Domanda<span class="float-right"><?php echo $domanda ?></span></h4>
+                <h4 class="small font-weight-bold">Domanda<span class="float-right"><?php echo $domanda.'%' ?></span></h4>
                 <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $domanda . '"' ?>><span class="sr-only"><?php echo $domanda ?></span></div>
+                    <div class="progress-bar bg-warning"  aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $domanda . '%"' ?>><span class="sr-only"><?php echo $domanda.'%' ?></span></div>
                 </div>
-                <h4 class="small font-weight-bold">Incidente<span class="float-right"><?php echo $incidente ?></span></h4>
+                <h4 class="small font-weight-bold">Incidente<span class="float-right"><?php echo $incidente.'%' ?></span></h4>
                 <div class="progress mb-4">
-                    <div class="progress-bar bg-primary" aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $incidente . '"' ?>><span class="sr-only"><?php echo $incidente ?></span></div>
+                    <div class="progress-bar bg-primary"  aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $incidente . '%"' ?>><span class="sr-only"><?php echo $incidente.'%' ?></span></div>
                 </div>
-                <h4 class="small font-weight-bold">Problema<span class="float-right"><?php echo $problema ?></span></h4>
+                <h4 class="small font-weight-bold">Problema<span class="float-right"><?php echo $problema.'%' ?></span></h4>
                 <div class="progress mb-4">
-                    <div class="progress-bar bg-info" aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $problema . '"' ?>><span class="sr-only"><?php echo $problema ?></span></div>
+                    <div class="progress-bar bg-info"  aria-valuemin="0" aria-valuemax="100" style=<?php echo '"width:' . $problema . '%"' ?>><span class="sr-only"><?php echo $problema.'%' ?></span></div>
                 </div>
             </div>
         </div>
@@ -173,10 +172,9 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
 </div>
 </div>
 </div>
-<script src="assets/js/jquery.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
-<script src="assets/js/bs-init.js"></script>
+<script src="../assets/js/bs-init.js"></script>
 <script>
     var chartData = {
         labels: <?php echo json_encode($mese); ?>,

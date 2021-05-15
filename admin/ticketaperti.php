@@ -35,18 +35,22 @@ Session();
         $total_pages = PagineTotali($total_pages_sql, $no_of_records_per_page);
 
         $offset = ($pageno - 1) * $no_of_records_per_page;
-        $sql = "SELECT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome FROM  ticket t
-            INNER JOIN settore s ON s.id=t.fk_settore  WHERE isassegnato=0
-            AND t.isaperto=1 ORDER BY t.dataapertura DESC LIMIT $offset, $no_of_records_per_page";
+         $sql = "SELECT DISTINCT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome, report.isrisolto FROM  ticket t
+        INNER JOIN settore s ON s.id=t.fk_settore
+        INNER join report on report.fk_ticket=t.id
+        where t.isaperto=1 and isassegnato=0
+	 LIMIT $offset, $no_of_records_per_page";
         $result = Tabella($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-        ?>
+                if($row['isrisolto']==0){$style="unicodue";}
+                 else {$style="unico";}       
+ ?>
                 <tr>
                     <td><?php echo $row["dataapertura"]; ?></td>
                     <td><?php echo $row["nome"];  ?></td>
                     <td><?php echo $row['oggetto'] ?></td>
-                    <?php echo '<td><button id="unico" onclick="location.href=' . "'assegnaticket.php?id=" . $row['id'] . "'" . '"' . ">assegna</button></td>" ?>
+                    <?php echo '<td><button id="'.$style.'" onclick="location.href=' . "'assegnaticket.php?id=" . $row['id'] . "'" . '"' . ">assegna</button></td>" ?>
                 </tr>
             <?php }
         } else {
