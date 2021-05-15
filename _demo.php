@@ -50,7 +50,7 @@
                     <div class="faq-item">
                         <h4 class="question">Dipendente</h4>
                         <div class="answer">
-                            <p>Username: pwoodrough0</p>
+                            <p>Username: dipendente</p>
                             <p>Password: aR4ExuE</p></br>
                             <p>Username: sleblanc1</p>
                             <p>Password: X7Cuz5iSzx</p>
@@ -59,7 +59,7 @@
                     <div class="faq-item">
                         <h4 class="question">Help desk</h4>
                         <div class="answer">
-                            <p>Username: ctrahar3</p>
+                            <p>Username: helpdesk</p>
                             <p>Password: sMuebQ</p>
                         </div>
                     </div>

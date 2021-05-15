@@ -2,7 +2,7 @@
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-/*function DataConnect()
+function DataConnect()
 {
     $servername = "127.0.0.1";
     $username = "db_infoservice";
@@ -12,19 +12,8 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
     if ($conn->connect_error)
         die("Connection failed: " . $conn->connect_error);
     return $conn;
-}*/
-
-function DataConnect()
-{
-    $servername = "lmc8ixkebgaq22lo.chr7pe7iynqr.eu-west-1.rds.amazonaws.com";
-    $username = "htgt3cv7fwksdcw4";
-    $password = "lh21vdy7t1yjk7bk";
-    $dbname = "k113bann4ponykr2";
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error)
-        die("Connection failed: " . $conn->connect_error);
-    return $conn;
 }
+
 
 function Session()
 {
@@ -788,9 +777,10 @@ function RitornaPercentuale_helpdesk($chiave, $total_pages, $anno)
 function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
 {
     if ($total_pages > 0) {
+	$variabile=GetUser()[0];
         $conn = DataConnect();
         $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_ticket = ?");
-        $stmt->bind_param('sii', $chiave, $anno, GetUser()[0]);
+        $stmt->bind_param('sii', $chiave, $anno, $variabile);
         $stmt->execute();
         $result = $stmt->get_result();
         $numero = intval($result->fetch_assoc()['count']);
@@ -840,7 +830,8 @@ function RitornaNumero_dipendente($chiave, $anno)
             break;
     }
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ii', $anno, GetUser()[0]);
+    $variabile=GetUser()[0];
+    $stmt->bind_param('ii', $anno, $variabile);
     $stmt->execute();
 
     $result = $stmt->get_result();
