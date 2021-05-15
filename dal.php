@@ -777,7 +777,7 @@ function RitornaPercentuale_helpdesk($chiave, $total_pages, $anno)
 function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
 {
     if ($total_pages > 0) {
-	$variabile=GetUser()[0];
+	    $variabile=GetUser()[0];
         $conn = DataConnect();
         $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_ticket = ?");
         $stmt->bind_param('sii', $chiave, $anno, $variabile);
