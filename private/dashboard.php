@@ -28,7 +28,14 @@ if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= intval(d
 } else {
     $data = intval(date("Y")) - 1;
 }
-$stmt = $conn->prepare("SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
+$var = GetUser()[0];
+$stmt = $conn->prepare($_SESSION['member'] != "dipendente"?
+"SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=".$data."GROUP BY mese, month(dataapertura) order by month(dataapertura)"
+:
+"SELECT monthname(ticket.dataapertura) as mese,  count(*) AS count FROM ticket inner join report on report.fk_ticket=ticket.id WHERE YEAR(ticket.dataapertura)=".$data." and report.fk_dipendente=? GROUP BY mese, month(ticket.dataapertura) order by month(ticket.dataapertura)");
+if ($_SESSION['member'] == "dipendente"){
+    $stmt -> bind_param('i',$var);
+}
 $stmt->execute();
 $result = $stmt->get_result();
 $mese = array();
