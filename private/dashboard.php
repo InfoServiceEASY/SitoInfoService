@@ -47,7 +47,14 @@ $featurerequest = RitornaPercentuale("Feature request", $tutto, $data, $_SESSION
 $domanda = RitornaPercentuale("Domanda", $tutto, $data, $_SESSION['member']);
 $incidente = RitornaPercentuale("Incidente", $tutto, $data, $_SESSION['member']);
 $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
-
+$unresolved = RitornaNumero('unresolved', $data, $_SESSION['member']);
+$unassigned = RitornaNumero('unassigned', $data, $_SESSION['member']); 
+$open = RitornaNumero('open', $data, $_SESSION['member']);
+$solved = RitornaNumero('solved', $data, $_SESSION['member']);
+var_dump($unresolved);
+var_dump($unassigned);
+var_dump($open);
+var_dump($solved);
 ?>
 
 <div class="d-sm-flex justify-content-between align-items-center mb-4">
@@ -60,7 +67,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
                 <div class="row align-items-center no-gutters">
                     <div class="col mr-2">
                         <div class="text-uppercase text-primary font-weight-bold text-xs mb-1"><span>unresolved</span></div>
-                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unresolved', $data, $_SESSION['member']) ?></span></div>
+                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo $unresolved; ?></span></div>
                     </div>
                     <div class="col-auto"><i class="fas fa-calendar fa-2x text-gray-300"></i></div>
                 </div>
@@ -73,7 +80,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
                 <div class="row align-items-center no-gutters">
                     <div class="col mr-2">
                         <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>Unassigned</span></div>
-                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('unassigned', $data, $_SESSION['member']) ?></span></div>
+                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo $unassigned ?></span></div>
                     </div>
                     <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
                 </div>
@@ -88,7 +95,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
                         <div class="text-uppercase text-info font-weight-bold text-xs mb-1"><span>Open</span></div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
-                                <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span><?php echo RitornaNumero('open', $data, $_SESSION['member']) ?></span></div>
+                                <div class="text-dark font-weight-bold h5 mb-0 mr-3"><span><?php echo $open; ?></span></div>
                             </div>
                         </div>
                     </div>
@@ -102,7 +109,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
                 <div class="row align-items-center no-gutters">
                     <div class="col mr-2">
                         <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>Solved</span></div>
-                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo RitornaNumero('solved', $data, $_SESSION['member']) ?></span></div>
+                        <div class="text-dark font-weight-bold h5 mb-0"><span><?php echo $solved; ?></span></div>
                     </div>
                     <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
                 </div>
@@ -211,7 +218,7 @@ $problema = RitornaPercentuale("Problema", $tutto, $data, $_SESSION['member']);
                 datasets: [{
                     "backgroundColor": ["#4e73df", "#1cc88a", "#36b9cc"],
                     "borderColor": ["#ffffff", "#ffffff", "#ffffff"],
-                    "data": <?php echo '["' . RitornaNumero('solved', $data, $_SESSION['member']) . '","' . RitornaNumero('unresolved', $data, $_SESSION['member']) . '","' . RitornaNumero('open', $data, $_SESSION['member']) . '"]' ?>
+                    "data": <?php echo '["' . $solved . '","' . $unresolved. '","' . $open. '"]' ?>
                 }]
             },
             options: {
