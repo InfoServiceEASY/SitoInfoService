@@ -608,11 +608,15 @@ function deleteTicket($id)
     $stmt->close();
     $conn->close();
     return $error;
+    $conn = DataConnect();
+    $stmt = $conn->prepare($query);
+    $stmt->execute();
+    $result = $stmt->get_result();
 }
 
 function Tabella($query)
 {
-    $conn = DataConnect();
+   $conn = DataConnect();
     $stmt = $conn->prepare($query);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -626,9 +630,10 @@ function PagineTotali($total_pages_sql, $num_records_per_page)
     $stmt = $conn->prepare($total_pages_sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    $total_rows = $result->fetch_assoc()['cont'];
+    $total_rows = $result->fetch_assoc()['count'];
     $total_pages = ceil($total_rows / $num_records_per_page);
     return $total_pages;
+
 }
 
 function Paginazione($pageno, $total_pages)
@@ -786,13 +791,14 @@ function RitornaPercentuale_dipendente($chiave, $anno)
     $sqlstmt -> close(); 
     if ($total_pages > 0) {
 	    $variabile=GetUser()[0];
+        $conn = DataConnect();
         $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r on t.id = r.fk_ticket where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_dipendente= ?");
         $stmt->bind_param('sii', $chiave, $anno, $variabile);
         $stmt->execute();
         $result = $stmt->get_result();
         $numero = intval($result->fetch_assoc()['count']);
         $stmt->close();
-        return round(($numero * 100) / $total_pages,2) . "%";
+        return floor($numero / $total_pages * 100) . "%";
     } else
         return "0%";
 }
@@ -803,16 +809,19 @@ function RitornaNumero_helpdesk($chiave, $anno)
 {
     $conn = DataConnect();
     if ($chiave == "unresolved")
-        $query = 'select count(*) as count from ticket t1 where t1.id in (select t.id from ticket t inner join report on t.id= report.fk_ticket where report.isrisolto=0) and YEAR(dataapertura)=? and isaperto=1 and isassegnato=0';
+        $query = 'SELECT count( DISTINCT t.id) as count FROM  ticket t
+         INNER JOIN settore s ON s.id=t.fk_settore LEFT join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 and isrisolto= 0  and YEAR(dataapertura)=?';
     else if ($chiave == "unassigned")
-        $query = "select count(*) as count from ticket t1 where isassegnato=0 and YEAR(dataapertura)=? and isaperto=1";
+        $query = "SELECT count( DISTINCT t.id) as count FROM  ticket t
+         INNER JOIN settore s ON s.id=t.fk_settore LEFT join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 and (isrisolto= 0 or isrisolto is null) and YEAR(dataapertura)=?";
     else if ($chiave == "open")
-        $query = "select count(*) as count from ticket t1 where isaperto=1 and YEAR(dataapertura)=?";
+        $query = "SELECT count( DISTINCT t.id) as count FROM  ticket t INNER JOIN settore s ON s.id=t.fk_settore LEFT join report on report.fk_ticket=t.id where t.isaperto=1  and (isrisolto= 0 or isrisolto is null) and YEAR(dataapertura)=?";
     else if ($chiave == "solved")
         $query = "select count(*) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where isaperto=0 and isrisolto=1 and YEAR(dataapertura)=?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $anno);
     $stmt->execute();
+
     $result = $stmt->get_result();
     $num_rows = $result->fetch_assoc()['count'];
     return $num_rows;
@@ -826,7 +835,8 @@ function RitornaNumero_dipendente($chiave, $anno)
             $query = 'select count(distinct t1.id) as count from ticket t1 where t1.id in (select t.id from ticket t inner join report r on t.id= r.fk_ticket where r.isrisolto=0 and r.fk_dipendente=?) and YEAR(dataapertura)=?';
             break;
         case "unassigned":
-            $query = "select count(distinct t1.id) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where t1.isassegnato=0 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
+            $query = "SELECT count( DISTINCT t.id) as count FROM  ticket t
+         INNER JOIN settore s ON s.id=t.fk_settore LEFT join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 and (isrisolto= 0 or isrisolto is null) YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
         break;
         case "open": 
             $query = "select count(distinct t.id) as count from ticket t inner join report r on r.fk_ticket=t.id where t.isaperto=1 and YEAR(t.dataapertura)=? and r.fk_dipendente=?";

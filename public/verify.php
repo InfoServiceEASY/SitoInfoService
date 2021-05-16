@@ -1,16 +1,12 @@
 <?php
 include_once '../dal.php';
-if (isset($_SESSION['login'])) {
-    header('location: ../index.php');
-    exit();
-}
 if (isset($_GET['email']) && isset($_GET['usr'])) {
     $conn = DataConnect();
     $stmt = $conn->prepare('SELECT status FROM utenza WHERE email=? AND username=?');
     $stmt->bind_param('ss', $_GET['email'], $_GET['usr']);
     if ($stmt->execute()) {
-        $stmt->close();
         $result = $stmt->get_result();
+        $stmt->close();
         if ($result->num_rows > 0) {
             $result = $result->fetch_assoc();
             if ($result['status'] === 0) {
@@ -43,6 +39,7 @@ if (isset($_GET['email']) && isset($_GET['usr'])) {
         $error = 'C\'è stato un problema riprova più tardi</p></div>';
     }
 } else {
+echo "ciao";
     header('location: ../index.php');
     exit();
 }

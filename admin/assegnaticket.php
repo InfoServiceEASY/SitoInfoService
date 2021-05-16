@@ -100,7 +100,6 @@ if ($result->num_rows > 0) {
   ?>
 
   <div style="float: right;">
-    <button class="btn btn-primary" type="submit" name="Elimina">Elimina</button>
     <button id="btnShowModal" class="btn btn-primary" type="submit" name="Assegna">Assegna</button>
   </div>
 </form>
