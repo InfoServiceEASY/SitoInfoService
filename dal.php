@@ -757,7 +757,7 @@ function ContaTutto($anno)
 }
 function RitornaPercentuale($chiave, $total_pages, $anno, $kind_of_user){
     return round(($kind_of_user == "dipendente"? 
-    RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
+    RitornaPercentuale_dipendente($chiave, $anno)
     : 
     RitornaPercentuale_helpdesk($chiave, $total_pages, $anno)),1);
 }
@@ -776,11 +776,16 @@ return $variabile;
     } else
         return "0%";
 }
-function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
+function RitornaPercentuale_dipendente($chiave, $anno)
 {
+    $conn = DataConnect();
+    $sqlstmt = $conn -> prepare("SELECT count(*) as count from ticket t inner join report r on t.id = r.fk_ticket WHERE YEAR(t.dataapertura)=?");
+    $sqlstmt -> bind_param('s', $anno);
+    $result1 = $sqlstmt -> get_result();
+    $total_pages = intval($result1 ->fetch_assoc()['count']);
+    $sqlstmt -> close(); 
     if ($total_pages > 0) {
 	    $variabile=GetUser()[0];
-        $conn = DataConnect();
         $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r on t.id = r.fk_ticket where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_dipendente= ?");
         $stmt->bind_param('sii', $chiave, $anno, $variabile);
         $stmt->execute();
@@ -808,7 +813,6 @@ function RitornaNumero_helpdesk($chiave, $anno)
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $anno);
     $stmt->execute();
-
     $result = $stmt->get_result();
     $num_rows = $result->fetch_assoc()['count'];
     return $num_rows;
