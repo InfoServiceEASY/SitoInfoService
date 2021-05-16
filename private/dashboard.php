@@ -51,10 +51,6 @@ $unresolved = RitornaNumero('unresolved', $data, $_SESSION['member']);
 $unassigned = RitornaNumero('unassigned', $data, $_SESSION['member']); 
 $open = RitornaNumero('open', $data, $_SESSION['member']);
 $solved = RitornaNumero('solved', $data, $_SESSION['member']);
-var_dump($unresolved);
-var_dump($unassigned);
-var_dump($open);
-var_dump($solved);
 ?>
 
 <div class="d-sm-flex justify-content-between align-items-center mb-4">

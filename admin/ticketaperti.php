@@ -26,12 +26,10 @@ Session();
           
  $no_of_records_per_page = 10;
 
-        $total_pages_sql = "SELECT COUNT(*) as cont FROM  ticket t
-            INNER JOIN settore s on s.id=t.fk_settore  where isassegnato=0
-            AND t.isaperto=1";
-        $total_pages = PagineTotali($total_pages_sql, $no_of_records_per_page);
-        if (isset($_GET['pageno'])) {
-            if (is_int($_GET['pageno'])&&$_GET['pageno']>0 && $_GET['pageno']-1<=$total_pages/$no_of_records_per_page  )
+        $total_pages_sql = "SELECT count( DISTINCT t.id) as count FROM  ticket t INNER JOIN settore s ON s.id=t.fk_settore LEFT join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 and (isrisolto= 0 or isrisolto is null) ";
+        $total_pages = PagineTotali($total_pages_sql, $no_of_records_per_page);      
+ if (isset($_GET['pageno'])) {
+            if (is_int((int)$_GET['pageno'])&&(int)$_GET['pageno']>0 && (int)$_GET['pageno']<=$total_pages )
                 $pageno = $_GET['pageno'];
 	else{
             $pageno = 1;
@@ -43,11 +41,11 @@ Session();
      
         $offset = ($pageno - 1) * $no_of_records_per_page;
         $sql = "SELECT DISTINCT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome, report.isrisolto FROM  ticket t
-         INNER JOIN settore s ON s.id=t.fk_settore INNER join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 LIMIT $offset, $no_of_records_per_page";
+         INNER JOIN settore s ON s.id=t.fk_settore LEFT join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 and (isrisolto= 0 or isrisolto is null) LIMIT $offset, $no_of_records_per_page";
         $result = Tabella($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                if ($row['isrisolto'] == 0) {
+                if (!is_null($row['isrisolto']) && $row['isrisolto']==0 ) {
                     $style = "unicodue";
                 } else {
                     $style = "unico";
