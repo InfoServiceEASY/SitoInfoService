@@ -787,7 +787,7 @@ function RitornaPercentuale_dipendente($chiave, $anno)
     $sqlstmt = $conn -> prepare("SELECT count(*) as count from ticket t inner join report r on t.id = r.fk_ticket WHERE YEAR(t.dataapertura)=?");
     $sqlstmt -> bind_param('i', $anno);
     $result1 = $sqlstmt -> get_result();
-    var_dump($result1);
+    echo($result1 == null? 0:1);
     $var = $result1 ->fetch_assoc()['count'];
     var_dump($var);
     $total_pages = intval($var);
