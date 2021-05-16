@@ -786,8 +786,10 @@ function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
         $stmt->execute();
         $result = $stmt->get_result();
         $numero = intval($result->fetch_assoc()['count']);
+        echo($numero);
+        echo($total_pages);
         $stmt->close();
-        return floor($numero / $total_pages * 100) . "%";
+        return floor(($numero * 100) / $total_pages) . "%";
     } else
         return "0%";
 }
@@ -831,7 +833,6 @@ function RitornaNumero_dipendente($chiave, $anno)
             $query = "select count(distinct t1.id) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where t1.isaperto=0 and r.isrisolto=1 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
             break;
     }
-    echo $query;
     $stmt = $conn->prepare($query);
     $variabile=GetUser()[0];
     $stmt->bind_param('ii', $anno, $variabile);
