@@ -819,7 +819,7 @@ function RitornaNumero_helpdesk($chiave, $anno)
     else if ($chiave == "solved")
         $query = "select count(*) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where isaperto=0 and isrisolto=1 and YEAR(dataapertura)=?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('i', $anno);
+    $stmt->bind_param('s', $anno);
     $stmt->execute();
 
     $result = $stmt->get_result();
