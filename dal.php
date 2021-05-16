@@ -781,7 +781,7 @@ function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
     if ($total_pages > 0) {
 	    $variabile=GetUser()[0];
         $conn = DataConnect();
-        $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_ticket = ?");
+        $stmt = $conn->prepare("SELECT count(*) as count from ticket t inner join report r on t.id = r.fk_ticket where t.tipologia=? and YEAR(t.dataapertura)=? and r.fk_dipendente= ?");
         $stmt->bind_param('sii', $chiave, $anno, $variabile);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -822,7 +822,7 @@ function RitornaNumero_dipendente($chiave, $anno)
             $query = 'select count(distinct t1.id) as count from ticket t1 where t1.id in (select t.id from ticket t inner join report r on t.id= r.fk_ticket where r.isrisolto=0 and r.fk_dipendente=?) and YEAR(dataapertura)=?';
             break;
         case "unassigned":
-            $query = "select count(distinct t1.id) as count from ticket t1 inner join report r where t1.isassegnato=0 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
+            $query = "select count(distinct t1.id) as count from ticket t1 inner join report r on r.fk_ticket=t.id where t1.isassegnato=0 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
         break;
         case "open": 
             $query = "select count(distinct t.id) as count from ticket t inner join report r on r.fk_ticket=t.id where t.isaperto=1 and YEAR(t.dataapertura)=? and r.fk_dipendente=?";
