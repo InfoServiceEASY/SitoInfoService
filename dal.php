@@ -791,7 +791,7 @@ function RitornaPercentuale_dipendente($chiave, $total_pages, $anno)
         echo($total_pages);
         echo '</br>';
         $stmt->close();
-        return floor(($numero * 100) / $total_pages) . "%";
+        return round(($numero * 100) / $total_pages,2) . "%";
     } else
         return "0%";
 }
