@@ -4,42 +4,59 @@ $title = 'Dashboard';
 include_once '../dal.php';
 include_once '../template/privatepage_params.php';
 Session();
-
-$conn = DataConnect();
-$nomeColonna = 1; // 1 all'inizio perchè se si tratta di helpdesk farò where 1=1 e quindi sempre 
-$condizione = "";
-if ($_SESSION["member"] === "admin")
-    $condizione = 1;
-elseif ($_SESSION["member"] === "cliente") {
-    $nomeColonna = "fk_cliente";
-    $condizione = GetUser()[0];
-}
-
-if ($_SESSION["member"] == "dipendente") {
-    $sql = "SELECT t.dataapertura, count(*) AS count FROM ticket t INNER JOIN report r ON t.id = r.fk_ticket
-  WHERE t.isaperto = 1 AND r.fk_dipendente = (SELECT id FROM utenza WHERE username = ?)";
-    $condizione = $_SESSION['utente'];
-}
-
-$conn->close();
 $conn = DataConnect();
 if (isset($_GET['data']) && !is_null($_GET['data']) && $_GET['data'] <= intval(date("Y")) && $_GET['data'] >= 2001) {
     $data = intval($_GET['data']);
 } else {
     $data = intval(date("Y")) - 1;
 }
-$stmt = $conn->prepare("SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
+$stmt = $conn->prepare( $_SESSION['member'] == "dipendente"? 
+"SELECT monthname(t.dataapertura) as mese,  count(*) AS count FROM ticket t inner join report r on t.id = r.fk_ticket WHERE YEAR(t.dataapertura)=" . $data . " and r.fk_dipendente = ?  GROUP BY mese, month(t.dataapertura) order by month(t.dataapertura)"
+:
+"SELECT monthname(dataapertura) as mese,  count(*) AS count FROM ticket WHERE YEAR(dataapertura)=" . $data . "  GROUP BY mese, month(dataapertura) order by month(dataapertura)");
+if($_SESSION['member'] == 'dipendente') $stmt -> bind_param('i', GetUser()[0]);
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->get_result(); 
 $mese = array();
 $somma = array();
-
-foreach ($result as $row) {
+$r = array();
+while($row = $result -> fetch_assoc()){
+    array_push($r, $row); 
+} 
+function FillMonths($rows){
+    $months = array();
+    for($i=0; $i < count($rows); $i++)
+        array_push($months, $rows[$i]['mese']);
+    //ottenuti tutti i mesi, procedo cercando di capire se ho ticket o no    
+    $result = array();
+    $arr = array("January", "February", "March", "April",
+     "May", "June", "July", "August", "September", "October", "November", "December");
+     $j = 0;
+     for($i = 0; $i < count($arr); $i++){
+        if(in_array($arr[$i], $months)){
+            $result[$arr[$i]] = $rows[$j]["count"];
+            $j++;
+        }
+        else 
+            $result[$arr[$i]] = 0;
+     }
+     return $result;
+}
+$data = FillMonths($r);
+/*foreach ($result as $row) {
     array_push($mese, array(
         $row["mese"]
     ));
     array_push($somma, array(
         $row["count"]
+    ));
+}*/
+foreach($data as $m =>$c){
+    array_push($mese, array(
+        $m
+    ));
+    array_push($somma, array(
+        $c
     ));
 }
 $tutto = ContaTutto($data);
