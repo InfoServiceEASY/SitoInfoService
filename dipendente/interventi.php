@@ -65,7 +65,7 @@ if (ReportOfthis($_GET['id'])) {
                     if (($aperto) && IsMine($row["Id"]))
                         echo '<td><button id="unico" onclick="location.href=' . "'writereport.php?id=" . $row['Id'] . "'" . '"' . ">Modifica Report</button>" .
                             '<button id="unico" onclick="location.href=' . "'interventi.php?id=" . $row['Id'] . "&Cancella=yes" . "'" . '"' . ">Cancella Report</button></td>";
-                    else echo '<td></td>';
+                    else echo '<td> NON MODIFICABILE </td>';
                 ?>
                 </tr>
                 <?php    
