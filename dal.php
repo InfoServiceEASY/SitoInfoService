@@ -831,6 +831,7 @@ function RitornaNumero_dipendente($chiave, $anno)
             $query = "select count(distinct t1.id) as count from ticket t1 inner join report r on r.fk_ticket=t1.id where t1.isaperto=0 and r.isrisolto=1 and YEAR(t1.dataapertura)=? and r.fk_dipendente=?";    
             break;
     }
+    echo $query;
     $stmt = $conn->prepare($query);
     $variabile=GetUser()[0];
     $stmt->bind_param('ii', $anno, $variabile);
