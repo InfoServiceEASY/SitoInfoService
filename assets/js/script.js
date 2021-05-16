@@ -122,7 +122,7 @@ function tabellaprivata() {
     $(document).ready(function() {
         $('#search thead th').each(function() {
             var title = $(this).text().trim();
-            if (title != "")
+            if (title != "" && title != "modifica" )
                 $(this).html('' + title + ' <br><input type="text" class="filter" placeholder="Search ' + title + '" />');
         });
 

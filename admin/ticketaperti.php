@@ -24,20 +24,23 @@ Session();
     <tbody>
         <?php
           
-
-        if (isset($_GET['pageno'])) {
-            if (is_numeric($_GET['pageno']))
-                $pageno = $_GET['pageno'];
-        } else {
-            $pageno = 1;
-        }
-     
-        $no_of_records_per_page = 10;
+ $no_of_records_per_page = 10;
 
         $total_pages_sql = "SELECT COUNT(*) as cont FROM  ticket t
             INNER JOIN settore s on s.id=t.fk_settore  where isassegnato=0
             AND t.isaperto=1";
         $total_pages = PagineTotali($total_pages_sql, $no_of_records_per_page);
+        if (isset($_GET['pageno'])) {
+            if (is_int($_GET['pageno'])&&$_GET['pageno']>0 && $_GET['pageno']-1<=$total_pages/$no_of_records_per_page  )
+                $pageno = $_GET['pageno'];
+	else{
+            $pageno = 1;
+        }
+
+        } else {
+            $pageno = 1;
+        }
+     
         $offset = ($pageno - 1) * $no_of_records_per_page;
         $sql = "SELECT DISTINCT t.id,t.dataapertura,t.descrizione,t.oggetto,t.tipologia,s.nome, report.isrisolto FROM  ticket t
          INNER JOIN settore s ON s.id=t.fk_settore INNER join report on report.fk_ticket=t.id where t.isaperto=1 and isassegnato=0 LIMIT $offset, $no_of_records_per_page";
@@ -70,7 +73,7 @@ Session();
             <th><strong>data apertura</strong></td>
             <th><strong>settore</strong></td>
             <th><strong>oggetto</strong></td>
-            <th><strong>modifica</strong></td>
+            <th></td>
         </tr>
     </tfoot>
 </table>

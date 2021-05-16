@@ -17,9 +17,6 @@
 </head>
 
 <body>
-<?php
-  echo "<script>window.sendmessaggio('domanda','risposta','marouanouadi@gmail.com');</script>";    
-?>
     <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-light clean-navbar">
         <div class="container"><button data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button><img src="../assets/img/logo.png" style="height: 60px;">
             <div class="collapse navbar-collapse" id="navcol-1">

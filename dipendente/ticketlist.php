@@ -54,7 +54,7 @@ function Table_content($conn, $pageno, $total_pages, $query, $aperto)
     <th><strong> Nome </strong></td>
     <th><strong> Oggetto </strong></td>
     <th><strong> Attività </strong></td>
-    <th><strong> modifica</td>
+    <th></td>
     </thead>
     <tbody><?php
     $stmt = $conn->prepare($query);
